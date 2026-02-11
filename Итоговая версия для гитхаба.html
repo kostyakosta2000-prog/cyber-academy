@@ -3664,7 +3664,23 @@ let puuCurrentQuestion = 0;
 let puuUserAnswers = [];
 let puuTestStartTime = null;
 let puuTestTimer = null;
-
+let socialTestQuestions = [];
+let socialCurrentQuestion = 0;
+let socialUserAnswers = [];
+let socialTestStartTime = null;
+let socialTestTimer = null;
+let finalTestQuestions = [];
+let finalCurrentQuestion = 0;
+let finalUserAnswers = [];
+let finalTestStartTime = null;
+let finalTestTimer = null;
+// Функция плавной прокрутки вверх
+function scrollToTop() {
+    window.scrollTo({
+        top: 0,
+        behavior: 'smooth'
+    });
+}
         // Инициализация при загрузке
         document.addEventListener('DOMContentLoaded', function() {
             // Проверяем, есть ли сохраненный пользователь
@@ -5181,7 +5197,7 @@ let puuTestTimer = null;
                 <p>Пройдите тест из 10 вопросов, чтобы проверить свои знания. Для успешного завершения курса нужно правильно ответить на 8 из 10 вопросов (80%).</p>
                 
                 <div style="text-align: center; margin: 40px 0;">
-                    <button class="btn btn-large btn-success" onclick="startFinancialTest()">
+                    <button class="btn btn-large btn-success" onclick="startFinanceFraudTest()">
                         <i class="fas fa-play icon"></i> Начать итоговый тест
                     </button>
                 </div>
@@ -7487,7 +7503,7 @@ wevtutil epl System system_backup.evtx</pre>
         }
                     ],
                     totalLessons: 10,
-                    totalDuration: '4 часа'
+                    totalDuration: '1.5 часа'
                 },
 // Добавьте этот блок в функцию initCoursesData() после курса 'puu'
 'passwords': {
@@ -9285,7 +9301,7 @@ wevtutil epl System system_backup.evtx</pre>
                             </div>
                             <h3>Тест по фишингу</h3>
                             <p>10 вопросов по распознаванию фишинговых атак</p>
-                            <button class="btn" style="width: 100%; margin-top: 15px;" onclick="startTest('phishing')">
+                            <button class="btn" style="width: 100%; margin-top: 15px;" onclick="startPhishingTest()">
                                 Начать тест
                             </button>
                         </div>
@@ -9296,7 +9312,7 @@ wevtutil epl System system_backup.evtx</pre>
                             </div>
                             <h3>Тест по телефонному мошенничеству</h3>
                             <p>8 вопросов по защите от телефонных атак</p>
-                            <button class="btn" style="width: 100%; margin-top: 15px;" onclick="startTest('calls')">
+                            <button class="btn" style="width: 100%; margin-top: 15px;" onclick="startCallsTest()">
                                 Начать тест
                             </button>
                         </div>
@@ -9307,7 +9323,7 @@ wevtutil epl System system_backup.evtx</pre>
                             </div>
                             <h3>Тест по мошенничеству с Госуслугами</h3>
                             <p>10 вопросов по защите аккаунта на портале Госуслуги</p>
-                            <button class="btn" style="width: 100%; margin-top: 15px;" onclick="startTest('gosuslugi')">
+                            <button class="btn" style="width: 100%; margin-top: 15px;" onclick="startGosuslugiTest()">
                                 Начать тест
                             </button>
                         </div>
@@ -9317,7 +9333,7 @@ wevtutil epl System system_backup.evtx</pre>
         </div>
         <h3>Тест по ПУУ схемам</h3>
         <p>15 вопросов по сложным атакам и удаленному доступу</p>
-        <button class="btn" style="width: 100%; margin-top: 15px;" onclick="startTest('puu')">
+        <button class="btn" style="width: 100%; margin-top: 15px;" onclick="startPuuTest()">
             Начать тест
         </button>
     </div>
@@ -9332,27 +9348,39 @@ wevtutil epl System system_backup.evtx</pre>
                     </button>
                 </div>
 <div class="course-card">
+    <div class="course-icon social">
+        <i class="fas fa-users"></i>
+    </div>
+    <h3>Тест по безопасности в соцсетях</h3>
+    <p>10 вопросов по защите аккаунтов и приватности</p>
+    <button class="btn" style="width: 100%; margin-top: 15px;" onclick="startSocialTest()">
+        Начать тест
+    </button>
+</div>
+<div class="course-card">
     <div class="course-icon passwords">
         <i class="fas fa-key"></i>
     </div>
     <h3>Тест по паролям и аутентификации</h3>
     <p>15 вопросов по созданию и защите паролей, менеджерам паролей, 2FA</p>
-    <button class="btn" style="width: 100%; margin-top: 15px;" onclick="startTest('passwords')">
+    <button class="btn" style="width: 100%; margin-top: 15px;" onclick="startPasswordsTest()">
         Начать тест
     </button>
 </div>
                         <div class="course-card">
-                            <div class="course-icon puu">
-                                <i class="fas fa-laptop-code"></i>
-                            </div>
-                            <h3>Итоговый тест</h3>
-                            <p>20 вопросов по всем темам кибербезопасности</p>
-                            <button class="btn btn-success" style="width: 100%; margin-top: 15px;" onclick="startTest('final')">
-                                Начать тест
-                            </button>
-                        </div>
-                    </div>
-                </div>
+    <div class="course-icon puu">
+        <i class="fas fa-laptop-code"></i>
+    </div>
+    <h3>Итоговый тест</h3>
+    <p>20 вопросов по всем темам кибербезопасности. Проверьте свои знания!</p>
+    <div style="margin-bottom: 10px;">
+        <span style="background-color: #ffa000; color: white; padding: 3px 10px; border-radius: 15px; font-size: 12px; font-weight: bold;">ЭКСПЕРТ</span>
+        <span style="background-color: #f5f5f5; color: #666; padding: 3px 10px; border-radius: 15px; font-size: 12px; margin-left: 5px;">40 мин</span>
+    </div>
+    <button class="btn btn-success" style="width: 100%; margin-top: 15px;" onclick="startFinalTest()">
+        <i class="fas fa-graduation-cap icon"></i> Начать итоговый тест
+    </button>
+</div>
             `;
         }
         
@@ -9659,41 +9687,48 @@ function showLessonContent(courseId, lessonIndex) {
 }
         
         // Завершить урок
-        function completeLesson(courseId, lessonIndex) {
-            if (!currentUser) return;
-            
-            const course = courses[courseId];
-            if (!course) return;
-            
-            // Проверяем, не завершен ли уже урок
-            const totalLessons = course.lessons.length;
-            const progressPerLesson = 100 / totalLessons;
-            const currentProgress = currentUser.progress[courseId] || 0;
-            const lessonProgress = (lessonIndex + 1) * progressPerLesson;
-            
-            if (lessonProgress <= currentProgress) {
-                showNotification('info', 'Этот урок уже завершен');
-                return;
-            }
-            
-            // Обновляем прогресс
-            currentUser.progress[courseId] = Math.min(lessonProgress, 100);
-            currentUser.stats.completedLessons++;
-            currentUser.stats.score += 10;
-            currentUser.stats.lastActive = new Date().toISOString();
-            
-            // Проверяем, завершен ли курс
-            if (currentUser.progress[courseId] >= 100 && !currentUser.completedCourses.includes(courseId)) {
-                currentUser.completedCourses.push(courseId);
-                showNotification('success', `Поздравляем! Вы завершили курс "${course.title}"`);
-            }
-            
-            updateUserInStorage();
-            showNotification('success', `Урок "${course.lessons[lessonIndex].title}" завершен! +10 очков`);
-            
-            // Обновляем отображение курса
-            startCourse(courseId);
-        }
+function completeLesson(courseId, lessonIndex) {
+    if (!currentUser) return;
+    
+    const course = courses[courseId];
+    if (!course) return;
+    
+    // Проверяем, не завершен ли уже урок
+    const totalLessons = course.lessons.length;
+    const currentProgress = currentUser.progress[courseId] || 0;
+    
+    // Рассчитываем, сколько уроков уже пройдено
+    const completedLessonsCount = Math.round((currentProgress / 100) * totalLessons);
+    
+    // Если этот урок уже пройден (индекс урока меньше количества пройденных)
+    if (lessonIndex < completedLessonsCount) {
+        showNotification('info', 'Этот урок уже завершен');
+        return;
+    }
+    
+    // Рассчитываем новый прогресс (округление до целого числа)
+    const newCompletedCount = lessonIndex + 1;
+    const newProgress = Math.round((newCompletedCount / totalLessons) * 100);
+    
+    // Обновляем прогресс
+    currentUser.progress[courseId] = newProgress;
+    currentUser.stats.completedLessons = (currentUser.stats.completedLessons || 0) + 1;
+    currentUser.stats.score = (currentUser.stats.score || 0) + 10;
+    currentUser.stats.lastActive = new Date().toISOString();
+    
+    // Проверяем, завершен ли курс
+    if (newProgress >= 100 && !currentUser.completedCourses.includes(courseId)) {
+        currentUser.completedCourses.push(courseId);
+        showNotification('success', `🎉 Поздравляем! Вы завершили курс "${course.title}"`);
+    } else {
+        showNotification('success', `✅ Урок "${course.lessons[lessonIndex].title}" завершен! +10 очков (Прогресс: ${newProgress}%)`);
+    }
+    
+    updateUserInStorage();
+    
+    // Обновляем отображение курса
+    startCourse(courseId);
+}
         
         // Начать тренажер
         function startSimulator(simulatorId) {
@@ -15294,6 +15329,8 @@ function startPhishingTest() {
 }
 // Добавляем после функции startPhishingTest() новую функцию:
 function startCallsTest() {
+  // ПРОКРУТКА ВВЕРХ
+    scrollToTop();
     // Показываем страницу активного курса
     document.querySelectorAll('.page').forEach(page => {
         page.classList.remove('active');
@@ -15588,26 +15625,31 @@ function loadTestQuestion() {
                 `).join('')}
             </div>
             
-            <div style="display: flex; justify-content: space-between; margin-top: 30px;">
-                ${currentQuestionIndex > 0 ? `
-                    <button class="btn" onclick="prevTestQuestion()">
-                        <i class="fas fa-arrow-left icon"></i> Назад
-                    </button>
-                ` : '<div></div>'}
-                
-                <div style="text-align: center;">
-                    <button class="btn btn-success" onclick="nextTestQuestion()" id="nextButton" ${userTestAnswers[currentQuestionIndex] === undefined ? 'disabled' : ''}>
-                        ${currentQuestionIndex === callsTestQuestions.length - 1 ? 'Завершить тест' : 'Следующий вопрос'} 
-                        <i class="fas fa-arrow-right icon"></i>
-                    </button>
-                </div>
-                
-                <div style="text-align: right;">
-                    <button class="btn btn-danger" onclick="cancelTest()">
-                        <i class="fas fa-times icon"></i> Отменить тест
-                    </button>
-                </div>
-            </div>
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 30px;">
+    ${currentQuestionIndex > 0 ? `
+        <button class="btn btn-outline" onclick="prevTestQuestion()" style="padding: 8px 20px;">
+            <i class="fas fa-arrow-left icon"></i> Назад
+        </button>
+    ` : '<div style="width: 100px;"></div>'}
+    
+    <div style="text-align: center;">
+        <button class="btn btn-success" onclick="nextTestQuestion()" id="nextButton" 
+                ${userTestAnswers[currentQuestionIndex] === undefined ? 'disabled' : ''}
+                style="padding: 8px 25px;">
+            ${currentQuestionIndex === callsTestQuestions.length - 1 ? 'Завершить тест' : 'Следующий вопрос'} 
+            <i class="fas fa-arrow-right icon"></i>
+        </button>
+        <p style="margin-top: 8px; color: #666; font-size: 0.85rem;">
+            Вопрос ${currentQuestionIndex + 1} из ${callsTestQuestions.length}
+        </p>
+    </div>
+    
+    <div style="text-align: right;">
+        <button class="btn btn-danger" onclick="cancelTest()" style="padding: 8px 20px;">
+            <i class="fas fa-times icon"></i> Отменить
+        </button>
+    </div>
+</div>
             
             <div style="margin-top: 20px; text-align: center; color: #666;">
                 <p><i class="fas fa-info-circle icon"></i> Выберите один вариант ответа</p>
@@ -15865,6 +15907,8 @@ let phishingTestTimer = null;
 
 // Функция запуска теста по фишингу
 function startPhishingTest() {
+   // ПРОКРУТКА ВВЕРХ
+    scrollToTop();
     // Показываем страницу активного курса
     document.querySelectorAll('.page').forEach(page => {
         page.classList.remove('active');
@@ -16112,30 +16156,31 @@ function loadPhishingTestQuestion() {
                 `).join('')}
             </div>
             
-            <div style="display: flex; justify-content: space-between; margin-top: 30px;">
-                ${phishingCurrentQuestion > 0 ? `
-                    <button class="btn" onclick="prevPhishingTestQuestion()">
-                        <i class="fas fa-arrow-left icon"></i> Назад
-                    </button>
-                ` : '<div></div>'}
-                
-                <div style="text-align: center;">
-                    <button class="btn btn-success" onclick="nextPhishingTestQuestion()" id="phishingNextButton" 
-                            ${phishingUserAnswers[phishingCurrentQuestion] === undefined ? 'disabled' : ''}>
-                        ${phishingCurrentQuestion === phishingTestQuestions.length - 1 ? 'Завершить тест' : 'Следующий вопрос'} 
-                        <i class="fas fa-arrow-right icon"></i>
-                    </button>
-                    <p style="margin-top: 10px; color: #666; font-size: 0.9rem;">
-                        Вопрос ${phishingCurrentQuestion + 1} из ${phishingTestQuestions.length}
-                    </p>
-                </div>
-                
-                <div style="text-align: right;">
-                    <button class="btn btn-danger" onclick="cancelPhishingTest()">
-                        <i class="fas fa-times icon"></i> Отменить тест
-                    </button>
-                </div>
-            </div>
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 30px;">
+    ${phishingCurrentQuestion > 0 ? `
+        <button class="btn btn-outline" onclick="prevPhishingTestQuestion()" style="padding: 8px 20px;">
+            <i class="fas fa-arrow-left icon"></i> Назад
+        </button>
+    ` : '<div style="width: 100px;"></div>'}
+    
+    <div style="text-align: center;">
+        <button class="btn btn-success" onclick="nextPhishingTestQuestion()" id="phishingNextButton" 
+                ${phishingUserAnswers[phishingCurrentQuestion] === undefined ? 'disabled' : ''}
+                style="padding: 8px 25px;">
+            ${phishingCurrentQuestion === phishingTestQuestions.length - 1 ? 'Завершить тест' : 'Следующий вопрос'} 
+            <i class="fas fa-arrow-right icon"></i>
+        </button>
+        <p style="margin-top: 8px; color: #666; font-size: 0.85rem;">
+            Вопрос ${phishingCurrentQuestion + 1} из ${phishingTestQuestions.length}
+        </p>
+    </div>
+    
+    <div style="text-align: right;">
+        <button class="btn btn-danger" onclick="cancelPhishingTest()" style="padding: 8px 20px;">
+            <i class="fas fa-times icon"></i> Отменить
+        </button>
+    </div>
+</div>
             
             <div style="margin-top: 20px; text-align: center; color: #666;">
                 <p><i class="fas fa-info-circle icon"></i> Выберите один вариант ответа</p>
@@ -16471,6 +16516,8 @@ function checkPhishingLesson7() {
 }
 // Функция запуска теста по Госуслугам
 function startGosuslugiTest() {
+// ПРОКРУТКА ВВЕРХ
+    scrollToTop();
     // Показываем страницу активного курса
     document.querySelectorAll('.page').forEach(page => {
         page.classList.remove('active');
@@ -16704,30 +16751,31 @@ function loadGosuslugiTestQuestion() {
                 `).join('')}
             </div>
             
-            <div style="display: flex; justify-content: space-between; margin-top: 30px;">
-                ${gosuslugiCurrentQuestion > 0 ? `
-                    <button class="btn" onclick="prevGosuslugiTestQuestion()">
-                        <i class="fas fa-arrow-left icon"></i> Назад
-                    </button>
-                ` : '<div></div>'}
-                
-                <div style="text-align: center;">
-                    <button class="btn btn-success" onclick="nextGosuslugiTestQuestion()" id="gosuslugiNextButton" 
-                            ${gosuslugiUserAnswers[gosuslugiCurrentQuestion] === undefined ? 'disabled' : ''}>
-                        ${gosuslugiCurrentQuestion === gosuslugiTestQuestions.length - 1 ? 'Завершить тест' : 'Следующий вопрос'} 
-                        <i class="fas fa-arrow-right icon"></i>
-                    </button>
-                    <p style="margin-top: 10px; color: #666; font-size: 0.9rem;">
-                        Вопрос ${gosuslugiCurrentQuestion + 1} из ${gosuslugiTestQuestions.length}
-                    </p>
-                </div>
-                
-                <div style="text-align: right;">
-                    <button class="btn btn-danger" onclick="cancelGosuslugiTest()">
-                        <i class="fas fa-times icon"></i> Отменить тест
-                    </button>
-                </div>
-            </div>
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 30px;">
+    ${gosuslugiCurrentQuestion > 0 ? `
+        <button class="btn btn-outline" onclick="prevGosuslugiTestQuestion()" style="padding: 8px 20px;">
+            <i class="fas fa-arrow-left icon"></i> Назад
+        </button>
+    ` : '<div style="width: 100px;"></div>'}
+    
+    <div style="text-align: center;">
+        <button class="btn btn-success" onclick="nextGosuslugiTestQuestion()" id="gosuslugiNextButton" 
+                ${gosuslugiUserAnswers[gosuslugiCurrentQuestion] === undefined ? 'disabled' : ''}
+                style="padding: 8px 25px;">
+            ${gosuslugiCurrentQuestion === gosuslugiTestQuestions.length - 1 ? 'Завершить тест' : 'Следующий вопрос'} 
+            <i class="fas fa-arrow-right icon"></i>
+        </button>
+        <p style="margin-top: 8px; color: #666; font-size: 0.85rem;">
+            Вопрос ${gosuslugiCurrentQuestion + 1} из ${gosuslugiTestQuestions.length}
+        </p>
+    </div>
+    
+    <div style="text-align: right;">
+        <button class="btn btn-danger" onclick="cancelGosuslugiTest()" style="padding: 8px 20px;">
+            <i class="fas fa-times icon"></i> Отменить
+        </button>
+    </div>
+</div>
             
             <div style="margin-top: 20px; text-align: center; color: #666;">
                 <p><i class="fas fa-info-circle icon"></i> Выберите один вариант ответа</p>
@@ -16984,6 +17032,8 @@ let financeTestTimer;
 
 // Функция запуска теста по финансовому мошенничеству
 function startFinanceFraudTest() {
+// ПРОКРУТКА ВВЕРХ
+    scrollToTop();
     // Показываем страницу активного курса
     document.querySelectorAll('.page').forEach(page => {
         page.classList.remove('active');
@@ -17217,30 +17267,31 @@ function loadFinanceTestQuestion() {
                 `).join('')}
             </div>
             
-            <div style="display: flex; justify-content: space-between; margin-top: 30px;">
-                ${financeCurrentQuestion > 0 ? `
-                    <button class="btn" onclick="prevFinanceTestQuestion()">
-                        <i class="fas fa-arrow-left icon"></i> Назад
-                    </button>
-                ` : '<div></div>'}
-                
-                <div style="text-align: center;">
-                    <button class="btn btn-success" onclick="nextFinanceTestQuestion()" id="financeNextButton" 
-                            ${financeUserAnswers[financeCurrentQuestion] === undefined ? 'disabled' : ''}>
-                        ${financeCurrentQuestion === financeTestQuestions.length - 1 ? 'Завершить тест' : 'Следующий вопрос'} 
-                        <i class="fas fa-arrow-right icon"></i>
-                    </button>
-                    <p style="margin-top: 10px; color: #666; font-size: 0.9rem;">
-                        Вопрос ${financeCurrentQuestion + 1} из ${financeTestQuestions.length}
-                    </p>
-                </div>
-                
-                <div style="text-align: right;">
-                    <button class="btn btn-danger" onclick="cancelFinanceTest()">
-                        <i class="fas fa-times icon"></i> Отменить тест
-                    </button>
-                </div>
-            </div>
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 30px;">
+    ${financeCurrentQuestion > 0 ? `
+        <button class="btn btn-outline" onclick="prevFinanceTestQuestion()" style="padding: 8px 20px;">
+            <i class="fas fa-arrow-left icon"></i> Назад
+        </button>
+    ` : '<div style="width: 100px;"></div>'}
+    
+    <div style="text-align: center;">
+        <button class="btn btn-success" onclick="nextFinanceTestQuestion()" id="financeNextButton" 
+                ${financeUserAnswers[financeCurrentQuestion] === undefined ? 'disabled' : ''}
+                style="padding: 8px 25px;">
+            ${financeCurrentQuestion === financeTestQuestions.length - 1 ? 'Завершить тест' : 'Следующий вопрос'} 
+            <i class="fas fa-arrow-right icon"></i>
+        </button>
+        <p style="margin-top: 8px; color: #666; font-size: 0.85rem;">
+            Вопрос ${financeCurrentQuestion + 1} из ${financeTestQuestions.length}
+        </p>
+    </div>
+    
+    <div style="text-align: right;">
+        <button class="btn btn-danger" onclick="cancelFinanceTest()" style="padding: 8px 20px;">
+            <i class="fas fa-times icon"></i> Отменить
+        </button>
+    </div>
+</div>
             
             <div style="margin-top: 20px; text-align: center; color: #666;">
                 <p><i class="fas fa-info-circle icon"></i> Выберите один вариант ответа</p>
@@ -17634,6 +17685,8 @@ function startFinancialTest() {
 }
 // Функция запуска теста по паролям
 function startPasswordsTest() {
+// ПРОКРУТКА ВВЕРХ
+    scrollToTop();
     // Показываем страницу активного курса
     document.querySelectorAll('.page').forEach(page => {
         page.classList.remove('active');
@@ -17929,30 +17982,31 @@ function loadPasswordsTestQuestion() {
                 `).join('')}
             </div>
             
-            <div style="display: flex; justify-content: space-between; margin-top: 30px;">
-                ${passwordsCurrentQuestion > 0 ? `
-                    <button class="btn" onclick="prevPasswordsTestQuestion()">
-                        <i class="fas fa-arrow-left icon"></i> Назад
-                    </button>
-                ` : '<div></div>'}
-                
-                <div style="text-align: center;">
-                    <button class="btn btn-success" onclick="nextPasswordsTestQuestion()" id="passwordsNextButton" 
-                            ${passwordsUserAnswers[passwordsCurrentQuestion] === undefined ? 'disabled' : ''}>
-                        ${passwordsCurrentQuestion === passwordsTestQuestions.length - 1 ? 'Завершить тест' : 'Следующий вопрос'} 
-                        <i class="fas fa-arrow-right icon"></i>
-                    </button>
-                    <p style="margin-top: 10px; color: #666; font-size: 0.9rem;">
-                        Вопрос ${passwordsCurrentQuestion + 1} из ${passwordsTestQuestions.length}
-                    </p>
-                </div>
-                
-                <div style="text-align: right;">
-                    <button class="btn btn-danger" onclick="cancelPasswordsTest()">
-                        <i class="fas fa-times icon"></i> Отменить тест
-                    </button>
-                </div>
-            </div>
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 30px;">
+    ${passwordsCurrentQuestion > 0 ? `
+        <button class="btn btn-outline" onclick="prevPasswordsTestQuestion()" style="padding: 8px 20px;">
+            <i class="fas fa-arrow-left icon"></i> Назад
+        </button>
+    ` : '<div style="width: 100px;"></div>'}
+    
+    <div style="text-align: center;">
+        <button class="btn btn-success" onclick="nextPasswordsTestQuestion()" id="passwordsNextButton" 
+                ${passwordsUserAnswers[passwordsCurrentQuestion] === undefined ? 'disabled' : ''}
+                style="padding: 8px 25px;">
+            ${passwordsCurrentQuestion === passwordsTestQuestions.length - 1 ? 'Завершить тест' : 'Следующий вопрос'} 
+            <i class="fas fa-arrow-right icon"></i>
+        </button>
+        <p style="margin-top: 8px; color: #666; font-size: 0.85rem;">
+            Вопрос ${passwordsCurrentQuestion + 1} из ${passwordsTestQuestions.length}
+        </p>
+    </div>
+    
+    <div style="text-align: right;">
+        <button class="btn btn-danger" onclick="cancelPasswordsTest()" style="padding: 8px 20px;">
+            <i class="fas fa-times icon"></i> Отменить
+        </button>
+    </div>
+</div>
             
             <div style="margin-top: 20px; text-align: center; color: #666;">
                 <p><i class="fas fa-info-circle icon"></i> Выберите один вариант ответа</p>
@@ -18200,6 +18254,7 @@ function downloadPasswordsCertificate() {
         }
     }, 500);
 }
+
 console.log('Скрипт темы загружен');
 
 // Используем событие DOMContentLoaded для гарантии, что DOM готов
@@ -18326,11 +18381,1842 @@ if (document.readyState === 'loading') {
     // DOM уже загружен, инициализируем сразу
     initThemeToggle();
 }
+// ============================
+// ТЕСТ: ПУУ СХЕМЫ И СЛОЖНЫЕ АТАКИ (15 вопросов)
+// ============================
+// ИСПОЛЬЗУЕМ СУЩЕСТВУЮЩИЕ ГЛОБАЛЬНЫЕ ПЕРЕМЕННЫЕ:
+// puuTestQuestions, puuCurrentQuestion, puuUserAnswers, puuTestStartTime, puuTestTimer
+
+// Функция запуска теста по ПУУ
+function startPuuTest() {
+// ПРОКРУТКА ВВЕРХ
+    scrollToTop();
+    // Показываем страницу активного курса
+    document.querySelectorAll('.page').forEach(page => {
+        page.classList.remove('active');
+    });
+    document.getElementById('active-course').classList.add('active');
+    
+    // Обновляем навигацию
+    document.querySelectorAll('.nav-link').forEach(link => {
+        link.classList.remove('active');
+    });
+    
+    // ИНИЦИАЛИЗАЦИЯ ВОПРОСОВ ТЕСТА (15 штук)
+    puuTestQuestions = [
+        {
+            question: "Что означает аббревиатура ПУУ в контексте кибербезопасности?",
+            options: [
+                "Программа Управления Устройствами",
+                "Программа Удаленного Управления",
+                "Правила Учета Угроз",
+                "Платформа Универсальной Уязвимости"
+            ],
+            correctAnswer: 1,
+            explanation: "ПУУ — Программа Удаленного Управления. Мошенники используют легитимные программы (AnyDesk, TeamViewer, Ammyy Admin) для получения контроля над устройствами жертв."
+        },
+        {
+            question: "Какая компания НИКОГДА не звонит пользователям с сообщениями о вирусах на компьютере?",
+            options: [
+                "Лаборатория Касперского",
+                "Microsoft",
+                "Dr.Web",
+                "Все перечисленные"
+            ],
+            correctAnswer: 3,
+            explanation: "Ни одна уважающая себя IT-компания не звонит пользователям с непрошеными предложениями 'помощи'. Microsoft, Apple, Google и антивирусные компании никогда так не делают."
+        },
+        {
+            question: "Какой из этих номеров телефона наиболее подозрителен при звонке от 'службы безопасности банка'?",
+            options: [
+                "8-800-555-55-50",
+                "+7 (495) 500-55-50",
+                "+7 900 123-45-67",
+                "8-495-500-00-00"
+            ],
+            correctAnswer: 2,
+            explanation: "Служба безопасности банка никогда не звонит с мобильных номеров. Официальные звонки осуществляются с городских или бесплатных номеров, указанных на сайте банка."
+        },
+        {
+            question: "Что такое 'социальная инженерия' в контексте ПУУ-атак?",
+            options: [
+                "Взлом паролей с помощью специальных программ",
+                "Психологическое манипулирование человеком для получения доступа к данным",
+                "Инженерный анализ социальных сетей",
+                "Разработка антивирусного ПО"
+            ],
+            correctAnswer: 1,
+            explanation: "Социальная инженерия — это метод психологического манипулирования, при котором мошенники заставляют человека добровольно совершить нужное действие (установить программу, назвать пароль, перевести деньги)."
+        },
+        {
+            question: "Какой главный признак того, что к вашему компьютеру подключились удаленно?",
+            options: [
+                "Появились новые файлы на рабочем столе",
+                "Курсор мыши двигается сам по себе",
+                "Компьютер стал медленно работать",
+                "Пропал интернет"
+            ],
+            correctAnswer: 1,
+            explanation: "Самый явный признак удаленного подключения — курсор двигается сам, программы открываются и закрываются без вашего участия. В этом случае нужно немедленно отключить интернет."
+        },
+        {
+            question: "Какую программу НЕЛЬЗЯ устанавливать по просьбе звонящего 'специалиста'?",
+            options: [
+                "Adobe Reader",
+                "Google Chrome",
+                "AnyDesk",
+                "VLC Media Player"
+            ],
+            correctAnswer: 2,
+            explanation: "AnyDesk, TeamViewer, Ammyy Admin, UltraVNC — программы удаленного доступа. Их установка по просьбе незнакомца дает мошенникам полный контроль над вашим компьютером."
+        },
+        {
+            question: "Что делать, если мошенник уже подключился к вашему компьютеру через AnyDesk?",
+            options: [
+                "Попытаться закрыть программу мышкой",
+                "Немедленно выдернуть кабель интернета/отключить Wi-Fi",
+                "Позвонить в полицию с этого же компьютера",
+                "Начать диалог и выяснять, кто это"
+            ],
+            correctAnswer: 1,
+            explanation: "При подозрении на удаленное подключение нужно немедленно физически отключить интернет. Это разорвет связь и прекратит доступ. Только после этого можно звонить в банк и полицию."
+        },
+        {
+            question: "Какой психологический прием чаще всего используют ПУУ-мошенники?",
+            options: [
+                "Предложение легкого заработка",
+                "Создание искусственной срочности и страха",
+                "Флирт и романтические отношения",
+                "Обещание крупного выигрыша"
+            ],
+            correctAnswer: 1,
+            explanation: "Главное оружие ПУУ-мошенников — срочность и страх: 'Ваш компьютер заражен!', 'Деньги украдут через 5 минут!', 'Вас уже взломали!'. Это отключает рациональное мышление."
+        },
+        {
+            question: "Что такое 'спуфинг' в телефонном мошенничестве?",
+            options: [
+                "Запись разговора с жертвой",
+                "Использование нескольких SIM-карт",
+                "Подмена номера телефона",
+                "Звонки через мессенджеры"
+            ],
+            correctAnswer: 2,
+            explanation: "Спуфинг — это технология подмены номера. Мошенник может звонить с номера, который на экране отображается как номер вашего банка, хотя на самом деле звонок идет из другого места."
+        },
+        {
+            question: "Почему мошенники просят установить программу удаленного доступа?",
+            options: [
+                "Чтобы удалить вирусы с вашего компьютера",
+                "Чтобы настроить антивирус",
+                "Чтобы получить полный контроль над устройством и видеть все ваши действия",
+                "Чтобы ускорить работу компьютера"
+            ],
+            correctAnswer: 2,
+            explanation: "Получив удаленный доступ, мошенник видит все, что вы делаете: вводите пароли, заходите в онлайн-банк, просматриваете почту. Это позволяет им красть данные в реальном времени."
+        },
+        {
+            question: "Какой из этих диалогов явно указывает на ПУУ-мошенника?",
+            options: [
+                "— Здравствуйте, это служба доставки. Ваш заказ прибудет завтра.",
+                "— Здравствуйте, это техподдержка Microsoft. На вашем компьютере вирус. Откройте сайт anydesk.com и скачайте программу.",
+                "— Здравствуйте, это служба безопасности банка. Не было ли у вас операций на 5000 рублей сегодня?",
+                "— Здравствуйте, мы проводим опрос населения. Не могли бы вы уделить 5 минут?"
+            ],
+            correctAnswer: 1,
+            explanation: "Microsoft никогда не звонит пользователям. Требование установить AnyDesk/TeamViewer — 100% признак мошенничества. Настоящие IT-специалисты работают в сервисных центрах, куда вы обращаетесь сами."
+        },
+        {
+            question: "Что делать, если вам звонят и представляются 'сотрудником ФСБ' или 'полицией', требуя перевести деньги на 'безопасный счет'?",
+            options: [
+                "Выполнить требования, чтобы избежать проблем",
+                "Положить трубку и сообщить в полицию по номеру 102 или 112",
+                "Попросить прислать официальное уведомление на email",
+                "Договориться о встрече в отделении"
+            ],
+            correctAnswer: 1,
+            explanation: "Правоохранительные органы никогда не звонят с требованиями перевода денег. Это 100% мошенничество. Нужно немедленно положить трубку и сообщить о звонке в настоящую полицию."
+        },
+        {
+            question: "Что НЕЛЬЗЯ делать, если вы уже сообщили мошенникам данные карты?",
+            options: [
+                "Немедленно позвонить в банк и заблокировать карту",
+                "Подать заявление в полицию",
+                "Продолжать разговор с мошенниками, пытаясь их переубедить",
+                "Сменить пароли от онлайн-банка"
+            ],
+            correctAnswer: 2,
+            explanation: "Ни в коем случае нельзя продолжать разговор. Мошенники будут давить и запугивать, чтобы получить еще больше информации. Просто положите трубку и действуйте по алгоритму: банк → полиция."
+        },
+        {
+            question: "Какой самый надежный способ проверить, звонит ли реальный сотрудник банка?",
+            options: [
+                "Попросить его назвать ваши паспортные данные",
+                "Перезвонить по номеру с обратной стороны вашей карты",
+                "Перевести 1 рубль на проверочный счет",
+                "Назвать ему код из SMS для проверки"
+            ],
+            correctAnswer: 1,
+            explanation: "Единственный надежный способ — не общаться по входящему звонку, а перезвонить самостоятельно по официальному номеру. На карте, на сайте банка, в мобильном приложении."
+        },
+        {
+            question: "Что делать, если мошенники угрожают, что 'заблокируют ваш паспорт' или 'возбудят уголовное дело'?",
+            options: [
+                "Выполнить все требования, чтобы избежать проблем",
+                "Положить трубку — это ложные угрозы, паспорт нельзя 'заблокировать' по телефону",
+                "Попросить их прислать официальные документы",
+                "Начать оправдываться и доказывать свою невиновность"
+            ],
+            correctAnswer: 1,
+            explanation: "Это классические угрозы мошенников. Паспорт — документ, удостоверяющий личность. Его нельзя 'заблокировать', 'аннулировать' или 'арестовать' по телефону. Это физический документ. Положите трубку."
+        }
+    ];
+    
+    // Сбрасываем данные теста — ИСПОЛЬЗУЕМ СУЩЕСТВУЮЩИЕ ПЕРЕМЕННЫЕ
+    puuCurrentQuestion = 0;
+    puuUserAnswers = [];
+    puuTestStartTime = new Date();
+    
+    // Загружаем страницу теста
+    const courseContent = document.getElementById('courseContent');
+    courseContent.innerHTML = `
+        <div class="course-header">
+            <div class="course-header-icon puu">
+                <i class="fas fa-laptop-code"></i>
+            </div>
+            <div class="course-header-content">
+                <h1>Итоговый тест: ПУУ схемы и сложные атаки</h1>
+                <p>Проверьте свои знания по пройденному материалу. 15 вопросов, для успешного прохождения нужно правильно ответить на 12 вопросов (80%).</p>
+                <div class="course-meta">
+                    <div class="course-meta-item">
+                        <i class="fas fa-question-circle"></i>
+                        <span>15 вопросов</span>
+                    </div>
+                    <div class="course-meta-item">
+                        <i class="fas fa-clock"></i>
+                        <span>30 минут</span>
+                    </div>
+                    <div class="course-meta-item">
+                        <i class="fas fa-chart-line"></i>
+                        <span>Проходной балл: 80%</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div id="puuTestContainer">
+            <div id="puuTestInstructions" style="text-align: center; padding: 40px 0;">
+                <h3>Инструкция к тесту</h3>
+                <p style="margin: 20px 0;">Тест состоит из 15 вопросов с одним правильным ответом.</p>
+                
+                <div style="background-color: #f5f5f5; padding: 20px; border-radius: 10px; max-width: 600px; margin: 0 auto;">
+                    <h4><i class="fas fa-info-circle icon" style="color: #43a047;"></i> Правила тестирования:</h4>
+                    <ul style="text-align: left; margin: 15px 0;">
+                        <li>Выберите один вариант ответа на каждый вопрос</li>
+                        <li>Можно вернуться к предыдущим вопросам</li>
+                        <li>На прохождение теста отводится 30 минут</li>
+                        <li>После завершения вы увидите детальный результат с объяснениями</li>
+                        <li>Для успешного прохождения нужно ≥ 80% правильных ответов (12 из 15)</li>
+                    </ul>
+                </div>
+                
+                <button class="btn btn-large btn-success" onclick="beginPuuTest()" style="margin-top: 30px;">
+                    <i class="fas fa-play icon"></i> Начать тест
+                </button>
+                
+                <button class="btn btn-large btn-outline" onclick="showPage('courses')" style="margin-top: 30px; margin-left: 15px;">
+                    <i class="fas fa-arrow-left icon"></i> Вернуться к курсам
+                </button>
+            </div>
+            
+            <div id="puuTestQuestions" style="display: none;">
+                <!-- Вопросы будут загружены динамически -->
+            </div>
+            
+            <div id="puuTestResults" style="display: none;">
+                <!-- Результаты будут загружены динамически -->
+            </div>
+        </div>
+    `;
+}
+
+// Функция для начала теста
+function beginPuuTest() {
+    // Скрываем инструкции и показываем вопросы
+    document.getElementById('puuTestInstructions').style.display = 'none';
+    document.getElementById('puuTestQuestions').style.display = 'block';
+    
+    // Запускаем таймер
+    startPuuTestTimer();
+    
+    // Загружаем первый вопрос
+    loadPuuTestQuestion();
+}
+
+// Функция для загрузки вопроса
+function loadPuuTestQuestion() {
+    const testQuestionsDiv = document.getElementById('puuTestQuestions');
+    const question = puuTestQuestions[puuCurrentQuestion];
+    
+    testQuestionsDiv.innerHTML = `
+        <div class="simulator">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                <h3>Вопрос ${puuCurrentQuestion + 1} из ${puuTestQuestions.length}</h3>
+                <div id="puuTestTimer" style="background-color: #f5f5f5; padding: 8px 15px; border-radius: 20px; font-weight: bold;">
+                    <i class="fas fa-clock icon"></i> <span id="puuTimeRemaining">30:00</span>
+                </div>
+            </div>
+            
+            <div style="background-color: #f8f9fa; padding: 25px; border-radius: 10px; margin-bottom: 25px;">
+                <h4 style="color: #43a047; margin-bottom: 15px;">${question.question}</h4>
+            </div>
+            
+            <div class="options">
+                ${question.options.map((option, index) => `
+                    <div class="option" onclick="selectPuuTestAnswer(${index})" 
+                         style="${puuUserAnswers[puuCurrentQuestion] === index ? 'border-color: #43a047; background-color: #e8f5e9;' : ''}">
+                        ${String.fromCharCode(65 + index)}. ${option}
+                    </div>
+                `).join('')}
+            </div>
+            
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 30px;">
+    ${puuCurrentQuestion > 0 ? `
+        <button class="btn btn-outline" onclick="prevPuuTestQuestion()" style="padding: 8px 20px;">
+            <i class="fas fa-arrow-left icon"></i> Назад
+        </button>
+    ` : '<div style="width: 100px;"></div>'}
+    
+    <div style="text-align: center;">
+        <button class="btn btn-success" onclick="nextPuuTestQuestion()" id="puuNextButton" 
+                ${puuUserAnswers[puuCurrentQuestion] === undefined ? 'disabled' : ''}
+                style="padding: 8px 25px;">
+            ${puuCurrentQuestion === puuTestQuestions.length - 1 ? 'Завершить тест' : 'Следующий вопрос'} 
+            <i class="fas fa-arrow-right icon"></i>
+        </button>
+        <p style="margin-top: 8px; color: #666; font-size: 0.85rem;">
+            Вопрос ${puuCurrentQuestion + 1} из ${puuTestQuestions.length}
+        </p>
+    </div>
+    
+    <div style="text-align: right;">
+        <button class="btn btn-danger" onclick="cancelPuuTest()" style="padding: 8px 20px;">
+            <i class="fas fa-times icon"></i> Отменить
+        </button>
+    </div>
+</div>
+            
+            <div style="margin-top: 20px; text-align: center; color: #666;">
+                <p><i class="fas fa-info-circle icon"></i> Выберите один вариант ответа</p>
+            </div>
+        </div>
+    `;
+}
+
+// Функция выбора ответа
+function selectPuuTestAnswer(answerIndex) {
+    // Убираем выделение со всех вариантов
+    document.querySelectorAll('#puuTestQuestions .option').forEach(option => {
+        option.style.borderColor = '#ddd';
+        option.style.backgroundColor = 'white';
+    });
+    
+    // Выделяем выбранный вариант
+    event.target.style.borderColor = '#43a047';
+    event.target.style.backgroundColor = '#e8f5e9';
+    
+    // Сохраняем ответ — ИСПОЛЬЗУЕМ СУЩЕСТВУЮЩИЙ МАССИВ
+    puuUserAnswers[puuCurrentQuestion] = answerIndex;
+    
+    // Активируем кнопку "Далее"
+    document.getElementById('puuNextButton').disabled = false;
+}
+
+// Функция для перехода к следующему вопросу
+function nextPuuTestQuestion() {
+    // Проверяем, выбран ли ответ
+    if (puuUserAnswers[puuCurrentQuestion] === undefined) {
+        showNotification('error', 'Пожалуйста, выберите вариант ответа');
+        return;
+    }
+    
+    // Переходим к следующему вопросу или завершаем тест
+    if (puuCurrentQuestion < puuTestQuestions.length - 1) {
+        puuCurrentQuestion++;
+        loadPuuTestQuestion();
+    } else {
+        finishPuuTest();
+    }
+}
+
+// Функция для возврата к предыдущему вопросу
+function prevPuuTestQuestion() {
+    if (puuCurrentQuestion > 0) {
+        puuCurrentQuestion--;
+        loadPuuTestQuestion();
+    }
+}
+
+// Функция запуска таймера теста
+function startPuuTestTimer() {
+    // Очищаем предыдущий таймер, если был
+    if (puuTestTimer) {
+        clearInterval(puuTestTimer);
+    }
+    
+    let timeLeft = 30 * 60; // 30 минут в секундах
+    
+    puuTestTimer = setInterval(function() {
+        timeLeft--;
+        
+        const minutes = Math.floor(timeLeft / 60);
+        const seconds = timeLeft % 60;
+        
+        const timeElement = document.getElementById('puuTimeRemaining');
+        if (timeElement) {
+            timeElement.textContent = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+        }
+        
+        // Меняем цвет при малом остатке времени
+        const timerDiv = document.getElementById('puuTestTimer');
+        if (timerDiv && timeLeft < 300) { // Меньше 5 минут
+            timerDiv.style.backgroundColor = '#ffebee';
+            timerDiv.style.color = '#d32f2f';
+        }
+        
+        if (timeLeft <= 0) {
+            clearInterval(puuTestTimer);
+            finishPuuTest();
+        }
+    }, 1000);
+}
+
+// Функция завершения теста
+function finishPuuTest() {
+    if (puuTestTimer) {
+        clearInterval(puuTestTimer);
+    }
+    
+    // Рассчитываем результаты
+    let correctAnswers = 0;
+    let resultsHTML = '';
+    
+    puuTestQuestions.forEach((question, index) => {
+        const userAnswer = puuUserAnswers[index];
+        const isCorrect = userAnswer === question.correctAnswer;
+        
+        if (isCorrect) correctAnswers++;
+        
+        resultsHTML += `
+            <div style="margin-bottom: 20px; padding: 15px; border-radius: 8px; background-color: ${isCorrect ? '#e8f5e9' : '#ffebee'}; border-left: 5px solid ${isCorrect ? '#388e3c' : '#d32f2f'}; text-align: left;">
+                <p><strong>Вопрос ${index + 1}:</strong> ${question.question}</p>
+                <p><strong>Ваш ответ:</strong> ${userAnswer !== undefined ? question.options[userAnswer] : 'Не ответили'}</p>
+                <p><strong>Правильный ответ:</strong> ${question.options[question.correctAnswer]}</p>
+                <p style="margin-top: 10px; color: #666;"><i class="fas fa-info-circle icon"></i> ${question.explanation}</p>
+            </div>
+        `;
+    });
+    
+    const score = Math.round((correctAnswers / puuTestQuestions.length) * 100);
+    const isPassed = score >= 80; // 12 из 15 = 80%
+    
+    // Обновляем прогресс пользователя
+    if (currentUser && isPassed) {
+        // Отмечаем тест как пройденный
+        if (!currentUser.completedCourses) currentUser.completedCourses = [];
+        if (!currentUser.completedCourses.includes('puu')) {
+            currentUser.completedCourses.push('puu');
+        }
+        
+        // Обновляем прогресс курса
+        if (!currentUser.progress) currentUser.progress = {};
+        currentUser.progress.puu = 100;
+        
+        if (!currentUser.stats) {
+            currentUser.stats = {
+                completedLessons: 0,
+                score: 0,
+                testResults: []
+            };
+        }
+        
+        currentUser.stats.completedLessons = (currentUser.stats.completedLessons || 0) + 1;
+        currentUser.stats.score = (currentUser.stats.score || 0) + 50; // Бонус за прохождение теста
+        
+        if (!currentUser.stats.testResults) currentUser.stats.testResults = [];
+        currentUser.stats.testResults.push({
+            course: 'puu',
+            score: score,
+            date: new Date().toISOString()
+        });
+        
+        updateUserInStorage();
+    }
+    
+    // Показываем результаты
+    document.getElementById('puuTestQuestions').style.display = 'none';
+    document.getElementById('puuTestResults').style.display = 'block';
+    document.getElementById('puuTestResults').innerHTML = `
+        <div class="simulator" style="text-align: center;">
+            <h3>Результаты теста</h3>
+            
+            <div style="margin: 30px 0;">
+                <div style="font-size: 3rem; color: ${isPassed ? '#388e3c' : '#d32f2f'}; margin-bottom: 10px;">
+                    ${score}%
+                </div>
+                <div style="font-size: 1.2rem; margin-bottom: 20px;">
+                    ${correctAnswers} из ${puuTestQuestions.length} правильных ответов
+                </div>
+                
+                <div style="background-color: ${isPassed ? '#e8f5e9' : '#ffebee'}; padding: 20px; border-radius: 10px; max-width: 500px; margin: 0 auto;">
+                    <h4 style="color: ${isPassed ? '#388e3c' : '#d32f2f'};">
+                        <i class="fas ${isPassed ? 'fa-check-circle' : 'fa-times-circle'} icon"></i>
+                        ${isPassed ? 'Тест пройден успешно!' : 'Тест не пройден'}
+                    </h4>
+                    <p>Для успешного прохождения необходимо набрать 80% правильных ответов (12 из 15).</p>
+                </div>
+            </div>
+            
+            ${isPassed ? `
+                <div style="background-color: #fff3e0; padding: 20px; border-radius: 10px; margin: 20px 0;">
+                    <h4><i class="fas fa-trophy icon" style="color: #ff9800;"></i> Поздравляем!</h4>
+                    <p>Вы успешно прошли курс "ПУУ схемы и сложные атаки" и получили +50 очков к вашему рейтингу.</p>
+                    ${currentUser ? `
+                        <p style="margin-top: 10px;">Ваш текущий счет: <strong>${currentUser.stats.score} очков</strong></p>
+                    ` : ''}
+                </div>
+            ` : `
+                <div style="background-color: #e3f2fd; padding: 20px; border-radius: 10px; margin: 20px 0;">
+                    <h4><i class="fas fa-redo icon" style="color: #1976d2;"></i> Рекомендации</h4>
+                    <p>Рекомендуем повторить материал курса и пройти тест снова.</p>
+                    <p>Обратите особое внимание на вопросы, в которых допустили ошибки.</p>
+                </div>
+            `}
+            
+            <h4 style="margin-top: 30px; margin-bottom: 20px;">Детализация ответов:</h4>
+            <div style="max-height: 400px; overflow-y: auto; padding-right: 10px; text-align: left;">
+                ${resultsHTML}
+            </div>
+            
+            <div style="margin-top: 30px;">
+                <button class="btn btn-large ${isPassed ? 'btn-success' : 'btn-warning'}" onclick="${isPassed ? 'showPage(\'courses\')' : 'retryPuuTest()'}">
+                    ${isPassed ? 'Вернуться к курсам' : 'Попробовать снова'}
+                </button>
+                
+                ${isPassed ? `
+                    <button class="btn btn-large btn-outline" onclick="downloadPuuCertificate()" style="margin-left: 15px;">
+                        <i class="fas fa-download icon"></i> Скачать сертификат
+                    </button>
+                ` : ''}
+            </div>
+        </div>
+    `;
+    
+    // Прокручиваем к результатам
+    document.getElementById('puuTestResults').scrollIntoView({ behavior: 'smooth' });
+}
+
+// Функция повторного прохождения теста
+function retryPuuTest() {
+    puuCurrentQuestion = 0;
+    puuUserAnswers = [];
+    
+    document.getElementById('puuTestResults').style.display = 'none';
+    document.getElementById('puuTestQuestions').style.display = 'block';
+    
+    puuTestStartTime = new Date();
+    startPuuTestTimer();
+    loadPuuTestQuestion();
+}
+
+// Функция отмены теста
+function cancelPuuTest() {
+    if (confirm('Вы уверены, что хотите отменить тест? Все ответы будут потеряны.')) {
+        if (puuTestTimer) {
+            clearInterval(puuTestTimer);
+        }
+        showPage('courses');
+    }
+}
+
+// Функция скачивания сертификата
+function downloadPuuCertificate() {
+    showNotification('success', 'Сертификат успешно сгенерирован!');
+    
+    const certificateContent = `
+        <div style="text-align: center; padding: 40px; background-color: white; border: 10px solid #43a047; max-width: 800px; margin: 0 auto; font-family: Arial, sans-serif;">
+            <h1 style="color: #43a047; font-size: 2.5rem; margin-bottom: 20px;">СЕРТИФИКАТ</h1>
+            <p style="font-size: 1.2rem; color: #555;">Настоящий сертификат подтверждает, что</p>
+            <h2 style="color: #2e7d32; margin: 20px 0; font-size: 2rem;">${currentUser ? currentUser.name : 'Студент'}</h2>
+            <p style="font-size: 1.2rem; color: #555;">успешно прошел(а) курс</p>
+            <h3 style="color: #43a047; margin: 20px 0; font-size: 1.8rem;">"ПУУ схемы и сложные атаки"</h3>
+            <p style="font-size: 1rem; color: #666;">в Академии Кибербезопасности</p>
+            <div style="margin: 30px 0; padding: 20px; background-color: #f9f9f9; border-radius: 10px;">
+                <p style="font-size: 1.1rem;"><strong>Дата:</strong> ${new Date().toLocaleDateString('ru-RU')}</p>
+                <p style="font-size: 1.1rem;"><strong>Результат теста:</strong> ${Math.round((puuUserAnswers.filter((answer, index) => answer === puuTestQuestions[index].correctAnswer).length / puuTestQuestions.length) * 100)}%</p>
+                <p style="font-size: 1.1rem;"><strong>Правильных ответов:</strong> ${puuUserAnswers.filter((answer, index) => answer === puuTestQuestions[index].correctAnswer).length} из 15</p>
+            </div>
+            <div style="margin-top: 50px; display: flex; justify-content: space-around;">
+                <div style="text-align: center;">
+                    <p>Директор Академии</p>
+                    <p style="margin-top: 40px;">___________________ А.В. Иванов</p>
+                </div>
+                <div style="text-align: center;">
+                    <p>Руководитель курса</p>
+                    <p style="margin-top: 40px;">___________________ Е.С. Петрова</p>
+                </div>
+            </div>
+            <div style="margin-top: 40px; color: #999; font-size: 0.9rem;">
+                <p>Лицензия на образовательную деятельность № 1234 от 01.01.2026</p>
+                <p>ID сертификата: CERT-PUU-${Date.now().toString().slice(-8)}</p>
+            </div>
+        </div>
+    `;
+    
+    setTimeout(() => {
+        if (confirm('Хотите увидеть предварительный просмотр сертификата?')) {
+            const win = window.open();
+            win.document.write(certificateContent);
+            win.document.title = 'Сертификат - ПУУ схемы и сложные атаки';
+        }
+    }, 500);
+}
+// Функция запуска теста по соцсетям
+function startSocialTest() {
+    // ПРОКРУТКА ВВЕРХ
+    scrollToTop();
+    // Показываем страницу активного курса
+    document.querySelectorAll('.page').forEach(page => {
+        page.classList.remove('active');
+    });
+    document.getElementById('active-course').classList.add('active');
+    
+    // Обновляем навигацию
+    document.querySelectorAll('.nav-link').forEach(link => {
+        link.classList.remove('active');
+    });
+    
+    // ИНИЦИАЛИЗАЦИЯ ВОПРОСОВ ТЕСТА (10 вопросов)
+    socialTestQuestions = [
+        {
+            question: "Что из перечисленного НЕ является признаком фишингового сообщения в социальных сетях?",
+            options: [
+                "Сообщение от друга с просьбой перейти по подозрительной ссылке",
+                "Сообщение о выигрыше в конкурсе, в котором вы не участвовали",
+                "Официальное уведомление от администрации с логотипом соцсети в личном кабинете",
+                "Срочная просьба о помощи с переводом денег от 'родственника'"
+            ],
+            correctAnswer: 2,
+            explanation: "Официальные уведомления от администрации всегда находятся в специальном разделе настроек или в личном кабинете, а не приходят в личные сообщения от неизвестных аккаунтов с просьбой перейти по ссылке."
+        },
+        {
+            question: "Какую информацию НЕЛЬЗЯ публиковать в открытом доступе в социальных сетях?",
+            options: [
+                "Фото домашнего питомца",
+                "Номер банковской карты и паспортные данные",
+                "Фото с отдыха",
+                "Свои увлечения и хобби"
+            ],
+            correctAnswer: 1,
+            explanation: "Номер банковской карты и паспортные данные — конфиденциальная информация. Мошенники могут использовать эти данные для кражи денег или оформления кредитов на ваше имя."
+        },
+        {
+            question: "Что такое двухфакторная аутентификация (2FA) в социальных сетях?",
+            options: [
+                "Возможность войти в аккаунт с двух устройств одновременно",
+                "Дополнительная защита, требующая код из SMS или приложения после ввода пароля",
+                "Подтверждение возраста при регистрации",
+                "Автоматическая публикация постов в двух соцсетях сразу"
+            ],
+            correctAnswer: 1,
+            explanation: "Двухфакторная аутентификация требует не только пароль, но и дополнительный код из SMS, приложения-аутентификатора или аппаратного ключа. Это значительно повышает безопасность аккаунта."
+        },
+        {
+            question: "Какой пароль считается наиболее надежным для социальных сетей?",
+            options: [
+                "qwerty123",
+                "J8#kL!p2qW9*zM5",
+                "password2024",
+                "Иван1990"
+            ],
+            correctAnswer: 1,
+            explanation: "Надежный пароль должен быть длинным (12+ символов), содержать заглавные и строчные буквы, цифры и специальные символы. Пароль 'J8#kL!p2qW9*zM5' соответствует всем этим требованиям."
+        },
+        {
+            question: "Что нужно сделать при получении заявки в друзья от незнакомого человека?",
+            options: [
+                "Всегда принимать — чем больше друзей, тем лучше",
+                "Проверить профиль: дата регистрации, фото, общие друзья; при подозрениях — отклонить",
+                "Обязательно написать ему первым",
+                "Переслать заявку всем своим друзьям"
+            ],
+            correctAnswer: 1,
+            explanation: "Всегда проверяйте профиль перед добавлением в друзья. Пустые аккаунты, недавно созданные страницы, отсутствие общих друзей — признаки фейковых аккаунтов, которые используются для фишинга и спама."
+        },
+        {
+            question: "Какие настройки приватности являются наиболее безопасными?",
+            options: [
+                "Открытый профиль для всех пользователей",
+                "Только друзья могут видеть публикации и личную информацию",
+                "Друзья друзей могут видеть всё",
+                "Полностью закрытый профиль, но фотографии открыты всем"
+            ],
+            correctAnswer: 1,
+            explanation: "Наиболее безопасная настройка — 'Только друзья'. Это ограничивает доступ к вашей личной информации, фотографиям и публикациям только теми, кого вы действительно знаете и кому доверяете."
+        },
+        {
+            question: "Что делать, если вы случайно перешли по фишинговой ссылке и ввели свои данные?",
+            options: [
+                "Ничего, если деньги сразу не списались",
+                "Немедленно сменить пароль и включить двухфакторную аутентификацию",
+                "Подождать пару часов — может, само рассосется",
+                "Написать гневный комментарий мошенникам"
+            ],
+            correctAnswer: 1,
+            explanation: "При компрометации данных нужно действовать немедленно: сменить пароль, завершить все активные сессии, включить 2FA. Если ввели данные карты — срочно заблокировать карту через банк."
+        },
+        {
+            question: "Какую геолокацию безопаснее всего публиковать в социальных сетях?",
+            options: [
+                "Отмечаться в аэропорту перед отпуском",
+                "Публиковать фото из дома с геометкой",
+                "Ставить геометку в ресторане в реальном времени",
+                "Не публиковать геолокацию вообще или ставить её уже после посещения места"
+            ],
+            correctAnswer: 3,
+            explanation: "Публикация геолокации в реальном времени показывает мошенникам, что вас нет дома. Лучше либо не публиковать геометки вообще, либо ставить их уже после того, как вы вернулись домой."
+        },
+        {
+            question: "Что такое 'приложения в социальных сетях' и чем они опасны?",
+            options: [
+                "Это встроенные игры, они всегда безопасны",
+                "Сторонние приложения, которые запрашивают доступ к вашему профилю, друзьям, сообщениям — могут собирать данные и рассылать спам",
+                "Это официальные приложения соцсетей для телефона",
+                "Это рекламные интеграции"
+            ],
+            correctAnswer: 1,
+            explanation: "Сторонние приложения могут запрашивать избыточные разрешения (доступ к друзьям, сообщениям, стене). Регулярно проверяйте список подключенных приложений в настройках и удаляйте неиспользуемые."
+        },
+        {
+            question: "Как распознать фейковый аккаунт знаменитости?",
+            options: [
+                "У него много подписчиков — значит, настоящий",
+                "Проверить верификацию (галочку), дату регистрации, активность, ссылки на официальные сайты",
+                "Если аккаунт красиво оформлен — он настоящий",
+                "Написать в директ и спросить, настоящий ли это аккаунт"
+            ],
+            correctAnswer: 1,
+            explanation: "Настоящие аккаунты знаменитостей имеют отметку верификации (галочку), официальные ссылки, стабильную активность. Фейки часто созданы недавно, не имеют галочки и пытаются выманить деньги или данные."
+        }
+    ];
+    
+    // Сбрасываем данные теста
+    socialCurrentQuestion = 0;
+    socialUserAnswers = [];
+    socialTestStartTime = new Date();
+    
+    // Загружаем страницу теста
+    const courseContent = document.getElementById('courseContent');
+    courseContent.innerHTML = `
+        <div class="course-header">
+            <div class="course-header-icon social">
+                <i class="fas fa-users"></i>
+            </div>
+            <div class="course-header-content">
+                <h1>Итоговый тест: Безопасность в социальных сетях</h1>
+                <p>Проверьте свои знания по защите аккаунтов в социальных сетях, настройкам приватности и распознаванию угроз. 10 вопросов, для успешного прохождения нужно правильно ответить на 8 вопросов (80%).</p>
+                <div class="course-meta">
+                    <div class="course-meta-item">
+                        <i class="fas fa-question-circle"></i>
+                        <span>10 вопросов</span>
+                    </div>
+                    <div class="course-meta-item">
+                        <i class="fas fa-clock"></i>
+                        <span>25 минут</span>
+                    </div>
+                    <div class="course-meta-item">
+                        <i class="fas fa-chart-line"></i>
+                        <span>Проходной балл: 80%</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div id="socialTestContainer">
+            <div id="socialTestInstructions" style="text-align: center; padding: 40px 0;">
+                <h3>Инструкция к тесту</h3>
+                <p style="margin: 20px 0;">Тест состоит из 10 вопросов с одним правильным ответом.</p>
+                
+                <div style="background-color: #f5f5f5; padding: 20px; border-radius: 10px; max-width: 600px; margin: 0 auto;">
+                    <h4><i class="fas fa-info-circle icon" style="color: #039be5;"></i> Правила тестирования:</h4>
+                    <ul style="text-align: left; margin: 15px 0;">
+                        <li>Выберите один вариант ответа на каждый вопрос</li>
+                        <li>Можно вернуться к предыдущим вопросам</li>
+                        <li>На прохождение теста отводится 25 минут</li>
+                        <li>После завершения вы увидите детальный результат с объяснениями</li>
+                        <li>Для успешного прохождения нужно ≥ 80% правильных ответов (8 из 10)</li>
+                    </ul>
+                </div>
+                
+                <button class="btn btn-large btn-success" onclick="beginSocialTest()" style="margin-top: 30px;">
+                    <i class="fas fa-play icon"></i> Начать тест
+                </button>
+                
+                <button class="btn btn-large btn-outline" onclick="showPage('courses')" style="margin-top: 30px; margin-left: 15px;">
+                    <i class="fas fa-arrow-left icon"></i> Вернуться к курсам
+                </button>
+            </div>
+            
+            <div id="socialTestQuestions" style="display: none;">
+                <!-- Вопросы будут загружены динамически -->
+            </div>
+            
+            <div id="socialTestResults" style="display: none;">
+                <!-- Результаты будут загружены динамически -->
+            </div>
+        </div>
+    `;
+}
+
+// Функция для начала теста
+function beginSocialTest() {
+    // Скрываем инструкции и показываем вопросы
+    document.getElementById('socialTestInstructions').style.display = 'none';
+    document.getElementById('socialTestQuestions').style.display = 'block';
+    
+    // Запускаем таймер
+    startSocialTestTimer();
+    
+    // Загружаем первый вопрос
+    loadSocialTestQuestion();
+}
+
+// Функция для загрузки вопроса
+function loadSocialTestQuestion() {
+    const testQuestionsDiv = document.getElementById('socialTestQuestions');
+    const question = socialTestQuestions[socialCurrentQuestion];
+    
+    testQuestionsDiv.innerHTML = `
+        <div class="simulator">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                <h3>Вопрос ${socialCurrentQuestion + 1} из ${socialTestQuestions.length}</h3>
+                <div id="socialTestTimer" style="background-color: #f5f5f5; padding: 8px 15px; border-radius: 20px; font-weight: bold;">
+                    <i class="fas fa-clock icon"></i> <span id="socialTimeRemaining">25:00</span>
+                </div>
+            </div>
+            
+            <div style="background-color: #f8f9fa; padding: 25px; border-radius: 10px; margin-bottom: 25px;">
+                <h4 style="color: #039be5; margin-bottom: 15px;">${question.question}</h4>
+            </div>
+            
+            <div class="options">
+                ${question.options.map((option, index) => `
+                    <div class="option" onclick="selectSocialTestAnswer(${index})" 
+                         style="${socialUserAnswers[socialCurrentQuestion] === index ? 'border-color: #039be5; background-color: #e1f5fe;' : ''}">
+                        ${String.fromCharCode(65 + index)}. ${option}
+                    </div>
+                `).join('')}
+            </div>
+            
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 30px;">
+    ${socialCurrentQuestion > 0 ? `
+        <button class="btn btn-outline" onclick="prevSocialTestQuestion()" style="padding: 8px 20px;">
+            <i class="fas fa-arrow-left icon"></i> Назад
+        </button>
+    ` : '<div style="width: 100px;"></div>'}
+    
+    <div style="text-align: center;">
+        <button class="btn btn-success" onclick="nextSocialTestQuestion()" id="socialNextButton" 
+                ${socialUserAnswers[socialCurrentQuestion] === undefined ? 'disabled' : ''}
+                style="padding: 8px 25px;">
+            ${socialCurrentQuestion === socialTestQuestions.length - 1 ? 'Завершить тест' : 'Следующий вопрос'} 
+            <i class="fas fa-arrow-right icon"></i>
+        </button>
+        <p style="margin-top: 8px; color: #666; font-size: 0.85rem;">
+            Вопрос ${socialCurrentQuestion + 1} из ${socialTestQuestions.length}
+        </p>
+    </div>
+    
+    <div style="text-align: right;">
+        <button class="btn btn-danger" onclick="cancelSocialTest()" style="padding: 8px 20px;">
+            <i class="fas fa-times icon"></i> Отменить
+        </button>
+    </div>
+</div>
+            
+            <div style="margin-top: 20px; text-align: center; color: #666;">
+                <p><i class="fas fa-info-circle icon"></i> Выберите один вариант ответа</p>
+            </div>
+        </div>
+    `;
+}
+
+// Функция выбора ответа
+function selectSocialTestAnswer(answerIndex) {
+    // Убираем выделение со всех вариантов
+    document.querySelectorAll('#socialTestQuestions .option').forEach(option => {
+        option.style.borderColor = '#ddd';
+        option.style.backgroundColor = 'white';
+    });
+    
+    // Выделяем выбранный вариант
+    event.target.style.borderColor = '#039be5';
+    event.target.style.backgroundColor = '#e1f5fe';
+    
+    // Сохраняем ответ
+    socialUserAnswers[socialCurrentQuestion] = answerIndex;
+    
+    // Активируем кнопку "Далее"
+    document.getElementById('socialNextButton').disabled = false;
+}
+
+// Функция для перехода к следующему вопросу
+function nextSocialTestQuestion() {
+    // Проверяем, выбран ли ответ
+    if (socialUserAnswers[socialCurrentQuestion] === undefined) {
+        showNotification('error', 'Пожалуйста, выберите вариант ответа');
+        return;
+    }
+    
+    // Переходим к следующему вопросу или завершаем тест
+    if (socialCurrentQuestion < socialTestQuestions.length - 1) {
+        socialCurrentQuestion++;
+        loadSocialTestQuestion();
+    } else {
+        finishSocialTest();
+    }
+}
+
+// Функция для возврата к предыдущему вопросу
+function prevSocialTestQuestion() {
+    if (socialCurrentQuestion > 0) {
+        socialCurrentQuestion--;
+        loadSocialTestQuestion();
+    }
+}
+
+// Функция запуска таймера теста
+function startSocialTestTimer() {
+    // Очищаем предыдущий таймер, если был
+    if (socialTestTimer) {
+        clearInterval(socialTestTimer);
+    }
+    
+    let timeLeft = 25 * 60; // 25 минут в секундах
+    
+    socialTestTimer = setInterval(function() {
+        timeLeft--;
+        
+        const minutes = Math.floor(timeLeft / 60);
+        const seconds = timeLeft % 60;
+        
+        const timeElement = document.getElementById('socialTimeRemaining');
+        if (timeElement) {
+            timeElement.textContent = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+        }
+        
+        // Меняем цвет при малом остатке времени
+        const timerDiv = document.getElementById('socialTestTimer');
+        if (timerDiv && timeLeft < 300) { // Меньше 5 минут
+            timerDiv.style.backgroundColor = '#ffebee';
+            timerDiv.style.color = '#d32f2f';
+        }
+        
+        if (timeLeft <= 0) {
+            clearInterval(socialTestTimer);
+            finishSocialTest();
+        }
+    }, 1000);
+}
+
+// Функция завершения теста
+function finishSocialTest() {
+    if (socialTestTimer) {
+        clearInterval(socialTestTimer);
+    }
+    
+    // Рассчитываем результаты
+    let correctAnswers = 0;
+    let resultsHTML = '';
+    
+    socialTestQuestions.forEach((question, index) => {
+        const userAnswer = socialUserAnswers[index];
+        const isCorrect = userAnswer === question.correctAnswer;
+        
+        if (isCorrect) correctAnswers++;
+        
+        resultsHTML += `
+            <div style="margin-bottom: 20px; padding: 15px; border-radius: 8px; background-color: ${isCorrect ? '#e8f5e9' : '#ffebee'}; border-left: 5px solid ${isCorrect ? '#388e3c' : '#d32f2f'}; text-align: left;">
+                <p><strong>Вопрос ${index + 1}:</strong> ${question.question}</p>
+                <p><strong>Ваш ответ:</strong> ${userAnswer !== undefined ? question.options[userAnswer] : 'Не ответили'}</p>
+                <p><strong>Правильный ответ:</strong> ${question.options[question.correctAnswer]}</p>
+                <p style="margin-top: 10px; color: #666;"><i class="fas fa-info-circle icon"></i> ${question.explanation}</p>
+            </div>
+        `;
+    });
+    
+    const score = Math.round((correctAnswers / socialTestQuestions.length) * 100);
+    const isPassed = score >= 80; // 8 из 10 = 80%
+    
+    // Обновляем прогресс пользователя
+    if (currentUser && isPassed) {
+        // Отмечаем тест как пройденный
+        if (!currentUser.completedCourses) currentUser.completedCourses = [];
+        if (!currentUser.completedCourses.includes('social')) {
+            currentUser.completedCourses.push('social');
+        }
+        
+        // Обновляем прогресс курса
+        if (!currentUser.progress) currentUser.progress = {};
+        currentUser.progress.social = 100;
+        
+        if (!currentUser.stats) {
+            currentUser.stats = {
+                completedLessons: 0,
+                score: 0,
+                testResults: []
+            };
+        }
+        
+        currentUser.stats.completedLessons = (currentUser.stats.completedLessons || 0) + 1;
+        currentUser.stats.score = (currentUser.stats.score || 0) + 50; // Бонус за прохождение теста
+        
+        if (!currentUser.stats.testResults) currentUser.stats.testResults = [];
+        currentUser.stats.testResults.push({
+            course: 'social',
+            score: score,
+            date: new Date().toISOString()
+        });
+        
+        updateUserInStorage();
+    }
+    
+    // Показываем результаты
+    document.getElementById('socialTestQuestions').style.display = 'none';
+    document.getElementById('socialTestResults').style.display = 'block';
+    document.getElementById('socialTestResults').innerHTML = `
+        <div class="simulator" style="text-align: center;">
+            <h3>Результаты теста</h3>
+            
+            <div style="margin: 30px 0;">
+                <div style="font-size: 3rem; color: ${isPassed ? '#388e3c' : '#d32f2f'}; margin-bottom: 10px;">
+                    ${score}%
+                </div>
+                <div style="font-size: 1.2rem; margin-bottom: 20px;">
+                    ${correctAnswers} из ${socialTestQuestions.length} правильных ответов
+                </div>
+                
+                <div style="background-color: ${isPassed ? '#e8f5e9' : '#ffebee'}; padding: 20px; border-radius: 10px; max-width: 500px; margin: 0 auto;">
+                    <h4 style="color: ${isPassed ? '#388e3c' : '#d32f2f'};">
+                        <i class="fas ${isPassed ? 'fa-check-circle' : 'fa-times-circle'} icon"></i>
+                        ${isPassed ? 'Тест пройден успешно!' : 'Тест не пройден'}
+                    </h4>
+                    <p>Для успешного прохождения необходимо набрать 80% правильных ответов (8 из 10).</p>
+                </div>
+            </div>
+            
+            ${isPassed ? `
+                <div style="background-color: #fff3e0; padding: 20px; border-radius: 10px; margin: 20px 0;">
+                    <h4><i class="fas fa-trophy icon" style="color: #ff9800;"></i> Поздравляем!</h4>
+                    <p>Вы успешно прошли курс "Безопасность в социальных сетях" и получили +50 очков к вашему рейтингу.</p>
+                    ${currentUser ? `
+                        <p style="margin-top: 10px;">Ваш текущий счет: <strong>${currentUser.stats.score} очков</strong></p>
+                    ` : ''}
+                </div>
+            ` : `
+                <div style="background-color: #e3f2fd; padding: 20px; border-radius: 10px; margin: 20px 0;">
+                    <h4><i class="fas fa-redo icon" style="color: #1976d2;"></i> Рекомендации</h4>
+                    <p>Рекомендуем повторить материал курса и пройти тест снова.</p>
+                    <p>Обратите особое внимание на вопросы, в которых допустили ошибки.</p>
+                </div>
+            `}
+            
+            <h4 style="margin-top: 30px; margin-bottom: 20px;">Детализация ответов:</h4>
+            <div style="max-height: 400px; overflow-y: auto; padding-right: 10px; text-align: left;">
+                ${resultsHTML}
+            </div>
+            
+            <div style="margin-top: 30px;">
+                <button class="btn btn-large ${isPassed ? 'btn-success' : 'btn-warning'}" onclick="${isPassed ? 'showPage(\'courses\')' : 'retrySocialTest()'}">
+                    ${isPassed ? 'Вернуться к курсам' : 'Попробовать снова'}
+                </button>
+                
+                ${isPassed ? `
+                    <button class="btn btn-large btn-outline" onclick="downloadSocialCertificate()" style="margin-left: 15px;">
+                        <i class="fas fa-download icon"></i> Скачать сертификат
+                    </button>
+                ` : ''}
+            </div>
+        </div>
+    `;
+    
+    // Прокручиваем к результатам
+    document.getElementById('socialTestResults').scrollIntoView({ behavior: 'smooth' });
+}
+
+// Функция повторного прохождения теста
+function retrySocialTest() {
+    socialCurrentQuestion = 0;
+    socialUserAnswers = [];
+    
+    document.getElementById('socialTestResults').style.display = 'none';
+    document.getElementById('socialTestQuestions').style.display = 'block';
+    
+    socialTestStartTime = new Date();
+    startSocialTestTimer();
+    loadSocialTestQuestion();
+}
+
+// Функция отмены теста
+function cancelSocialTest() {
+    if (confirm('Вы уверены, что хотите отменить тест? Все ответы будут потеряны.')) {
+        if (socialTestTimer) {
+            clearInterval(socialTestTimer);
+        }
+        showPage('courses');
+    }
+}
+
+// Функция скачивания сертификата
+function downloadSocialCertificate() {
+    showNotification('success', 'Сертификат успешно сгенерирован!');
+    
+    const certificateContent = `
+        <div style="text-align: center; padding: 40px; background-color: white; border: 10px solid #039be5; max-width: 800px; margin: 0 auto; font-family: Arial, sans-serif;">
+            <h1 style="color: #039be5; font-size: 2.5rem; margin-bottom: 20px;">СЕРТИФИКАТ</h1>
+            <p style="font-size: 1.2rem; color: #555;">Настоящий сертификат подтверждает, что</p>
+            <h2 style="color: #01579b; margin: 20px 0; font-size: 2rem;">${currentUser ? currentUser.name : 'Студент'}</h2>
+            <p style="font-size: 1.2rem; color: #555;">успешно прошел(а) курс</p>
+            <h3 style="color: #039be5; margin: 20px 0; font-size: 1.8rem;">"Безопасность в социальных сетях"</h3>
+            <p style="font-size: 1rem; color: #666;">в Академии Кибербезопасности</p>
+            <div style="margin: 30px 0; padding: 20px; background-color: #f9f9f9; border-radius: 10px;">
+                <p style="font-size: 1.1rem;"><strong>Дата:</strong> ${new Date().toLocaleDateString('ru-RU')}</p>
+                <p style="font-size: 1.1rem;"><strong>Результат теста:</strong> ${Math.round((socialUserAnswers.filter((answer, index) => answer === socialTestQuestions[index].correctAnswer).length / socialTestQuestions.length) * 100)}%</p>
+                <p style="font-size: 1.1rem;"><strong>Правильных ответов:</strong> ${socialUserAnswers.filter((answer, index) => answer === socialTestQuestions[index].correctAnswer).length} из 10</p>
+            </div>
+            <div style="margin-top: 50px; display: flex; justify-content: space-around;">
+                <div style="text-align: center;">
+                    <p>Директор Академии</p>
+                    <p style="margin-top: 40px;">___________________ А.В. Иванов</p>
+                </div>
+                <div style="text-align: center;">
+                    <p>Руководитель курса</p>
+                    <p style="margin-top: 40px;">___________________ Е.С. Петрова</p>
+                </div>
+            </div>
+            <div style="margin-top: 40px; color: #999; font-size: 0.9rem;">
+                <p>Лицензия на образовательную деятельность № 1234 от 01.01.2026</p>
+                <p>ID сертификата: CERT-SOCIAL-${Date.now().toString().slice(-8)}</p>
+            </div>
+        </div>
+    `;
+    
+    setTimeout(() => {
+        if (confirm('Хотите увидеть предварительный просмотр сертификата?')) {
+            const win = window.open();
+            win.document.write(certificateContent);
+            win.document.title = 'Сертификат - Безопасность в социальных сетях';
+        }
+    }, 500);
+}
+// ============================
+// ИТОГОВЫЙ ТЕСТ: 20 вопросов по всем темам кибербезопасности
+// ============================
+
+// Функция запуска итогового теста
+function startFinalTest() {
+    // ПРОКРУТКА ВВЕРХ
+    scrollToTop();
+    
+    // Показываем страницу активного курса
+    document.querySelectorAll('.page').forEach(page => {
+        page.classList.remove('active');
+    });
+    document.getElementById('active-course').classList.add('active');
+    
+    // Обновляем навигацию
+    document.querySelectorAll('.nav-link').forEach(link => {
+        link.classList.remove('active');
+    });
+    
+    // ИНИЦИАЛИЗАЦИЯ ВОПРОСОВ ИТОГОВОГО ТЕСТА (20 вопросов по всем темам)
+    finalTestQuestions = [
+        // === ФИШИНГ (вопросы 1-3) ===
+        {
+            question: "Что такое фишинг?",
+            options: [
+                "Вид компьютерного вируса",
+                "Мошенническая техника для получения конфиденциальной информации",
+                "Способ шифрования данных",
+                "Программа для удаленного управления"
+            ],
+            correctAnswer: 1,
+            explanation: "Фишинг — это мошенническая техника, при которой злоумышленники выдают себя за доверенные организации, чтобы заставить жертву раскрыть конфиденциальную информацию (пароли, данные карт и т.д.)."
+        },
+        {
+            question: "Какой адрес электронной почты, скорее всего, принадлежит мошенникам?",
+            options: [
+                "support@sberbank.ru",
+                "security@vtb.ru",
+                "client@alfabank.ru",
+                "sberbank-secure@yandex.ru"
+            ],
+            correctAnswer: 3,
+            explanation: "Мошенники часто используют бесплатные почтовые сервисы (yandex.ru, mail.ru, gmail.com) или поддельные домены, похожие на официальные. Настоящие банки используют свои корпоративные домены."
+        },
+        {
+            question: "Что делать, если вы получили письмо от банка с просьбой срочно перейти по ссылке и подтвердить данные карты?",
+            options: [
+                "Перейти по ссылке и ввести данные, чтобы не заблокировали карту",
+                "Ничего не делать — это мошенники, настоящий банк так не просит",
+                "Ответить на письмо и уточнить детали",
+                "Переслать письмо друзьям, чтобы они тоже проверили"
+            ],
+            correctAnswer: 1,
+            explanation: "Настоящие банки никогда не просят вводить данные карты по ссылкам из писем или SMS. Это 100% фишинг. Такие письма нужно сразу удалять."
+        },
+        
+        // === ТЕЛЕФОННОЕ МОШЕННИЧЕСТВО (вопросы 4-6) ===
+        {
+            question: "Вам звонит 'сотрудник службы безопасности банка' и сообщает о подозрительной операции. Что делать?",
+            options: [
+                "Назвать код из SMS для отмены операции",
+                "Немедленно перевести деньги на 'безопасный счет'",
+                "Положить трубку и перезвонить в банк по номеру с карты",
+                "Установить программу, которую рекомендует сотрудник"
+            ],
+            correctAnswer: 2,
+            explanation: "Единственно верное действие — положить трубку и самостоятельно перезвонить в банк по официальному номеру, указанному на обратной стороне карты или на сайте банка."
+        },
+        {
+            question: "Что такое спуфинг в телефонном мошенничестве?",
+            options: [
+                "Запись разговора с жертвой",
+                "Подмена номера телефона",
+                "Использование робота-автоответчика",
+                "Звонки через мессенджеры"
+            ],
+            correctAnswer: 1,
+            explanation: "Спуфинг — это технология подмены номера. Мошенник может звонить с номера, который на экране отображается как номер вашего банка, хотя на самом деле звонок идет из другого места."
+        },
+        {
+            question: "Какой из этих звонков, скорее всего, мошеннический?",
+            options: [
+                "Звонок из поликлиники с напоминанием о записи к врачу",
+                "Звонок от 'внука', который попал в ДТП и срочно просит перевести деньги",
+                "Звонок из налоговой с просьбой уточнить адрес регистрации",
+                "Звонок из школы с приглашением на родительское собрание"
+            ],
+            correctAnswer: 1,
+            explanation: "Схема 'родственник в беде' — классическое телефонное мошенничество. Мошенники играют на эмоциях и просят срочно перевести деньги. Всегда перезванивайте родственнику на его реальный номер."
+        },
+        
+        // === ГОСУСЛУГИ (вопросы 7-9) ===
+        {
+            question: "Какой официальный сайт Госуслуг?",
+            options: [
+                "gosuslugi.ru",
+                "gosuslugi-online.ru",
+                "gosuslugi-portal.com",
+                "gosuslugi-gov.ru"
+            ],
+            correctAnswer: 0,
+            explanation: "Единственный официальный сайт Госуслуг — gosuslugi.ru. Все остальные домены с дополнительными словами или в других зонах — мошеннические."
+        },
+        {
+            question: "Что делать, если вам звонят и представляются сотрудником Госуслуг, прося назвать код из SMS?",
+            options: [
+                "Назвать код, чтобы подтвердить личность",
+                "Положить трубку — настоящие сотрудники никогда не просят коды",
+                "Попросить прислать официальное письмо на email",
+                "Спросить номер служебного удостоверения"
+            ],
+            correctAnswer: 1,
+            explanation: "Настоящие сотрудники Госуслуг НИКОГДА не звонят и не просят назвать коды из SMS. Это всегда мошенники."
+        },
+        {
+            question: "Какой номер телефона официальной горячей линии Госуслуг?",
+            options: [
+                "8-800-100-70-10",
+                "8-900-123-45-67",
+                "8-495-777-77-77",
+                "8-800-555-35-35"
+            ],
+            correctAnswer: 0,
+            explanation: "Единственный официальный номер горячей линии Госуслуг — 8-800-100-70-10. Он работает круглосуточно, бесплатно со всех телефонов России."
+        },
+        
+        // === ПУУ СХЕМЫ (вопросы 10-12) ===
+        {
+            question: "Что означает аббревиатура ПУУ?",
+            options: [
+                "Программа Универсальной Уязвимости",
+                "Программа Удаленного Управления",
+                "Правила Учета Угроз",
+                "Платформа Управления Устройствами"
+            ],
+            correctAnswer: 1,
+            explanation: "ПУУ — Программа Удаленного Управления. Мошенники используют легитимные программы (AnyDesk, TeamViewer, Ammyy Admin) для получения контроля над устройствами жертв."
+        },
+        {
+            question: "Какую программу НЕЛЬЗЯ устанавливать по просьбе звонящего 'специалиста техподдержки'?",
+            options: [
+                "Google Chrome",
+                "AnyDesk",
+                "Adobe Reader",
+                "VLC Media Player"
+            ],
+            correctAnswer: 1,
+            explanation: "AnyDesk, TeamViewer, Ammyy Admin, UltraVNC — программы удаленного доступа. Их установка по просьбе незнакомца дает мошенникам полный контроль над вашим компьютером."
+        },
+        {
+            question: "Что делать, если курсор мыши двигается сам по себе?",
+            options: [
+                "Позвонить в техподдержку по номеру из всплывшего окна",
+                "Немедленно отключить интернет (выдернуть кабель/отключить Wi-Fi)",
+                "Ничего, это глюк компьютера",
+                "Перезагрузить компьютер"
+            ],
+            correctAnswer: 1,
+            explanation: "Самый явный признак удаленного подключения — курсор двигается сам, программы открываются и закрываются без вашего участия. Нужно немедленно физически отключить интернет."
+        },
+        
+        // === ПАРОЛИ И АУТЕНТИФИКАЦИЯ (вопросы 13-15) ===
+        {
+            question: "Какой пароль считается наиболее надежным?",
+            options: [
+                "qwerty123",
+                "password2024",
+                "J8#kL!p2qW9*zM5",
+                "Иван1990"
+            ],
+            correctAnswer: 2,
+            explanation: "Надежный пароль должен быть длинным (12+ символов), содержать заглавные и строчные буквы, цифры и специальные символы. Пароль 'J8#kL!p2qW9*zM5' соответствует всем этим требованиям."
+        },
+        {
+            question: "Что такое двухфакторная аутентификация (2FA)?",
+            options: [
+                "Вход в аккаунт с двух устройств одновременно",
+                "Дополнительная защита: после пароля нужен код из SMS/приложения",
+                "Два разных пароля для одного аккаунта",
+                "Автоматическая смена пароля раз в месяц"
+            ],
+            correctAnswer: 1,
+            explanation: "Двухфакторная аутентификация требует не только пароль, но и дополнительный код из SMS, приложения-аутентификатора или аппаратного ключа. Это значительно повышает безопасность аккаунта."
+        },
+        {
+            question: "Почему нельзя использовать один пароль для всех сервисов?",
+            options: [
+                "Это неудобно — нужно везде вводить одно и то же",
+                "При утечке пароля на одном сайте будут скомпрометированы все аккаунты",
+                "Сайты требуют разные пароли",
+                "Один пароль легко забыть"
+            ],
+            correctAnswer: 1,
+            explanation: "Использование одного пароля для всех сервисов опасно: если мошенники получат пароль от одного сайта (например, форума), они попробуют его на Gmail, соцсетях, банках."
+        },
+        
+        // === СОЦИАЛЬНЫЕ СЕТИ (вопросы 16-17) ===
+        {
+            question: "Какую информацию безопаснее всего публиковать в соцсетях?",
+            options: [
+                "Номер паспорта для подтверждения личности",
+                "Фото билетов с QR-кодом перед поездкой",
+                "Фото питомца без геометки",
+                "Дату и время отъезда в отпуск"
+            ],
+            correctAnswer: 2,
+            explanation: "Фото питомца без геометки — безопасно. Остальное: паспортные данные — конфиденциальная информация, QR-коды могут скопировать, дата отъезда показывает мошенникам, что вас нет дома."
+        },
+        {
+            question: "Как распознать фейковый аккаунт в соцсетях?",
+            options: [
+                "У него много подписчиков — значит, настоящий",
+                "Проверить верификацию (галочку), дату регистрации, активность",
+                "Красиво оформленный профиль",
+                "Наличие постов с фотографиями"
+            ],
+            correctAnswer: 1,
+            explanation: "Фейковые аккаунты часто созданы недавно, не имеют галочки верификации, мало активности, странные ссылки в описании. Настоящие аккаунты имеют историю и верификацию."
+        },
+        
+        // === ФИНАНСОВОЕ МОШЕННИЧЕСТВО (вопросы 18-19) ===
+        {
+            question: "Что должно насторожить в инвестиционном предложении?",
+            options: [
+                "Обещание гарантированной доходности 200% годовых",
+                "Лицензия Центрального банка",
+                "Официальный сайт компании",
+                "Прозрачные условия договора"
+            ],
+            correctAnswer: 0,
+            explanation: "Гарантированная доходность выше 30-40% годовых — признак финансовой пирамиды или мошенничества. Легальные инвестиции всегда связаны с рисками."
+        },
+        {
+            question: "Что делать, если на ваше имя оформили кредит без вашего ведома?",
+            options: [
+                "Ничего — платить придется все равно",
+                "Немедленно обратиться в банк и полицию",
+                "Написать мошенникам и просить аннулировать кредит",
+                "Перевести деньги на 'безопасный счет'"
+            ],
+            correctAnswer: 1,
+            explanation: "Нужно одновременно: 1) Подать заявление в банк о несогласии с кредитом, 2) Обратиться в полицию с заявлением о мошенничестве, 3) Проверить кредитную историю."
+        },
+        
+        // === МОБИЛЬНАЯ БЕЗОПАСНОСТЬ (вопрос 20) ===
+        {
+            question: "Почему опасно пользоваться публичным Wi-Fi (в кафе, аэропорту) без VPN?",
+            options: [
+                "Медленная скорость интернета",
+                "Мошенники могут перехватывать ваш трафик и видеть пароли",
+                "Высокая стоимость подключения",
+                "Быстро разряжается телефон"
+            ],
+            correctAnswer: 1,
+            explanation: "В публичных Wi-Fi-сетях мошенники могут проводить атаки Man-in-the-Middle, перехватывая все данные, которые вы отправляете: пароли, сообщения, данные карт. VPN шифрует трафик и защищает от этого."
+        }
+    ];
+    
+    // Сбрасываем данные теста
+    finalCurrentQuestion = 0;
+    finalUserAnswers = [];
+    finalTestStartTime = new Date();
+    
+    // Загружаем страницу теста
+    const courseContent = document.getElementById('courseContent');
+    courseContent.innerHTML = `
+        <div class="course-header">
+            <div class="course-header-icon" style="background: linear-gradient(135deg, #ffa000, #ffb300);">
+                <i class="fas fa-graduation-cap"></i>
+            </div>
+            <div class="course-header-content">
+                <h1>Итоговый тест: Кибербезопасность (Все темы)</h1>
+                <p>Проверьте свои знания по всем темам кибербезопасности. 20 вопросов, для успешного прохождения нужно правильно ответить на 16 вопросов (80%).</p>
+                <div class="course-meta">
+                    <div class="course-meta-item">
+                        <i class="fas fa-question-circle"></i>
+                        <span>20 вопросов</span>
+                    </div>
+                    <div class="course-meta-item">
+                        <i class="fas fa-clock"></i>
+                        <span>40 минут</span>
+                    </div>
+                    <div class="course-meta-item">
+                        <i class="fas fa-chart-line"></i>
+                        <span>Проходной балл: 80%</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div id="finalTestContainer">
+            <div id="finalTestInstructions" style="text-align: center; padding: 40px 0;">
+                <h3>Инструкция к итоговому тесту</h3>
+                <p style="margin: 20px 0;">Тест состоит из 20 вопросов по всем темам курса. Каждый вопрос имеет один правильный ответ.</p>
+                
+                <div style="background-color: #f5f5f5; padding: 20px; border-radius: 10px; max-width: 600px; margin: 0 auto;">
+                    <h4><i class="fas fa-info-circle icon" style="color: #ffa000;"></i> Правила тестирования:</h4>
+                    <ul style="text-align: left; margin: 15px 0;">
+                        <li>Выберите один вариант ответа на каждый вопрос</li>
+                        <li>Можно вернуться к предыдущим вопросам</li>
+                        <li>На прохождение теста отводится 40 минут</li>
+                        <li>После завершения вы увидите детальный результат с объяснениями</li>
+                        <li>Для успешного прохождения нужно ≥ 80% правильных ответов (16 из 20)</li>
+                        <li>При успешном прохождении вы получите сертификат эксперта по кибербезопасности</li>
+                    </ul>
+                </div>
+                
+                <div style="background-color: #fff3e0; padding: 20px; border-radius: 10px; max-width: 600px; margin: 20px auto 0;">
+                    <h4><i class="fas fa-trophy icon" style="color: #ff9800;"></i> Темы тестирования:</h4>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 10px;">
+                        <div>✓ Фишинг</div>
+                        <div>✓ Телефонное мошенничество</div>
+                        <div>✓ Госуслуги</div>
+                        <div>✓ ПУУ схемы</div>
+                        <div>✓ Пароли и 2FA</div>
+                        <div>✓ Социальные сети</div>
+                        <div>✓ Финансовое мошенничество</div>
+                        <div>✓ Мобильная безопасность</div>
+                    </div>
+                </div>
+                
+                <button class="btn btn-large btn-success" onclick="beginFinalTest()" style="margin-top: 30px;">
+                    <i class="fas fa-play icon"></i> Начать итоговый тест
+                </button>
+                
+                <button class="btn btn-large btn-outline" onclick="showPage('test')" style="margin-top: 30px; margin-left: 15px;">
+                    <i class="fas fa-arrow-left icon"></i> Вернуться к тестам
+                </button>
+            </div>
+            
+            <div id="finalTestQuestions" style="display: none;">
+                <!-- Вопросы будут загружены динамически -->
+            </div>
+            
+            <div id="finalTestResults" style="display: none;">
+                <!-- Результаты будут загружены динамически -->
+            </div>
+        </div>
+    `;
+}
+
+// Функция для начала теста
+function beginFinalTest() {
+    // Скрываем инструкции и показываем вопросы
+    document.getElementById('finalTestInstructions').style.display = 'none';
+    document.getElementById('finalTestQuestions').style.display = 'block';
+    
+    // Запускаем таймер
+    startFinalTestTimer();
+    
+    // Загружаем первый вопрос
+    loadFinalTestQuestion();
+}
+
+// Функция для загрузки вопроса
+function loadFinalTestQuestion() {
+    const testQuestionsDiv = document.getElementById('finalTestQuestions');
+    const question = finalTestQuestions[finalCurrentQuestion];
+    
+    testQuestionsDiv.innerHTML = `
+        <div class="simulator">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                <h3>Вопрос ${finalCurrentQuestion + 1} из ${finalTestQuestions.length}</h3>
+                <div id="finalTestTimer" style="background-color: #f5f5f5; padding: 8px 15px; border-radius: 20px; font-weight: bold;">
+                    <i class="fas fa-clock icon"></i> <span id="finalTimeRemaining">40:00</span>
+                </div>
+            </div>
+            
+            <div style="background-color: #f8f9fa; padding: 25px; border-radius: 10px; margin-bottom: 25px;">
+                <h4 style="color: #ffa000; margin-bottom: 15px;">${question.question}</h4>
+            </div>
+            
+            <div class="options">
+                ${question.options.map((option, index) => `
+                    <div class="option" onclick="selectFinalTestAnswer(${index})" 
+                         style="${finalUserAnswers[finalCurrentQuestion] === index ? 'border-color: #ffa000; background-color: #fff8e1;' : ''}">
+                        ${String.fromCharCode(65 + index)}. ${option}
+                    </div>
+                `).join('')}
+            </div>
+            
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 30px;">
+    ${finalCurrentQuestion > 0 ? `
+        <button class="btn btn-outline" onclick="prevFinalTestQuestion()" style="padding: 8px 20px;">
+            <i class="fas fa-arrow-left icon"></i> Назад
+        </button>
+    ` : '<div style="width: 100px;"></div>'}
+    
+    <div style="text-align: center;">
+        <button class="btn btn-success" onclick="nextFinalTestQuestion()" id="finalNextButton" 
+                ${finalUserAnswers[finalCurrentQuestion] === undefined ? 'disabled' : ''}
+                style="padding: 8px 25px;">
+            ${finalCurrentQuestion === finalTestQuestions.length - 1 ? 'Завершить тест' : 'Следующий вопрос'} 
+            <i class="fas fa-arrow-right icon"></i>
+        </button>
+        <p style="margin-top: 8px; color: #666; font-size: 0.85rem;">
+            Вопрос ${finalCurrentQuestion + 1} из ${finalTestQuestions.length}
+        </p>
+    </div>
+    
+    <div style="text-align: right;">
+        <button class="btn btn-danger" onclick="cancelFinalTest()" style="padding: 8px 20px;">
+            <i class="fas fa-times icon"></i> Отменить
+        </button>
+    </div>
+</div>
+            
+            <div style="margin-top: 20px; text-align: center; color: #666;">
+                <p><i class="fas fa-info-circle icon"></i> Выберите один вариант ответа</p>
+            </div>
+        </div>
+    `;
+}
+
+// Функция выбора ответа
+function selectFinalTestAnswer(answerIndex) {
+    // Убираем выделение со всех вариантов
+    document.querySelectorAll('#finalTestQuestions .option').forEach(option => {
+        option.style.borderColor = '#ddd';
+        option.style.backgroundColor = 'white';
+    });
+    
+    // Выделяем выбранный вариант
+    event.target.style.borderColor = '#ffa000';
+    event.target.style.backgroundColor = '#fff8e1';
+    
+    // Сохраняем ответ
+    finalUserAnswers[finalCurrentQuestion] = answerIndex;
+    
+    // Активируем кнопку "Далее"
+    document.getElementById('finalNextButton').disabled = false;
+}
+
+// Функция для перехода к следующему вопросу
+function nextFinalTestQuestion() {
+    // Проверяем, выбран ли ответ
+    if (finalUserAnswers[finalCurrentQuestion] === undefined) {
+        showNotification('error', 'Пожалуйста, выберите вариант ответа');
+        return;
+    }
+    
+    // Переходим к следующему вопросу или завершаем тест
+    if (finalCurrentQuestion < finalTestQuestions.length - 1) {
+        finalCurrentQuestion++;
+        loadFinalTestQuestion();
+    } else {
+        finishFinalTest();
+    }
+}
+
+// Функция для возврата к предыдущему вопросу
+function prevFinalTestQuestion() {
+    if (finalCurrentQuestion > 0) {
+        finalCurrentQuestion--;
+        loadFinalTestQuestion();
+    }
+}
+
+// Функция запуска таймера теста
+function startFinalTestTimer() {
+    // Очищаем предыдущий таймер, если был
+    if (finalTestTimer) {
+        clearInterval(finalTestTimer);
+    }
+    
+    let timeLeft = 40 * 60; // 40 минут в секундах
+    
+    finalTestTimer = setInterval(function() {
+        timeLeft--;
+        
+        const minutes = Math.floor(timeLeft / 60);
+        const seconds = timeLeft % 60;
+        
+        const timeElement = document.getElementById('finalTimeRemaining');
+        if (timeElement) {
+            timeElement.textContent = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+        }
+        
+        // Меняем цвет при малом остатке времени
+        const timerDiv = document.getElementById('finalTestTimer');
+        if (timerDiv && timeLeft < 300) { // Меньше 5 минут
+            timerDiv.style.backgroundColor = '#ffebee';
+            timerDiv.style.color = '#d32f2f';
+        }
+        
+        if (timeLeft <= 0) {
+            clearInterval(finalTestTimer);
+            finishFinalTest();
+        }
+    }, 1000);
+}
+
+// Функция завершения теста
+function finishFinalTest() {
+    if (finalTestTimer) {
+        clearInterval(finalTestTimer);
+    }
+    
+    // Рассчитываем результаты
+    let correctAnswers = 0;
+    let resultsHTML = '';
+    
+    finalTestQuestions.forEach((question, index) => {
+        const userAnswer = finalUserAnswers[index];
+        const isCorrect = userAnswer === question.correctAnswer;
+        
+        if (isCorrect) correctAnswers++;
+        
+        resultsHTML += `
+            <div style="margin-bottom: 20px; padding: 15px; border-radius: 8px; background-color: ${isCorrect ? '#e8f5e9' : '#ffebee'}; border-left: 5px solid ${isCorrect ? '#388e3c' : '#d32f2f'}; text-align: left;">
+                <p><strong>Вопрос ${index + 1}:</strong> ${question.question}</p>
+                <p><strong>Ваш ответ:</strong> ${userAnswer !== undefined ? question.options[userAnswer] : 'Не ответили'}</p>
+                <p><strong>Правильный ответ:</strong> ${question.options[question.correctAnswer]}</p>
+                <p style="margin-top: 10px; color: #666;"><i class="fas fa-info-circle icon"></i> ${question.explanation}</p>
+            </div>
+        `;
+    });
+    
+    const score = Math.round((correctAnswers / finalTestQuestions.length) * 100);
+    const isPassed = score >= 80; // 16 из 20 = 80%
+    
+    // Обновляем прогресс пользователя
+    if (currentUser && isPassed) {
+        // Отмечаем итоговый тест как пройденный
+        if (!currentUser.completedCourses) currentUser.completedCourses = [];
+        if (!currentUser.completedCourses.includes('final')) {
+            currentUser.completedCourses.push('final');
+        }
+        
+        if (!currentUser.stats) {
+            currentUser.stats = {
+                completedLessons: 0,
+                score: 0,
+                testResults: []
+            };
+        }
+        
+        currentUser.stats.completedLessons = (currentUser.stats.completedLessons || 0) + 1;
+        currentUser.stats.score = (currentUser.stats.score || 0) + 100; // Бонус 100 очков за итоговый тест
+        
+        if (!currentUser.stats.testResults) currentUser.stats.testResults = [];
+        currentUser.stats.testResults.push({
+            course: 'final',
+            score: score,
+            date: new Date().toISOString()
+        });
+        
+        updateUserInStorage();
+    }
+    
+    // Показываем результаты
+    document.getElementById('finalTestQuestions').style.display = 'none';
+    document.getElementById('finalTestResults').style.display = 'block';
+    document.getElementById('finalTestResults').innerHTML = `
+        <div class="simulator" style="text-align: center;">
+            <h3>Результаты итогового теста</h3>
+            
+            <div style="margin: 30px 0;">
+                <div style="font-size: 3rem; color: ${isPassed ? '#388e3c' : '#d32f2f'}; margin-bottom: 10px;">
+                    ${score}%
+                </div>
+                <div style="font-size: 1.2rem; margin-bottom: 20px;">
+                    ${correctAnswers} из ${finalTestQuestions.length} правильных ответов
+                </div>
+                
+                <div style="background-color: ${isPassed ? '#e8f5e9' : '#ffebee'}; padding: 20px; border-radius: 10px; max-width: 500px; margin: 0 auto;">
+                    <h4 style="color: ${isPassed ? '#388e3c' : '#d32f2f'};">
+                        <i class="fas ${isPassed ? 'fa-check-circle' : 'fa-times-circle'} icon"></i>
+                        ${isPassed ? 'Итоговый тест пройден успешно!' : 'Итоговый тест не пройден'}
+                    </h4>
+                    <p>Для успешного прохождения необходимо набрать 80% правильных ответов (16 из 20).</p>
+                </div>
+            </div>
+            
+            ${isPassed ? `
+                <div style="background-color: #fff3e0; padding: 30px; border-radius: 10px; margin: 20px 0; border: 2px solid #ffa000;">
+                    <h4 style="color: #ff9800; font-size: 1.5rem;"><i class="fas fa-crown icon"></i> ПОЗДРАВЛЯЕМ!</h4>
+                    <p style="font-size: 1.2rem; margin: 15px 0;">Вы успешно прошли итоговый тест и подтвердили свои знания по кибербезопасности!</p>
+                    <p>Вы получаете статус <strong>"Эксперт по кибербезопасности"</strong> и +100 очков к рейтингу.</p>
+                    ${currentUser ? `
+                        <p style="margin-top: 10px;">Ваш текущий счет: <strong>${currentUser.stats.score} очков</strong></p>
+                    ` : ''}
+                </div>
+            ` : `
+                <div style="background-color: #e3f2fd; padding: 20px; border-radius: 10px; margin: 20px 0;">
+                    <h4><i class="fas fa-redo icon" style="color: #1976d2;"></i> Рекомендации</h4>
+                    <p>Повторите материал по темам, в которых допустили ошибки:</p>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 15px;">
+                        <div>✓ Фишинг</div>
+                        <div>✓ Телефонное мошенничество</div>
+                        <div>✓ Госуслуги</div>
+                        <div>✓ ПУУ схемы</div>
+                        <div>✓ Пароли и 2FA</div>
+                        <div>✓ Социальные сети</div>
+                        <div>✓ Финансовое мошенничество</div>
+                        <div>✓ Мобильная безопасность</div>
+                    </div>
+                    <p style="margin-top: 15px;">Пройдите тесты по отдельным темам и попробуйте снова!</p>
+                </div>
+            `}
+            
+            <h4 style="margin-top: 30px; margin-bottom: 20px;">Детализация ответов:</h4>
+            <div style="max-height: 400px; overflow-y: auto; padding-right: 10px; text-align: left;">
+                ${resultsHTML}
+            </div>
+            
+            <div style="margin-top: 30px;">
+                <button class="btn btn-large ${isPassed ? 'btn-success' : 'btn-warning'}" onclick="${isPassed ? 'showPage(\'test\')' : 'retryFinalTest()'}">
+                    ${isPassed ? 'Вернуться к тестам' : 'Попробовать снова'}
+                </button>
+                
+                ${isPassed ? `
+                    <button class="btn btn-large btn-outline" onclick="downloadFinalCertificate()" style="margin-left: 15px;">
+                        <i class="fas fa-download icon"></i> Скачать сертификат эксперта
+                    </button>
+                ` : ''}
+            </div>
+        </div>
+    `;
+    
+    // Прокручиваем к результатам
+    document.getElementById('finalTestResults').scrollIntoView({ behavior: 'smooth' });
+}
+
+// Функция повторного прохождения теста
+function retryFinalTest() {
+    finalCurrentQuestion = 0;
+    finalUserAnswers = [];
+    
+    document.getElementById('finalTestResults').style.display = 'none';
+    document.getElementById('finalTestQuestions').style.display = 'block';
+    
+    finalTestStartTime = new Date();
+    startFinalTestTimer();
+    loadFinalTestQuestion();
+}
+
+// Функция отмены теста
+function cancelFinalTest() {
+    if (confirm('Вы уверены, что хотите отменить тест? Все ответы будут потеряны.')) {
+        if (finalTestTimer) {
+            clearInterval(finalTestTimer);
+        }
+        showPage('test');
+    }
+}
+
+// Функция скачивания сертификата
+function downloadFinalCertificate() {
+    showNotification('success', 'Сертификат эксперта успешно сгенерирован!');
+    
+    const certificateContent = `
+        <div style="text-align: center; padding: 40px; background-color: white; border: 10px solid #ffa000; max-width: 800px; margin: 0 auto; font-family: Arial, sans-serif;">
+            <div style="font-size: 3rem; color: #ffa000; margin-bottom: 20px;">
+                <i class="fas fa-shield-alt"></i>
+            </div>
+            <h1 style="color: #ffa000; font-size: 2.5rem; margin-bottom: 20px;">СЕРТИФИКАТ ЭКСПЕРТА</h1>
+            <p style="font-size: 1.2rem; color: #555;">Настоящий сертификат подтверждает, что</p>
+            <h2 style="color: #ff8f00; margin: 20px 0; font-size: 2rem;">${currentUser ? currentUser.name : 'Студент'}</h2>
+            <p style="font-size: 1.2rem; color: #555;">успешно прошел(а) итоговое тестирование и подтвердил(а) знания</p>
+            <h3 style="color: #ffa000; margin: 20px 0; font-size: 1.8rem;">ПО КИБЕРБЕЗОПАСНОСТИ</h3>
+            <div style="margin: 30px 0; padding: 20px; background-color: #fff8e1; border-radius: 10px;">
+                <p style="font-size: 1.1rem;"><strong>Дата:</strong> ${new Date().toLocaleDateString('ru-RU')}</p>
+                <p style="font-size: 1.1rem;"><strong>Результат теста:</strong> ${Math.round((finalUserAnswers.filter((answer, index) => answer === finalTestQuestions[index].correctAnswer).length / finalTestQuestions.length) * 100)}%</p>
+                <p style="font-size: 1.1rem;"><strong>Правильных ответов:</strong> ${finalUserAnswers.filter((answer, index) => answer === finalTestQuestions[index].correctAnswer).length} из 20</p>
+            </div>
+            <div style="margin-top: 50px; display: flex; justify-content: space-around;">
+                <div style="text-align: center;">
+                    <p>Директор Академии</p>
+                    <p style="margin-top: 40px;">___________________ А.В. Иванов</p>
+                </div>
+                <div style="text-align: center;">
+                    <p>Руководитель курса</p>
+                    <p style="margin-top: 40px;">___________________ Е.С. Петрова</p>
+                </div>
+            </div>
+            <div style="margin-top: 40px; color: #999; font-size: 0.9rem;">
+                <p>Лицензия на образовательную деятельность № 1234 от 01.01.2026</p>
+                <p>ID сертификата: CERT-EXPERT-${Date.now().toString().slice(-8)}</p>
+            </div>
+            <div style="margin-top: 20px; color: #ffa000; font-weight: bold;">
+                <p>ЭКСПЕРТ ПО КИБЕРБЕЗОПАСНОСТИ</p>
+            </div>
+        </div>
+    `;
+    
+    setTimeout(() => {
+        if (confirm('Хотите увидеть предварительный просмотр сертификата?')) {
+            const win = window.open();
+            win.document.write(certificateContent);
+            win.document.title = 'Сертификат эксперта - Кибербезопасность';
+        }
+    }, 500);
+}
 </script>
 <button class="theme-toggle" id="themeToggle">
     <i class="fas fa-moon"></i>
 </button>
 
 </body>
-
 </html>
