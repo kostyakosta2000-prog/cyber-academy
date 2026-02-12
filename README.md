@@ -9233,50 +9233,275 @@ wevtutil epl System system_backup.evtx</pre>
         }
         
         // Загрузка страницы курсов
-        function loadCoursesPage() {
-            const allCoursesTab = document.getElementById('all-courses');
-            const myCoursesTab = document.getElementById('my-courses');
-            const myCoursesMessage = document.getElementById('my-courses-message');
-            
-            // Обновляем вкладку "Мои курсы"
-            if (currentUser) {
-                myCoursesMessage.textContent = 'Ваши курсы:';
-                
-                // Загружаем прогресс пользователя
-                let myCoursesContent = '<div class="course-cards">';
-                
-                Object.keys(courses).forEach(courseId => {
-                    const course = courses[courseId];
-                    const progress = currentUser.progress[courseId] || 0;
-                    const isCompleted = progress >= 100;
-                    
-                    myCoursesContent += `
-                        <div class="course-card">
-                            <div class="course-icon ${course.color}">
-                                <i class="fas ${course.icon}"></i>
-                            </div>
-                            <h3>${course.title}</h3>
-                            <p>${course.description}</p>
-                            <div class="progress-container">
-                                <div class="progress-label">
-                                    <span>Прогресс</span>
-                                    <span>${progress}%</span>
-                                </div>
-                                <div class="progress-bar">
-                                    <div class="progress-fill" style="width: ${progress}%;"></div>
-                                </div>
-                            </div>
-                            <button class="btn ${isCompleted ? 'btn-success' : ''}" style="width: 100%; margin-top: 15px;" onclick="startCourse('${courseId}')">
-                                ${isCompleted ? '<i class="fas fa-check icon"></i> Курс пройден' : 'Продолжить'}
-                            </button>
-                        </div>
-                    `;
-                });
-                
-                myCoursesContent += '</div>';
-                myCoursesTab.innerHTML = myCoursesContent;
-            }
+function loadCoursesPage() {
+    const allCoursesTab = document.getElementById('all-courses');
+    const beginnerCoursesTab = document.getElementById('beginner-courses');
+    const advancedCoursesTab = document.getElementById('advanced-courses');
+    const myCoursesTab = document.getElementById('my-courses');
+    const myCoursesMessage = document.getElementById('my-courses-message');
+    
+    // ========== ВКЛАДКА "ВСЕ КУРСЫ" ==========
+    let allCoursesContent = '<div class="course-cards">';
+    
+    Object.keys(courses).forEach(courseId => {
+        const course = courses[courseId];
+        
+        // Получаем прогресс для авторизованных пользователей
+        let progress = 0;
+        if (currentUser && currentUser.progress && currentUser.progress[courseId] !== undefined) {
+            progress = currentUser.progress[courseId];
         }
+        
+        const isCompleted = progress >= 100;
+        
+        allCoursesContent += `
+            <div class="course-card">
+                <div class="course-icon ${course.color}">
+                    <i class="fas ${course.icon}"></i>
+                </div>
+                <h3>${course.title}</h3>
+                <p>${course.description.substring(0, 80)}...</p>
+                <div class="course-meta">
+                    <div class="course-meta-item">
+                        <i class="fas fa-book"></i>
+                        <span>${course.totalLessons} уроков</span>
+                    </div>
+                    <div class="course-meta-item">
+                        <i class="fas fa-clock"></i>
+                        <span>${course.totalDuration}</span>
+                    </div>
+                </div>
+                ${currentUser ? `
+                    <div class="progress-container" style="margin-top: 10px;">
+                        <div class="progress-label">
+                            <span>Прогресс</span>
+                            <span>${progress}%</span>
+                        </div>
+                        <div class="progress-bar">
+                            <div class="progress-fill" style="width: ${progress}%;"></div>
+                        </div>
+                    </div>
+                    <button class="btn ${isCompleted ? 'btn-success' : ''}" style="width: 100%; margin-top: 15px;" onclick="startCourse('${courseId}')">
+                        ${isCompleted ? '<i class="fas fa-check icon"></i> Курс пройден' : 'Начать курс'}
+                    </button>
+                ` : `
+                    <button class="btn" style="width: 100%; margin-top: 15px;" onclick="showLoginModal()">
+                        <i class="fas fa-sign-in-alt icon"></i> Войти для доступа
+                    </button>
+                `}
+            </div>
+        `;
+    });
+    
+    allCoursesContent += '</div>';
+    allCoursesTab.innerHTML = allCoursesContent;
+    
+    // ========== ВКЛАДКА "ДЛЯ НАЧИНАЮЩИХ" ==========
+    // Список курсов для начинающих
+    const beginnerCourses = ['phishing', 'calls', 'gosuslugi', 'passwords', 'social'];
+    
+    let beginnerCoursesContent = '<div class="course-cards">';
+    
+    beginnerCourses.forEach(courseId => {
+        const course = courses[courseId];
+        if (!course) return;
+        
+        // Получаем прогресс для авторизованных пользователей
+        let progress = 0;
+        if (currentUser && currentUser.progress && currentUser.progress[courseId] !== undefined) {
+            progress = currentUser.progress[courseId];
+        }
+        
+        const isCompleted = progress >= 100;
+        
+        beginnerCoursesContent += `
+            <div class="course-card">
+                <div class="course-icon ${course.color}">
+                    <i class="fas ${course.icon}"></i>
+                </div>
+                <h3>${course.title}</h3>
+                <p>${course.description.substring(0, 80)}...</p>
+                <div class="course-meta">
+                    <div class="course-meta-item">
+                        <i class="fas fa-book"></i>
+                        <span>${course.totalLessons} уроков</span>
+                    </div>
+                    <div class="course-meta-item">
+                        <i class="fas fa-clock"></i>
+                        <span>${course.totalDuration}</span>
+                    </div>
+                </div>
+                <div style="margin-bottom: 10px; margin-top: 5px;">
+                    <span style="background-color: #4caf50; color: white; padding: 3px 10px; border-radius: 15px; font-size: 12px; font-weight: bold;">
+                        <i class="fas fa-star"></i> Для начинающих
+                    </span>
+                </div>
+                ${currentUser ? `
+                    <div class="progress-container" style="margin-top: 10px;">
+                        <div class="progress-label">
+                            <span>Прогресс</span>
+                            <span>${progress}%</span>
+                        </div>
+                        <div class="progress-bar">
+                            <div class="progress-fill" style="width: ${progress}%;"></div>
+                        </div>
+                    </div>
+                    <button class="btn ${isCompleted ? 'btn-success' : ''}" style="width: 100%; margin-top: 15px;" onclick="startCourse('${courseId}')">
+                        ${isCompleted ? '<i class="fas fa-check icon"></i> Курс пройден' : 'Начать курс'}
+                    </button>
+                ` : `
+                    <button class="btn" style="width: 100%; margin-top: 15px;" onclick="showLoginModal()">
+                        <i class="fas fa-sign-in-alt icon"></i> Войти для доступа
+                    </button>
+                `}
+            </div>
+        `;
+    });
+    
+    beginnerCoursesContent += '</div>';
+    beginnerCoursesTab.innerHTML = beginnerCoursesContent;
+    
+    // ========== ВКЛАДКА "ПРОДВИНУТЫЕ" ==========
+    // Список продвинутых курсов
+    const advancedCourses = ['puu', 'financial', 'mobile'];
+    
+    let advancedCoursesContent = '<div class="course-cards">';
+    
+    advancedCourses.forEach(courseId => {
+        const course = courses[courseId];
+        if (!course) return;
+        
+        // Получаем прогресс для авторизованных пользователей
+        let progress = 0;
+        if (currentUser && currentUser.progress && currentUser.progress[courseId] !== undefined) {
+            progress = currentUser.progress[courseId];
+        }
+        
+        const isCompleted = progress >= 100;
+        
+        advancedCoursesContent += `
+            <div class="course-card">
+                <div class="course-icon ${course.color}">
+                    <i class="fas ${course.icon}"></i>
+                </div>
+                <h3>${course.title}</h3>
+                <p>${course.description.substring(0, 80)}...</p>
+                <div class="course-meta">
+                    <div class="course-meta-item">
+                        <i class="fas fa-book"></i>
+                        <span>${course.totalLessons} уроков</span>
+                    </div>
+                    <div class="course-meta-item">
+                        <i class="fas fa-clock"></i>
+                        <span>${course.totalDuration}</span>
+                    </div>
+                </div>
+                <div style="margin-bottom: 10px; margin-top: 5px;">
+                    <span style="background-color: #ff9800; color: white; padding: 3px 10px; border-radius: 15px; font-size: 12px; font-weight: bold;">
+                        <i class="fas fa-rocket"></i> Продвинутый
+                    </span>
+                </div>
+                ${currentUser ? `
+                    <div class="progress-container" style="margin-top: 10px;">
+                        <div class="progress-label">
+                            <span>Прогресс</span>
+                            <span>${progress}%</span>
+                        </div>
+                        <div class="progress-bar">
+                            <div class="progress-fill" style="width: ${progress}%;"></div>
+                        </div>
+                    </div>
+                    <button class="btn ${isCompleted ? 'btn-success' : ''}" style="width: 100%; margin-top: 15px;" onclick="startCourse('${courseId}')">
+                        ${isCompleted ? '<i class="fas fa-check icon"></i> Курс пройден' : 'Начать курс'}
+                    </button>
+                ` : `
+                    <button class="btn" style="width: 100%; margin-top: 15px;" onclick="showLoginModal()">
+                        <i class="fas fa-sign-in-alt icon"></i> Войти для доступа
+                    </button>
+                `}
+            </div>
+        `;
+    });
+    
+    advancedCoursesContent += '</div>';
+    advancedCoursesTab.innerHTML = advancedCoursesContent;
+    
+    // ========== ВКЛАДКА "МОИ КУРСЫ" ==========
+    if (currentUser) {
+        myCoursesMessage.textContent = 'Ваши курсы:';
+        
+        let myCoursesContent = '<div class="course-cards">';
+        
+        Object.keys(courses).forEach(courseId => {
+            const course = courses[courseId];
+            
+            // Показываем только курсы с прогрессом > 0
+            let progress = 0;
+            if (currentUser.progress && currentUser.progress[courseId] !== undefined) {
+                progress = currentUser.progress[courseId];
+            }
+            
+            if (progress > 0) {
+                const isCompleted = progress >= 100;
+                
+                myCoursesContent += `
+                    <div class="course-card">
+                        <div class="course-icon ${course.color}">
+                            <i class="fas ${course.icon}"></i>
+                        </div>
+                        <h3>${course.title}</h3>
+                        <p>${course.description.substring(0, 80)}...</p>
+                        <div class="progress-container">
+                            <div class="progress-label">
+                                <span>Прогресс</span>
+                                <span>${progress}%</span>
+                            </div>
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: ${progress}%;"></div>
+                            </div>
+                        </div>
+                        <button class="btn ${isCompleted ? 'btn-success' : ''}" style="width: 100%; margin-top: 15px;" onclick="startCourse('${courseId}')">
+                            ${isCompleted ? '<i class="fas fa-check icon"></i> Курс пройден' : 'Продолжить'}
+                        </button>
+                    </div>
+                `;
+            }
+        });
+        
+        myCoursesContent += '</div>';
+        
+        // Если нет курсов в процессе
+        if (myCoursesContent === '<div class="course-cards"></div>') {
+            myCoursesContent = `
+                <div style="text-align: center; padding: 40px 0; color: #666;">
+                    <i class="fas fa-book-open" style="font-size: 3rem; margin-bottom: 20px; color: #ddd;"></i>
+                    <h3>У вас нет активных курсов</h3>
+                    <p>Начните обучение с курсов для начинающих!</p>
+                    <button class="btn btn-large" style="margin-top: 20px;" onclick="openTab(event, 'beginner-courses')">
+                        <i class="fas fa-play icon"></i> Выбрать курс
+                    </button>
+                </div>
+            `;
+        }
+        
+        myCoursesTab.innerHTML = myCoursesContent;
+    } else {
+        myCoursesMessage.textContent = 'Войдите в систему, чтобы увидеть ваши курсы.';
+        myCoursesTab.innerHTML = `
+            <div style="text-align: center; padding: 40px 0;">
+                <i class="fas fa-user-lock" style="font-size: 3rem; margin-bottom: 20px; color: #ddd;"></i>
+                <h3>Авторизуйтесь для доступа к курсам</h3>
+                <p>Войдите или зарегистрируйтесь, чтобы отслеживать прогресс</p>
+                <button class="btn btn-large" style="margin-top: 20px;" onclick="showLoginModal()">
+                    <i class="fas fa-sign-in-alt icon"></i> Войти
+                </button>
+                <button class="btn btn-large btn-success" style="margin-top: 20px; margin-left: 15px;" onclick="showRegisterModal()">
+                    <i class="fas fa-user-plus icon"></i> Регистрация
+                </button>
+            </div>
+        `;
+    }
+}
         
         // Загрузка страницы тренажеров
         function loadSimulatorsPage() {
@@ -9533,13 +9758,14 @@ wevtutil epl System system_backup.evtx</pre>
         
         // Начать курс
 function startCourse(courseId) {
-// Прокрутка к началу страницы
+    // Прокрутка к началу страницы
     setTimeout(() => {
         window.scrollTo({
             top: 0,
             behavior: 'smooth'
         });
     }, 100);
+    
     if (!currentUser) {
         showNotification('error', 'Для доступа к курсам необходимо войти в систему');
         showLoginModal();
@@ -9560,15 +9786,36 @@ function startCourse(courseId) {
         link.classList.remove('active');
     });
     
-    // Генерируем контент курса
-    const courseContent = document.getElementById('courseContent');
-    const progress = currentUser.progress[courseId] || 0;
+    // Получаем прогресс
+    let progress = 0;
+    if (currentUser.progress && currentUser.progress[courseId] !== undefined) {
+        progress = currentUser.progress[courseId];
+    } else {
+        // Инициализируем прогресс, если его нет
+        if (!currentUser.progress) currentUser.progress = {};
+        currentUser.progress[courseId] = 0;
+        progress = 0;
+    }
     
+    // ВАЖНО: Вычисляем количество пройденных уроков на основе прогресса
+    const totalLessons = course.lessons.length;
+    let completedLessonsCount = 0;
+    
+    if (progress === 0) {
+        completedLessonsCount = 0;
+    } else if (progress >= 100) {
+        completedLessonsCount = totalLessons;
+    } else {
+        // Рассчитываем количество пройденных уроков
+        completedLessonsCount = Math.round((progress / 100) * totalLessons);
+        if (completedLessonsCount > totalLessons) completedLessonsCount = totalLessons;
+    }
+    
+    // Генерируем список уроков
     let lessonsHTML = '';
     course.lessons.forEach((lesson, index) => {
-        const lessonProgress = (progress / 100) * course.lessons.length;
-        const isCompleted = index < lessonProgress;
-        const lessonId = `${courseId}-lesson-${index}`;
+        // Урок считается пройденным, ТОЛЬКО если его индекс МЕНЬШЕ количества пройденных уроков
+        const isCompleted = index < completedLessonsCount;
         
         lessonsHTML += `
             <div class="lesson-item ${isCompleted ? 'completed' : ''}" onclick="showLessonContent('${courseId}', ${index})">
@@ -9582,6 +9829,7 @@ function startCourse(courseId) {
         `;
     });
     
+    const courseContent = document.getElementById('courseContent');
     courseContent.innerHTML = `
         <div class="course-header">
             <div class="course-header-icon ${course.color}">
@@ -9693,22 +9941,54 @@ function completeLesson(courseId, lessonIndex) {
     const course = courses[courseId];
     if (!course) return;
     
-    // Проверяем, не завершен ли уже урок
     const totalLessons = course.lessons.length;
-    const currentProgress = currentUser.progress[courseId] || 0;
     
-    // Рассчитываем, сколько уроков уже пройдено
-    const completedLessonsCount = Math.round((currentProgress / 100) * totalLessons);
+    // Инициализируем прогресс, если его нет
+    if (!currentUser.progress) currentUser.progress = {};
+    if (!currentUser.progress[courseId]) currentUser.progress[courseId] = 0;
     
-    // Если этот урок уже пройден (индекс урока меньше количества пройденных)
+    const currentProgress = currentUser.progress[courseId];
+    
+    // ВАЖНО: Храним количество пройденных уроков, а не проценты!
+    // Получаем текущее количество пройденных уроков из прогресса
+    let completedLessonsCount = 0;
+    
+    if (currentProgress === 0) {
+        completedLessonsCount = 0;
+    } else if (currentProgress >= 100) {
+        completedLessonsCount = totalLessons;
+    } else {
+        // Рассчитываем количество пройденных уроков на основе прогресса
+        // Используем Math.round для более точного определения
+        completedLessonsCount = Math.round((currentProgress / 100) * totalLessons);
+        
+        // Коррекция: если прогресс 50% при 6 уроках, то пройдено 3 урока
+        // Если прогресс 33% при 6 уроках, то пройдено 2 урока
+        if (completedLessonsCount > totalLessons) completedLessonsCount = totalLessons;
+    }
+    
+    // ПРОВЕРКА 1: Урок уже пройден?
     if (lessonIndex < completedLessonsCount) {
         showNotification('info', 'Этот урок уже завершен');
         return;
     }
     
-    // Рассчитываем новый прогресс (округление до целого числа)
-    const newCompletedCount = lessonIndex + 1;
-    const newProgress = Math.round((newCompletedCount / totalLessons) * 100);
+    // ПРОВЕРКА 2: Можно проходить только следующий урок по порядку
+    if (lessonIndex > completedLessonsCount) {
+        showNotification('error', 'Сначала завершите предыдущие уроки');
+        return;
+    }
+    
+    // Рассчитываем новый прогресс - ИСПОЛЬЗУЕМ КОЛИЧЕСТВО УРОКОВ, А НЕ ПРОЦЕНТЫ
+    const newCompletedCount = completedLessonsCount + 1;
+    
+    // Округляем до целого числа
+    let newProgress = Math.round((newCompletedCount / totalLessons) * 100);
+    
+    // Для последнего урока всегда 100%
+    if (newCompletedCount >= totalLessons) {
+        newProgress = 100;
+    }
     
     // Обновляем прогресс
     currentUser.progress[courseId] = newProgress;
@@ -9724,6 +10004,7 @@ function completeLesson(courseId, lessonIndex) {
         showNotification('success', `✅ Урок "${course.lessons[lessonIndex].title}" завершен! +10 очков (Прогресс: ${newProgress}%)`);
     }
     
+    // Сохраняем в localStorage
     updateUserInStorage();
     
     // Обновляем отображение курса
@@ -9827,22 +10108,30 @@ if (simulatorId === 'phishing-detective') {
         
         // Завершить тренажер
 function completeSimulator(simulatorId) {
-    if (!currentUser) return;
-     // Для тренажера Фишинг используем специальную функцию
+    if (!currentUser) {
+        showNotification('error', 'Для сохранения прогресса войдите в систему');
+        showLoginModal();
+        return;
+    }
+    
+    // Для тренажера Фишинг используем специальную функцию
     if (simulatorId === 'phishing-detective') {
         completePhishingSimulator();
         return;
     }
-// Для тренажера Телефон используем специальную функцию
+    
+    // Для тренажера Телефон используем специальную функцию
     if (simulatorId === 'phone-simulator') {
         completePhoneSimulator();
         return;
     }
-  // Для тренажера Проверка безопасности используем симулятор ВК
+    
+    // Для тренажера Проверка безопасности используем симулятор ВК
     if (simulatorId === 'security-check') {
-    completeVKSimulator();
-    return;
-}
+        completeVKSimulator();
+        return;
+    }
+    
     const simulator = simulators[simulatorId];
     if (!simulator) return;
     
@@ -9871,7 +10160,7 @@ function completeSimulator(simulatorId) {
         if (!isFinished) {
             if (confirm('Тренажер еще не завершен. Завершить сейчас и получить частичные очки?')) {
                 // Вычисляем очки на основе текущей безопасности
-                const earnedPoints = Math.max(10, Math.floor(securityScore / 5)); // минимум 10 очков
+                const earnedPoints = Math.max(10, Math.floor(securityScore / 5));
                 
                 // Обновляем прогресс
                 if (!currentUser.completedSimulators) {
@@ -9879,15 +10168,16 @@ function completeSimulator(simulatorId) {
                 }
                 
                 currentUser.completedSimulators.push(simulatorId);
-                currentUser.stats.completedSimulators++;
-                currentUser.stats.score += earnedPoints;
+                currentUser.stats.completedSimulators = (currentUser.stats.completedSimulators || 0) + 1;
+                currentUser.stats.score = (currentUser.stats.score || 0) + earnedPoints;
                 currentUser.stats.lastActive = new Date().toISOString();
                 
                 updateUserInStorage();
-                showNotification('success', `Тренажер "${simulator.title}" завершен! +${earnedPoints} очков (безопасность: ${securityScore}%)`);
                 
-                // Обновляем прогресс-бары
+                // ПРИНУДИТЕЛЬНО ОБНОВЛЯЕМ ПРОГРЕСС-БАРЫ
                 updateProgressBars();
+                
+                showNotification('success', `Тренажер "${simulator.title}" завершен! +${earnedPoints} очков (безопасность: ${securityScore}%)`);
                 
                 // Возвращаемся к тренажерам
                 showPage('simulators');
@@ -9903,15 +10193,16 @@ function completeSimulator(simulatorId) {
             }
             
             currentUser.completedSimulators.push(simulatorId);
-            currentUser.stats.completedSimulators++;
-            currentUser.stats.score += earnedPoints;
+            currentUser.stats.completedSimulators = (currentUser.stats.completedSimulators || 0) + 1;
+            currentUser.stats.score = (currentUser.stats.score || 0) + earnedPoints;
             currentUser.stats.lastActive = new Date().toISOString();
             
             updateUserInStorage();
-            showNotification('success', `Тренажер "${simulator.title}" завершен! +${earnedPoints} очков`);
             
-            // Обновляем прогресс-бары
+            // ПРИНУДИТЕЛЬНО ОБНОВЛЯЕМ ПРОГРЕСС-БАРЫ
             updateProgressBars();
+            
+            showNotification('success', `Тренажер "${simulator.title}" завершен! +${earnedPoints} очков`);
             
             // Возвращаемся к тренажерам
             showPage('simulators');
@@ -9919,21 +10210,22 @@ function completeSimulator(simulatorId) {
         }
     }
     
-    // Для остальных тренажеров (старая логика)
+    // Для остальных тренажеров
     if (!currentUser.completedSimulators) {
         currentUser.completedSimulators = [];
     }
     
     currentUser.completedSimulators.push(simulatorId);
-    currentUser.stats.completedSimulators++;
-    currentUser.stats.score += 20;
+    currentUser.stats.completedSimulators = (currentUser.stats.completedSimulators || 0) + 1;
+    currentUser.stats.score = (currentUser.stats.score || 0) + 20;
     currentUser.stats.lastActive = new Date().toISOString();
     
     updateUserInStorage();
-    showNotification('success', `Тренажер "${simulator.title}" завершен! +20 очков`);
     
-    // Обновляем прогресс-бары
+    // ПРИНУДИТЕЛЬНО ОБНОВЛЯЕМ ПРОГРЕСС-БАРЫ
     updateProgressBars();
+    
+    showNotification('success', `Тренажер "${simulator.title}" завершен! +20 очков`);
     
     // Возвращаемся к тренажерам
     showPage('simulators');
@@ -11359,8 +11651,8 @@ function completePhishingSimulator() {
     }
     
     currentUser.completedSimulators.push(simulatorId);
-    currentUser.stats.completedSimulators++;
-    currentUser.stats.score += earnedPoints;
+    currentUser.stats.completedSimulators = (currentUser.stats.completedSimulators || 0) + 1;
+    currentUser.stats.score = (currentUser.stats.score || 0) + earnedPoints;
     currentUser.stats.lastActive = new Date().toISOString();
     
     // Сохраняем статистику по фишингу
@@ -11374,6 +11666,9 @@ function completePhishingSimulator() {
     currentUser.phishingStats.lastCompletion = new Date().toISOString();
     
     updateUserInStorage();
+    
+    // ПРИНУДИТЕЛЬНО ОБНОВЛЯЕМ ПРОГРЕСС-БАРЫ
+    updateProgressBars();
     
     // Показываем уведомление
     let message = '';
@@ -12235,8 +12530,8 @@ function completePhoneSimulator() {
     }
     
     currentUser.completedSimulators.push(simulatorId);
-    currentUser.stats.completedSimulators++;
-    currentUser.stats.score += earnedPoints;
+    currentUser.stats.completedSimulators = (currentUser.stats.completedSimulators || 0) + 1;
+    currentUser.stats.score = (currentUser.stats.score || 0) + earnedPoints;
     currentUser.stats.lastActive = new Date().toISOString();
     
     // Сохраняем статистику по телефонному мошенничеству
@@ -12250,6 +12545,9 @@ function completePhoneSimulator() {
     currentUser.phoneStats.lastCompletion = new Date().toISOString();
     
     updateUserInStorage();
+    
+    // ПРИНУДИТЕЛЬНО ОБНОВЛЯЕМ ПРОГРЕСС-БАРЫ
+    updateProgressBars();
     
     // Показываем уведомление
     let message = '';
