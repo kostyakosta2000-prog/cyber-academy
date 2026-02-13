@@ -1,4 +1,3 @@
-<!DOCTYPE html>
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
@@ -163,105 +162,489 @@
         }
         
         /* Навигация */
-        .navbar {
-            background-color: white;
-            position: fixed;
-            top: 0;
-            width: 100%;
-            z-index: 1000;
-            box-shadow: 0 2px 15px rgba(0, 0, 0, 0.1);
-            padding: 0 20px;
-        }
-        
-        .nav-container {
-            max-width: 1200px;
-            margin: 0 auto;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 15px 0;
-        }
-        
-        .logo {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            font-size: 1.5rem;
-            font-weight: 700;
-            color: var(--primary-color);
-            text-decoration: none;
-        }
-        
-        .nav-menu {
-            display: flex;
-            list-style: none;
-            gap: 25px;
-            align-items: center;
-            margin-left: auto;
-        }
-        
-        .nav-link {
-            color: #333;
-            text-decoration: none;
-            font-weight: 600;
-            padding: 8px 15px;
-            border-radius: 5px;
-            transition: all 0.3s;
-        }
-        
-        .nav-link:hover, .nav-link.active {
-            background-color: var(--primary-color);
-            color: white;
-        }
-        
-        .user-menu {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-            margin-left: auto;
-        }
-        
-        .user-info {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            cursor: pointer;
-            padding: 8px 15px;
-            border-radius: 20px;
-            background-color: #f0f2ff;
-            transition: background-color 0.3s;
-        }
-        
-        .user-info:hover {
-            background-color: #e0e2ff;
-        }
-        
-        .avatar {
-            width: 35px;
-            height: 35px;
-            border-radius: 50%;
-            background-color: var(--secondary-color);
-            color: white;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: bold;
-        }
-        
-        .auth-buttons {
-            display: flex;
-            gap: 10px;
-            margin-left: 20px;
-        }
-        
-        .mobile-menu-btn {
-            display: none;
-            background: none;
-            border: none;
-            font-size: 1.5rem;
-            color: var(--primary-color);
-            cursor: pointer;
-        }
+        /* ========== НАВИГАЦИЯ С ВЫПАДАЮЩИМ МЕНЮ ========== */
+.navbar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    background: rgba(255, 255, 255, 0.98);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    box-shadow: 0 2px 20px rgba(0, 0, 0, 0.08);
+    z-index: 1000;
+    height: 70px;
+    transition: all 0.3s ease;
+}
+
+.navbar.scrolled {
+    background: rgba(255, 255, 255, 0.98);
+    box-shadow: 0 5px 25px rgba(0, 0, 0, 0.1);
+}
+
+.nav-container {
+    max-width: 1400px;
+    height: 100%;
+    margin: 0 auto;
+    padding: 0 30px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: relative;
+}
+
+/* Левая часть с логотипом и бургером */
+.nav-left {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    height: 100%;
+}
+
+/* Логотип */
+.logo {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 1.6rem;
+    font-weight: 700;
+    color: #1a237e;
+    text-decoration: none;
+    transition: transform 0.3s ease;
+    z-index: 1002;
+    cursor: pointer;
+}
+
+.logo:hover {
+    transform: scale(1.02);
+}
+
+.logo i {
+    font-size: 1.8rem;
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.logo span {
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+/* Бургер-кнопка */
+.menu-btn {
+    width: 45px;
+    height: 45px;
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    border: none;
+    border-radius: 12px;
+    color: white;
+    font-size: 1.3rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+}
+
+.menu-btn:hover {
+    transform: scale(1.05);
+    box-shadow: 0 8px 25px rgba(102, 126, 234, 0.5);
+}
+
+.menu-btn i {
+    transition: transform 0.3s ease;
+}
+
+.menu-btn.active i {
+    transform: rotate(90deg);
+}
+
+/* Правая часть (кнопки на десктопе) */
+.nav-right {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    z-index: 1002;
+}
+
+/* Кнопки авторизации */
+.auth-buttons {
+    display: flex;
+    gap: 12px;
+}
+
+.auth-buttons .btn {
+    padding: 10px 20px;
+    font-size: 0.95rem;
+    border-radius: 30px;
+    transition: all 0.3s ease;
+    font-weight: 600;
+    letter-spacing: 0.3px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+    cursor: pointer;
+}
+
+.auth-buttons .btn:first-child {
+    background: white;
+    color: #667eea;
+    border: 2px solid #667eea;
+}
+
+.auth-buttons .btn:first-child:hover {
+    background: #667eea;
+    color: white;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(102, 126, 234, 0.3);
+}
+
+.auth-buttons .btn-success {
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    border: none;
+    color: white;
+}
+
+.auth-buttons .btn-success:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
+}
+
+/* Пользовательское меню на десктопе */
+.user-menu {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.user-info {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 8px 18px 8px 12px;
+    background: #f8f9ff;
+    border-radius: 40px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    border: 2px solid transparent;
+}
+
+.user-info:hover {
+    border-color: #667eea;
+    background: white;
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(102, 126, 234, 0.15);
+}
+
+.avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 600;
+    font-size: 1rem;
+    box-shadow: 0 3px 8px rgba(102, 126, 234, 0.3);
+}
+
+.user-info span {
+    font-weight: 500;
+    color: #333;
+}
+
+.user-info + .btn-danger {
+    padding: 8px 18px;
+    border-radius: 30px;
+    background: linear-gradient(135deg, #f56565, #e53e3e);
+    border: none;
+    box-shadow: 0 4px 10px rgba(229, 62, 62, 0.2);
+    cursor: pointer;
+}
+
+.user-info + .btn-danger:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(229, 62, 62, 0.3);
+}
+
+/* ========== ВЫПАДАЮЩЕЕ МЕНЮ ========== */
+.dropdown-menu {
+    position: absolute;
+    top: 70px;
+    left: 30px;
+    width: 280px;
+    background: white;
+    border-radius: 20px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-10px);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    z-index: 1001;
+    overflow: hidden;
+}
+
+.dropdown-menu.active {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+}
+
+/* Шапка меню */
+.dropdown-header {
+    padding: 20px;
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    color: white;
+}
+
+.dropdown-header h3 {
+    font-size: 1.2rem;
+    margin-bottom: 5px;
+}
+
+.dropdown-header p {
+    font-size: 0.9rem;
+    opacity: 0.9;
+}
+
+/* Список меню */
+.dropdown-list {
+    list-style: none;
+    padding: 10px;
+    margin: 0;
+}
+
+.dropdown-item {
+    margin-bottom: 5px;
+}
+
+.dropdown-link {
+    display: flex;
+    align-items: center;
+    padding: 14px 16px;
+    color: #333;
+    text-decoration: none;
+    font-weight: 500;
+    border-radius: 12px;
+    transition: all 0.3s ease;
+    gap: 15px;
+    position: relative;
+    overflow: hidden;
+    cursor: pointer;
+}
+
+.dropdown-link::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 4px;
+    height: 100%;
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    transform: scaleY(0);
+    transition: transform 0.3s ease;
+    border-radius: 0 2px 2px 0;
+}
+
+.dropdown-link:hover::before {
+    transform: scaleY(1);
+}
+
+.dropdown-link:hover {
+    background: #f8f9ff;
+    color: #667eea;
+    padding-left: 25px;
+}
+
+.dropdown-link.active {
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    color: white;
+    box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3);
+}
+
+.dropdown-link.active i {
+    color: white;
+}
+
+.dropdown-link i {
+    width: 24px;
+    text-align: center;
+    color: #667eea;
+    font-size: 1.2rem;
+    transition: all 0.3s ease;
+}
+
+.dropdown-link.active i {
+    color: white;
+}
+
+/* Секция пользователя в меню */
+.dropdown-user-section {
+    padding: 15px;
+    border-top: 2px solid #f0f2ff;
+    margin-top: 5px;
+}
+
+.dropdown-user-info {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    padding: 15px;
+    background: linear-gradient(135deg, #f8f9ff, #f0f2ff);
+    border-radius: 12px;
+    margin-bottom: 15px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.dropdown-user-info:hover {
+    transform: translateX(5px);
+    background: linear-gradient(135deg, #f0f2ff, #e8eaff);
+}
+
+.dropdown-avatar {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 600;
+    font-size: 1.2rem;
+    box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3);
+    flex-shrink: 0;
+}
+
+.dropdown-user-details {
+    flex: 1;
+    min-width: 0;
+}
+
+.dropdown-user-name {
+    font-weight: 600;
+    color: #333;
+    margin-bottom: 5px;
+    font-size: 1rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.dropdown-user-stats {
+    font-size: 0.85rem;
+    color: #666;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.dropdown-user-stats i {
+    color: #ffc107;
+    font-size: 0.8rem;
+}
+
+.dropdown-auth-buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.dropdown-auth-buttons .btn {
+    width: 100%;
+    justify-content: center;
+    padding: 12px;
+    border-radius: 10px;
+    font-size: 0.95rem;
+    cursor: pointer;
+}
+
+/* Затемнение фона */
+.menu-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(5px);
+    -webkit-backdrop-filter: blur(5px);
+    z-index: 999;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s ease;
+}
+
+.menu-overlay.active {
+    opacity: 1;
+    visibility: visible;
+}
+
+/* ========== АДАПТИВНОСТЬ ========== */
+@media (max-width: 768px) {
+    .navbar {
+        height: 60px;
+    }
+    
+    .nav-container {
+        padding: 0 15px;
+    }
+    
+    .logo {
+        font-size: 1.3rem;
+        gap: 8px;
+    }
+    
+    .logo i {
+        font-size: 1.5rem;
+    }
+    
+    .menu-btn {
+        width: 40px;
+        height: 40px;
+        font-size: 1.2rem;
+        border-radius: 10px;
+    }
+    
+    .auth-buttons {
+        display: none;
+    }
+    
+    .user-menu {
+        display: none;
+    }
+    
+    .dropdown-menu {
+        top: 60px;
+        left: 15px;
+        right: 15px;
+        width: auto;
+        max-width: 320px;
+    }
+}
+
+@media (max-width: 480px) {
+    .nav-container {
+        padding: 0 12px;
+    }
+    
+    .logo {
+        font-size: 1.2rem;
+    }
+    
+    .logo i {
+        font-size: 1.3rem;
+    }
+    
+    .dropdown-menu {
+        left: 12px;
+        right: 12px;
+    }
+}
         
         /* Контейнер и основное содержимое */
         .container {
@@ -1161,45 +1544,6 @@
         }
         
         /* Адаптивность */
-        @media (max-width: 992px) {
-            .hero-title {
-                font-size: 2.5rem;
-            }
-            
-            .section-title h2 {
-                font-size: 2rem;
-            }
-            
-            .nav-menu {
-                position: fixed;
-                top: 70px;
-                left: 0;
-                width: 100%;
-                background-color: white;
-                flex-direction: column;
-                padding: 20px;
-                box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-                display: none;
-                z-index: 1001;
-            }
-            
-            .nav-menu.active {
-                display: flex;
-            }
-            
-            .mobile-menu-btn {
-                display: block;
-            }
-            
-            .auth-buttons {
-                display: none;
-            }
-            
-            .simulators-grid {
-                grid-template-columns: 1fr;
-            }
-        }
-        
         @media (max-width: 768px) {
             .hero-title {
                 font-size: 2rem;
@@ -1416,30 +1760,6 @@
 .dark-theme {
     background-color: #121212;
     color: #e0e0e0;
-}
-
-.dark-theme .navbar {
-    background-color: #1e1e1e;
-    box-shadow: 0 2px 15px rgba(0, 0, 0, 0.3);
-}
-
-.dark-theme .nav-link {
-    color: #e0e0e0;
-}
-
-.dark-theme .nav-link:hover,
-.dark-theme .nav-link.active {
-    background-color: var(--primary-color);
-    color: white;
-}
-
-.dark-theme .user-info {
-    background-color: #2d2d2d;
-    color: #e0e0e0;
-}
-
-.dark-theme .user-info:hover {
-    background-color: #3d3d3d;
 }
 
 .dark-theme .card {
@@ -2871,39 +3191,79 @@
     </div>
 
     <!-- Навигация -->
-    <nav class="navbar">
-        <div class="nav-container">
+<nav class="navbar" id="navbar">
+    <div class="nav-container">
+        <!-- Левая часть с логотипом и кнопкой -->
+        <div class="nav-left">
+            <button class="menu-btn" id="menuBtn" onclick="toggleDropdownMenu()">
+                <i class="fas fa-bars"></i>
+            </button>
+            
             <a href="#" class="logo" onclick="showPage('home')">
                 <i class="fas fa-shield-alt"></i>
                 <span>КиберАкадемия</span>
             </a>
-            
-            <button class="mobile-menu-btn" onclick="toggleMenu()">
-                <i class="fas fa-bars"></i>
-            </button>
-            
-            <ul class="nav-menu" id="navMenu">
-                <li><a href="#" class="nav-link active" onclick="showPage('home')">Главная</a></li>
-                <li><a href="#" class="nav-link" onclick="showPage('courses')">Все курсы</a></li>
-                <li><a href="#" class="nav-link" onclick="showPage('simulators')">Тренажеры</a></li>
-                <li><a href="#" class="nav-link" onclick="showPage('test')">Тестирование</a></li>
-                
-                <li class="user-menu" id="userMenu">
-                    <!-- Будет заполнено скриптом -->
-                </li>
-                
-                <li class="auth-buttons" id="authButtonsContainer">
-                    <button class="btn" onclick="showLoginModal()">
-                        <i class="fas fa-sign-in-alt icon"></i> Войти
-                    </button>
-                    <button class="btn btn-success" onclick="showRegisterModal()">
-                        <i class="fas fa-user-plus icon"></i> Регистрация
-                    </button>
-                </li>
-            </ul>
         </div>
-    </nav>
+        
+        <!-- Правая часть -->
+        <div class="nav-right">
+            <!-- Кнопки авторизации (десктоп) -->
+            <div class="auth-buttons" id="authButtonsContainer">
+                <button class="btn" onclick="showLoginModal()">
+                    <i class="fas fa-sign-in-alt"></i> Войти
+                </button>
+                <button class="btn btn-success" onclick="showRegisterModal()">
+                    <i class="fas fa-user-plus"></i> Регистрация
+                </button>
+            </div>
+            
+            <!-- Пользовательское меню (десктоп) -->
+            <div class="user-menu" id="userMenu"></div>
+        </div>
+    </div>
     
+    <!-- Выпадающее меню -->
+    <div class="dropdown-menu" id="dropdownMenu">
+        <div class="dropdown-header">
+            <h3>Меню навигации</h3>
+            <p>Выберите раздел</p>
+        </div>
+        
+        <ul class="dropdown-list">
+            <li class="dropdown-item">
+                <a href="#" class="dropdown-link" onclick="showPage('home'); closeDropdownMenu()">
+                    <i class="fas fa-home"></i>
+                    Главная
+                </a>
+            </li>
+            <li class="dropdown-item">
+                <a href="#" class="dropdown-link" onclick="showPage('courses'); closeDropdownMenu()">
+                    <i class="fas fa-book"></i>
+                    Все курсы
+                </a>
+            </li>
+            <li class="dropdown-item">
+                <a href="#" class="dropdown-link" onclick="showPage('simulators'); closeDropdownMenu()">
+                    <i class="fas fa-gamepad"></i>
+                    Тренажеры
+                </a>
+            </li>
+            <li class="dropdown-item">
+                <a href="#" class="dropdown-link" onclick="showPage('test'); closeDropdownMenu()">
+                    <i class="fas fa-graduation-cap"></i>
+                    Тестирование
+                </a>
+            </li>
+        </ul>
+        
+        <!-- Секция пользователя в меню (заполняется JS) -->
+        <div class="dropdown-user-section" id="dropdownUserSection"></div>
+    </div>
+</nav>
+
+<!-- Затемнение фона -->
+<div class="menu-overlay" id="menuOverlay" onclick="closeDropdownMenu()"></div>
+
     <!-- Контейнер для всех страниц -->
     <div class="container">
         <!-- Главная страница -->
@@ -21277,6 +21637,268 @@ function downloadFinalCertificate() {
         }
     }, 500);
 }
+// ========== ФУНКЦИИ ДЛЯ ВЫПАДАЮЩЕГО МЕНЮ ==========
+
+// Открыть/закрыть меню
+function toggleDropdownMenu() {
+    const menu = document.getElementById('dropdownMenu');
+    const overlay = document.getElementById('menuOverlay');
+    const menuBtn = document.getElementById('menuBtn');
+    const body = document.body;
+    
+    menu.classList.toggle('active');
+    overlay.classList.toggle('active');
+    menuBtn.classList.toggle('active');
+    
+    if (menu.classList.contains('active')) {
+        body.style.overflow = 'hidden';
+    } else {
+        body.style.overflow = '';
+    }
+}
+
+// Закрыть меню
+function closeDropdownMenu() {
+    const menu = document.getElementById('dropdownMenu');
+    const overlay = document.getElementById('menuOverlay');
+    const menuBtn = document.getElementById('menuBtn');
+    const body = document.body;
+    
+    menu.classList.remove('active');
+    overlay.classList.remove('active');
+    menuBtn.classList.remove('active');
+    body.style.overflow = '';
+}
+
+// Обновленная функция showPage с закрытием меню
+function showPage(pageId) {
+    // Закрываем меню
+    closeDropdownMenu();
+    
+    // Прокрутка к началу страницы
+    setTimeout(() => {
+        window.scrollTo({
+            top: 0,
+            behavior: 'smooth'
+        });
+    }, 100);
+    
+    // Проверка авторизации для защищенных страниц
+    const protectedPages = ['courses', 'simulators', 'test', 'profile', 'active-simulator', 'active-course'];
+    
+    if (protectedPages.includes(pageId) && !currentUser) {
+        showNotification('error', 'Для доступа к этому разделу необходимо войти в систему');
+        showLoginModal();
+        return;
+    }
+    
+    // Скрыть текущую страницу
+    document.querySelectorAll('.page').forEach(page => {
+        page.classList.remove('active');
+    });
+    
+    // Показать выбранную страницу
+    const targetPage = document.getElementById(pageId);
+    if (targetPage) {
+        targetPage.classList.add('active');
+    }
+    
+    // Обновить активную ссылку в навигации
+    document.querySelectorAll('.dropdown-link').forEach(link => {
+        link.classList.remove('active');
+    });
+    
+    // Найти и активировать соответствующую ссылку
+    const pageTitles = {
+        'home': 'Главная',
+        'courses': 'Все курсы',
+        'simulators': 'Тренажеры',
+        'test': 'Тестирование',
+        'profile': 'Профиль'
+    };
+    
+    document.querySelectorAll('.dropdown-link').forEach(link => {
+        if (link.textContent.trim() === pageTitles[pageId]) {
+            link.classList.add('active');
+        }
+    });
+    
+    currentPage = pageId;
+    
+    // Загрузить контент страницы
+    if (pageId === 'courses') {
+        loadCoursesPage();
+    } else if (pageId === 'simulators') {
+        loadSimulatorsPage();
+    } else if (pageId === 'test') {
+        loadTestPage();
+    } else if (pageId === 'profile') {
+        loadProfilePage();
+    }
+}
+
+// Обновленная функция для авторизованного пользователя
+function updateUIForLoggedInUser() {
+    // Десктопное меню
+    const userMenu = document.getElementById('userMenu');
+    if (userMenu) {
+        userMenu.innerHTML = `
+            <div class="user-info" onclick="showPage('profile')">
+                <div class="avatar">${currentUser.name.charAt(0).toUpperCase()}</div>
+                <span>${currentUser.name}</span>
+            </div>
+            <button class="btn btn-danger" onclick="logoutUser()">
+                <i class="fas fa-sign-out-alt"></i>
+            </button>
+        `;
+    }
+    
+    // Формируем текст статистики (только рейтинг)
+    let statsText = '';
+    if (currentUser.stats) {
+        statsText = `
+            <div class="dropdown-user-stats">
+                <i class="fas fa-star" style="color: #ffc107;"></i> ${currentUser.stats.score || 0} очков
+            </div>
+        `;
+    } else {
+        statsText = `
+            <div class="dropdown-user-stats">
+                <i class="fas fa-star" style="color: #ffc107;"></i> 0 очков
+            </div>
+        `;
+    }
+    
+    // Выпадающее меню
+    const dropdownUserSection = document.getElementById('dropdownUserSection');
+    if (dropdownUserSection) {
+        dropdownUserSection.innerHTML = `
+            <div class="dropdown-user-info" onclick="showPage('profile'); closeDropdownMenu();">
+                <div class="dropdown-avatar">${currentUser.name.charAt(0).toUpperCase()}</div>
+                <div class="dropdown-user-details">
+                    <div class="dropdown-user-name">${currentUser.name}</div>
+                    ${statsText}
+                </div>
+            </div>
+            <div class="dropdown-auth-buttons">
+                <button class="btn" onclick="showPage('profile'); closeDropdownMenu();">
+                    <i class="fas fa-user"></i> Мой профиль
+                </button>
+                <button class="btn btn-success" onclick="logoutUser(); closeDropdownMenu();">
+                    <i class="fas fa-sign-out-alt"></i> Выйти
+                </button>
+            </div>
+        `;
+    }
+    
+    const authButtons = document.getElementById('authButtonsContainer');
+    if (authButtons) {
+        authButtons.style.display = 'none';
+    }
+    
+    updateProgressBars();
+}
+
+// Обновленная функция для неавторизованного пользователя
+function updateUIForLoggedOutUser() {
+    const userMenu = document.getElementById('userMenu');
+    if (userMenu) {
+        userMenu.innerHTML = '';
+    }
+    
+    const authButtons = document.getElementById('authButtonsContainer');
+    if (authButtons) {
+        authButtons.style.display = 'flex';
+    }
+    
+    // Выпадающее меню
+    const dropdownUserSection = document.getElementById('dropdownUserSection');
+    if (dropdownUserSection) {
+        dropdownUserSection.innerHTML = `
+            <div class="dropdown-auth-buttons">
+                <button class="btn" onclick="showLoginModal(); closeDropdownMenu();">
+                    <i class="fas fa-sign-in-alt"></i> Войти
+                </button>
+                <button class="btn btn-success" onclick="showRegisterModal(); closeDropdownMenu();">
+                    <i class="fas fa-user-plus"></i> Регистрация
+                </button>
+            </div>
+        `;
+    }
+}
+
+// Функции для модальных окон
+function showLoginModal() {
+    const modal = document.getElementById('loginModal');
+    if (modal) {
+        modal.style.display = 'flex';
+    }
+    closeDropdownMenu();
+}
+
+function showRegisterModal() {
+    const modal = document.getElementById('registerModal');
+    if (modal) {
+        modal.style.display = 'flex';
+    }
+    closeDropdownMenu();
+}
+
+function closeModal(modalId) {
+    const modal = document.getElementById(modalId);
+    if (modal) {
+        modal.style.display = 'none';
+    }
+}
+
+// Функция выхода
+function logoutUser() {
+    currentUser = null;
+    localStorage.removeItem('cyberAcademyCurrentUser');
+    showNotification('info', 'Вы вышли из системы');
+    updateUIForLoggedOutUser();
+    showPage('home');
+    closeDropdownMenu();
+}
+
+// Добавляем эффект скролла для навбара
+window.addEventListener('scroll', function() {
+    const navbar = document.getElementById('navbar');
+    if (navbar) {
+        if (window.scrollY > 50) {
+            navbar.classList.add('scrolled');
+        } else {
+            navbar.classList.remove('scrolled');
+        }
+    }
+});
+
+// Закрытие меню при клике вне его
+document.addEventListener('click', function(event) {
+    const menu = document.getElementById('dropdownMenu');
+    const menuBtn = document.getElementById('menuBtn');
+    const overlay = document.getElementById('menuOverlay');
+    
+    if (menu && menuBtn && overlay) {
+        if (!menu.contains(event.target) && !menuBtn.contains(event.target) && menu.classList.contains('active')) {
+            closeDropdownMenu();
+        }
+    }
+});
+
+// Закрытие меню при нажатии Escape
+document.addEventListener('keydown', function(event) {
+    if (event.key === 'Escape') {
+        closeDropdownMenu();
+    }
+});
+
+// Закрытие модальных окон при клике вне их
+window.onclick = function(event) {
+    if (event.target.classList.contains('modal')) {
+        event.target.style.display = 'none';
+    }
+};
 </script>
 <button class="theme-toggle" id="themeToggle">
     <i class="fas fa-moon"></i>
