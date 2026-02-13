@@ -1,5 +1,6 @@
 
 <html lang="ru">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -3121,7 +3122,547 @@
     50% { transform: scale(1.05); box-shadow: 0 0 20px rgba(67, 160, 71, 0.5); }
     100% { transform: scale(1); }
 }
+/* ========== ПОЛНАЯ АДАПТИВНАЯ ВЕРСТКА ========== */
 
+/* Планшеты и небольшие ноутбуки (от 768px до 1024px) */
+@media screen and (max-width: 1024px) {
+    .container {
+        padding: 20px 15px;
+    }
+    
+    .hero-title {
+        font-size: 2.5rem;
+    }
+    
+    .hero-subtitle {
+        font-size: 1.1rem;
+        padding: 15px;
+    }
+    
+    .hero-stats {
+        gap: 20px;
+        padding: 20px;
+    }
+    
+    .hero-stat-number {
+        font-size: 2rem;
+    }
+    
+    .features-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 20px;
+    }
+    
+    .course-cards {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 20px;
+    }
+    
+    .simulators-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 20px;
+    }
+    
+    .footer-content {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 30px;
+    }
+}
+
+/* Большие телефоны и маленькие планшеты (от 600px до 768px) */
+@media screen and (max-width: 768px) {
+    body {
+        padding-top: 60px;
+    }
+    
+    .navbar {
+        height: 60px;
+    }
+    
+    .logo {
+        font-size: 1.3rem;
+    }
+    
+    .logo i {
+        font-size: 1.4rem;
+    }
+    
+    .menu-btn {
+        width: 40px;
+        height: 40px;
+        font-size: 1.2rem;
+    }
+    
+    .dropdown-menu {
+        top: 60px;
+        width: 280px;
+    }
+    
+    .hero-section {
+        padding: 40px 20px;
+        border-radius: 20px;
+    }
+    
+    .hero-title {
+        font-size: 2rem;
+    }
+    
+    .hero-subtitle {
+        font-size: 1rem;
+        margin-bottom: 30px;
+    }
+    
+    .hero-stats {
+        flex-wrap: wrap;
+        gap: 15px;
+        padding: 15px;
+    }
+    
+    .hero-stat {
+        min-width: 120px;
+        padding: 10px;
+    }
+    
+    .hero-stat-number {
+        font-size: 1.8rem;
+    }
+    
+    .hero-stat-text {
+        font-size: 0.9rem;
+    }
+    
+    .section-title h2 {
+        font-size: 2rem;
+    }
+    
+    .section-title p {
+        font-size: 1rem;
+    }
+    
+    .features-grid {
+        grid-template-columns: 1fr;
+        gap: 15px;
+    }
+    
+    .feature-card {
+        padding: 20px;
+    }
+    
+    .feature-icon {
+        width: 60px;
+        height: 60px;
+        font-size: 1.5rem;
+        margin-bottom: 15px;
+    }
+    
+    .feature-card h3 {
+        font-size: 1.2rem;
+    }
+    
+    .course-cards {
+        grid-template-columns: 1fr;
+        gap: 15px;
+    }
+    
+    .course-card {
+        padding: 20px;
+    }
+    
+    .course-icon {
+        width: 50px;
+        height: 50px;
+        font-size: 1.2rem;
+    }
+    
+    .course-card h3 {
+        font-size: 1.1rem;
+    }
+    
+    .simulators-grid {
+        grid-template-columns: 1fr;
+        gap: 15px;
+    }
+    
+    .simulator-header {
+        padding: 20px;
+    }
+    
+    .simulator-icon {
+        font-size: 2rem;
+    }
+    
+    .simulator-header h3 {
+        font-size: 1.2rem;
+    }
+    
+    .simulator-body {
+        padding: 20px;
+    }
+    
+    .cta-section {
+        padding: 40px 20px;
+    }
+    
+    .cta-title {
+        font-size: 1.8rem;
+    }
+    
+    .cta-text {
+        font-size: 1rem;
+        margin-bottom: 30px;
+    }
+    
+    .footer-content {
+        grid-template-columns: 1fr;
+        gap: 30px;
+        padding: 0 20px;
+    }
+    
+    .footer-section {
+        text-align: center;
+    }
+    
+    .footer-links {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+    
+    /* Табы */
+    .tabs {
+        flex-direction: column;
+        gap: 5px;
+    }
+    
+    .tab {
+        width: 100%;
+        text-align: center;
+        padding: 12px;
+    }
+    
+    /* Модальные окна */
+    .modal-content {
+        width: 95%;
+        padding: 25px;
+        margin: 20px;
+    }
+    
+    /* Страница курса */
+    .course-header {
+        flex-direction: column;
+        text-align: center;
+    }
+    
+    .course-header-icon {
+        margin-bottom: 15px;
+    }
+    
+    .course-meta {
+        flex-direction: column;
+        gap: 10px;
+        align-items: center;
+    }
+    
+    /* Уроки */
+    .lesson-item {
+        padding: 15px;
+    }
+    
+    .lesson-number {
+        width: 25px;
+        height: 25px;
+        line-height: 25px;
+        font-size: 0.9rem;
+    }
+    
+    .lesson-title {
+        font-size: 1rem;
+    }
+    
+    /* Профиль */
+    .profile-header {
+        flex-direction: column;
+        text-align: center;
+    }
+    
+    .profile-avatar {
+        margin-bottom: 15px;
+    }
+    
+    .profile-stats {
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+    
+    .profile-stat {
+        min-width: 100px;
+        padding: 10px;
+    }
+    
+    .profile-stat-value {
+        font-size: 1.5rem;
+    }
+    
+    .progress-course {
+        flex-direction: column;
+        text-align: center;
+    }
+    
+    .progress-course-icon {
+        margin-bottom: 10px;
+    }
+    
+    /* Тесты */
+    .simulator .options {
+        gap: 8px;
+    }
+    
+    .option {
+        padding: 12px;
+        font-size: 0.95rem;
+    }
+    
+    .result {
+        padding: 15px;
+    }
+    
+    /* Кнопки */
+    .btn-large {
+        padding: 12px 25px;
+        font-size: 1rem;
+    }
+    
+    .action-buttons {
+        flex-direction: column;
+        align-items: center;
+        gap: 10px;
+    }
+    
+    .action-buttons .btn {
+        width: 100%;
+        max-width: 300px;
+    }
+}
+
+/* Маленькие телефоны (до 600px) */
+@media screen and (max-width: 600px) {
+    .container {
+        padding: 15px 10px;
+    }
+    
+    .hero-section {
+        padding: 30px 15px;
+    }
+    
+    .hero-title {
+        font-size: 1.8rem;
+    }
+    
+    .hero-subtitle {
+        font-size: 0.95rem;
+        padding: 12px;
+    }
+    
+    .hero-stats {
+        flex-direction: column;
+        align-items: center;
+        gap: 10px;
+    }
+    
+    .hero-stat {
+        width: 100%;
+        max-width: 200px;
+    }
+    
+    .section-title h2 {
+        font-size: 1.8rem;
+    }
+    
+    .card {
+        padding: 20px 15px;
+    }
+    
+    .card h2 {
+        font-size: 1.5rem;
+    }
+    
+    .card h3 {
+        font-size: 1.2rem;
+    }
+    
+    /* Формы */
+    .form-control {
+        padding: 10px 12px;
+        font-size: 0.95rem;
+    }
+    
+    .form-group label {
+        font-size: 0.95rem;
+    }
+    
+    /* Уведомления */
+    .notification {
+        top: 70px;
+        right: 10px;
+        left: 10px;
+        width: auto;
+        max-width: none;
+        font-size: 0.95rem;
+        padding: 12px 15px;
+    }
+    
+    /* Кнопка наверх */
+    .scroll-to-top {
+        bottom: 20px;
+        right: 20px;
+        width: 45px;
+        height: 45px;
+        font-size: 1.3rem;
+    }
+    
+    /* Кнопка темы */
+    .theme-toggle {
+        bottom: 80px;
+        left: 20px;
+        width: 45px;
+        height: 45px;
+        font-size: 1.2rem;
+    }
+}
+
+/* Очень маленькие телефоны (до 400px) */
+@media screen and (max-width: 400px) {
+    .hero-title {
+        font-size: 1.5rem;
+    }
+    
+    .hero-subtitle {
+        font-size: 0.9rem;
+    }
+    
+    .btn {
+        padding: 10px 15px;
+        font-size: 0.9rem;
+    }
+    
+    .btn-large {
+        padding: 10px 20px;
+        font-size: 0.95rem;
+    }
+    
+    .logo {
+        font-size: 1.1rem;
+    }
+    
+    .logo i {
+        font-size: 1.2rem;
+    }
+    
+    .menu-btn {
+        width: 35px;
+        height: 35px;
+        font-size: 1rem;
+    }
+    
+    .dropdown-menu {
+        width: 260px;
+        left: 10px;
+    }
+    
+    .dropdown-header h3 {
+        font-size: 1rem;
+    }
+    
+    .dropdown-link {
+        padding: 10px 12px;
+        font-size: 0.95rem;
+    }
+    
+    .modal-content {
+        padding: 20px;
+    }
+    
+    .modal h2 {
+        font-size: 1.3rem;
+    }
+}
+
+/* Исправление для горизонтальной ориентации на телефонах */
+@media screen and (max-height: 500px) and (orientation: landscape) {
+    .navbar {
+        height: 50px;
+    }
+    
+    body {
+        padding-top: 50px;
+    }
+    
+    .dropdown-menu {
+        top: 50px;
+        max-height: calc(100vh - 60px);
+        overflow-y: auto;
+    }
+    
+    .hero-section {
+        padding: 20px 15px;
+    }
+    
+    .hero-stats {
+        flex-direction: row;
+        flex-wrap: wrap;
+    }
+    
+    .modal-content {
+        max-height: 90vh;
+        overflow-y: auto;
+    }
+}
+
+/* Большие экраны (от 1400px) */
+@media screen and (min-width: 1400px) {
+    .container {
+        max-width: 1400px;
+    }
+    
+    .hero-title {
+        font-size: 3.5rem;
+    }
+    
+    .hero-subtitle {
+        font-size: 1.3rem;
+    }
+    
+    .features-grid {
+        grid-template-columns: repeat(3, 1fr);
+    }
+    
+    .course-cards {
+        grid-template-columns: repeat(4, 1fr);
+    }
+    
+    .simulators-grid {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
+
+/* Очень большие экраны (от 1900px) */
+@media screen and (min-width: 1900px) {
+    .container {
+        max-width: 1600px;
+    }
+    
+    .hero-title {
+        font-size: 4rem;
+    }
+    
+    .features-grid {
+        grid-template-columns: repeat(4, 1fr);
+    }
+    
+    .course-cards {
+        grid-template-columns: repeat(5, 1fr);
+    }
+}
 </style>
 </head>
 <body>
@@ -21900,6 +22441,134 @@ window.onclick = function(event) {
         event.target.style.display = 'none';
     }
 };
+// ========== ОБРАБОТКА НАЖАТИЯ КЛАВИШИ ENTER В ТЕСТАХ ==========
+
+// Функция для обработки нажатия Enter в тестах
+function handleEnterKey(event) {
+    // Проверяем, что нажата клавиша Enter (код 13)
+    if (event.keyCode === 13 || event.key === 'Enter') {
+        
+        // Проверяем, какой тест сейчас активен
+        const activePage = document.querySelector('.page.active')?.id;
+        
+        // Тест по телефонному мошенничеству
+        if (activePage === 'active-course' && document.getElementById('testQuestions')?.style.display === 'block') {
+            const nextButton = document.getElementById('nextButton');
+            if (nextButton && !nextButton.disabled) {
+                event.preventDefault();
+                nextButton.click();
+            }
+        }
+        
+        // Тест по фишингу
+        else if (activePage === 'active-course' && document.getElementById('phishingTestQuestions')?.style.display === 'block') {
+            const nextButton = document.getElementById('phishingNextButton');
+            if (nextButton && !nextButton.disabled) {
+                event.preventDefault();
+                nextButton.click();
+            }
+        }
+        
+        // Тест по Госуслугам
+        else if (activePage === 'active-course' && document.getElementById('gosuslugiTestQuestions')?.style.display === 'block') {
+            const nextButton = document.getElementById('gosuslugiNextButton');
+            if (nextButton && !nextButton.disabled) {
+                event.preventDefault();
+                nextButton.click();
+            }
+        }
+        
+        // Тест по ПУУ
+        else if (activePage === 'active-course' && document.getElementById('puuTestQuestions')?.style.display === 'block') {
+            const nextButton = document.getElementById('puuNextButton');
+            if (nextButton && !nextButton.disabled) {
+                event.preventDefault();
+                nextButton.click();
+            }
+        }
+        
+        // Тест по финансам
+        else if (activePage === 'active-course' && document.getElementById('financeTestQuestions')?.style.display === 'block') {
+            const nextButton = document.getElementById('financeNextButton');
+            if (nextButton && !nextButton.disabled) {
+                event.preventDefault();
+                nextButton.click();
+            }
+        }
+        
+        // Тест по паролям
+        else if (activePage === 'active-course' && document.getElementById('passwordsTestQuestions')?.style.display === 'block') {
+            const nextButton = document.getElementById('passwordsNextButton');
+            if (nextButton && !nextButton.disabled) {
+                event.preventDefault();
+                nextButton.click();
+            }
+        }
+        
+        // Тест по соцсетям
+        else if (activePage === 'active-course' && document.getElementById('socialTestQuestions')?.style.display === 'block') {
+            const nextButton = document.getElementById('socialNextButton');
+            if (nextButton && !nextButton.disabled) {
+                event.preventDefault();
+                nextButton.click();
+            }
+        }
+        
+        // Итоговый тест
+        else if (activePage === 'active-course' && document.getElementById('finalTestQuestions')?.style.display === 'block') {
+            const nextButton = document.getElementById('finalNextButton');
+            if (nextButton && !nextButton.disabled) {
+                event.preventDefault();
+                nextButton.click();
+            }
+        }
+    }
+}
+
+// Добавляем обработчик события на всю страницу
+document.addEventListener('keydown', handleEnterKey);
+
+// Дополнительно: добавляем обработку Enter для выбора вариантов в тренажерах
+function handleSimulatorEnter(event) {
+    if (event.keyCode === 13 || event.key === 'Enter') {
+        
+        // Для тренажера Фишинг
+        const phishingChat = document.getElementById('phishing-chat-container');
+        if (phishingChat && phishingChat.style.display !== 'none') {
+            const activeOption = document.querySelector('.phishing-chat-option:hover');
+            if (activeOption) {
+                event.preventDefault();
+                activeOption.click();
+            }
+        }
+        
+        // Для тренажера Телефон
+        const phoneChat = document.getElementById('phone-chat-container');
+        if (phoneChat && phoneChat.style.display !== 'none') {
+            const activeOption = document.querySelector('.phone-chat-option:hover');
+            if (activeOption) {
+                event.preventDefault();
+                activeOption.click();
+            }
+        }
+        
+        // Для тренажера ПУУ
+        const puuChat = document.getElementById('ai-phone-simulator');
+        if (puuChat && puuChat.style.display !== 'none') {
+            const activeOption = document.querySelector('.ai-response-option:hover');
+            if (activeOption) {
+                event.preventDefault();
+                activeOption.click();
+            }
+        }
+    }
+}
+
+// Добавляем второй обработчик
+document.addEventListener('keydown', handleSimulatorEnter);
+
+// Функция для отладки (можно удалить позже)
+console.log('Обработчик клавиши Enter добавлен для всех тестов');
 </script>
 <button class="theme-toggle" id="themeToggle">
     <i class="fas fa-moon"></i>
