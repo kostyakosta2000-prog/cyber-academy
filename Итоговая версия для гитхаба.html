@@ -1991,52 +1991,6 @@
     color: #e0e0e0;
 }
 
-/* Кнопка переключения темы */
-.theme-toggle {
-    position: fixed;
-    bottom: 30px;
-    left: 30px;
-    width: 50px;
-    height: 50px;
-    background-color: var(--primary-color);
-    color: white;
-    border-radius: 50%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    font-size: 1.3rem;
-    cursor: pointer;
-    z-index: 100;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
-    transition: all 0.3s ease;
-    border: none;
-}
-
-.theme-toggle:hover {
-    background-color: var(--secondary-color);
-    transform: scale(1.1);
-    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
-}
-
-/* Адаптивность для кнопки темы */
-@media (max-width: 768px) {
-    .theme-toggle {
-        bottom: 90px;
-        left: 20px;
-        width: 45px;
-        height: 45px;
-        font-size: 1.2rem;
-    }
-.simulator-difficulty {
-    padding: 4px 12px;
-    border-radius: 20px;
-    font-size: 12px;
-    font-weight: 600;
-    display: inline-block;
-    margin-top: 5px;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-}
 
 /* Разные цвета для разных уровней */
 .simulator-difficulty:contains("Начальный") {
@@ -3122,54 +3076,36 @@
     50% { transform: scale(1.05); box-shadow: 0 0 20px rgba(67, 160, 71, 0.5); }
     100% { transform: scale(1); }
 }
-/* ========== ПОЛНАЯ АДАПТИВНАЯ ВЕРСТКА ========== */
+/* ========== УЛУЧШЕННАЯ АДАПТИВНАЯ ВЕРСТКА ========== */
 
 /* Планшеты и небольшие ноутбуки (от 768px до 1024px) */
 @media screen and (max-width: 1024px) {
     .container {
-        padding: 20px 15px;
+        padding: 25px 20px;
     }
     
     .hero-title {
         font-size: 2.5rem;
     }
     
-    .hero-subtitle {
-        font-size: 1.1rem;
-        padding: 15px;
-    }
-    
     .hero-stats {
-        gap: 20px;
-        padding: 20px;
-    }
-    
-    .hero-stat-number {
-        font-size: 2rem;
+        gap: 25px;
     }
     
     .features-grid {
         grid-template-columns: repeat(2, 1fr);
-        gap: 20px;
     }
     
     .course-cards {
         grid-template-columns: repeat(2, 1fr);
-        gap: 20px;
     }
     
     .simulators-grid {
         grid-template-columns: repeat(2, 1fr);
-        gap: 20px;
-    }
-    
-    .footer-content {
-        grid-template-columns: repeat(2, 1fr);
-        gap: 30px;
     }
 }
 
-/* Большие телефоны и маленькие планшеты (от 600px до 768px) */
+/* Телефоны (до 768px) */
 @media screen and (max-width: 768px) {
     body {
         padding-top: 60px;
@@ -3183,44 +3119,49 @@
         font-size: 1.3rem;
     }
     
-    .logo i {
-        font-size: 1.4rem;
-    }
-    
     .menu-btn {
         width: 40px;
         height: 40px;
-        font-size: 1.2rem;
     }
     
-    .dropdown-menu {
-        top: 60px;
-        width: 280px;
+    .container {
+        padding: 20px 15px;
     }
     
+    /* Hero секция - компактная как на скриншоте */
     .hero-section {
-        padding: 40px 20px;
+        padding: 30px 20px;
         border-radius: 20px;
+        margin-bottom: 30px;
     }
     
     .hero-title {
         font-size: 2rem;
+        margin-bottom: 15px;
+    }
+    
+    .hero-title::after {
+        width: 80px;
+        height: 3px;
     }
     
     .hero-subtitle {
         font-size: 1rem;
-        margin-bottom: 30px;
+        padding: 15px;
+        margin-bottom: 25px;
     }
     
     .hero-stats {
-        flex-wrap: wrap;
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
         gap: 15px;
-        padding: 15px;
+        padding: 20px;
+        margin-top: 25px;
     }
     
     .hero-stat {
-        min-width: 120px;
-        padding: 10px;
+        padding: 15px 10px;
+        min-width: auto;
     }
     
     .hero-stat-number {
@@ -3231,37 +3172,53 @@
         font-size: 0.9rem;
     }
     
+    /* Кнопки в hero */
+    .hero-content .btn-large {
+        padding: 12px 25px;
+        font-size: 1rem;
+        width: auto;
+        min-width: 180px;
+    }
+    
+    /* Заголовки секций */
     .section-title h2 {
-        font-size: 2rem;
+        font-size: 1.8rem;
     }
     
     .section-title p {
         font-size: 1rem;
     }
     
+    /* Сетки - все в 1 колонку для компактности */
     .features-grid {
         grid-template-columns: 1fr;
         gap: 15px;
     }
     
-    .feature-card {
-        padding: 20px;
-    }
-    
-    .feature-icon {
-        width: 60px;
-        height: 60px;
-        font-size: 1.5rem;
-        margin-bottom: 15px;
-    }
-    
-    .feature-card h3 {
-        font-size: 1.2rem;
-    }
-    
     .course-cards {
         grid-template-columns: 1fr;
         gap: 15px;
+    }
+    
+    .simulators-grid {
+        grid-template-columns: 1fr;
+        gap: 15px;
+    }
+    
+    /* Карточки - компактные */
+    .feature-card {
+        padding: 25px 20px;
+    }
+    
+    .feature-icon {
+        width: 70px;
+        height: 70px;
+        font-size: 1.8rem;
+        margin-bottom: 20px;
+    }
+    
+    .feature-card h3 {
+        font-size: 1.3rem;
     }
     
     .course-card {
@@ -3271,36 +3228,16 @@
     .course-icon {
         width: 50px;
         height: 50px;
-        font-size: 1.2rem;
+        font-size: 1.3rem;
     }
     
     .course-card h3 {
-        font-size: 1.1rem;
-    }
-    
-    .simulators-grid {
-        grid-template-columns: 1fr;
-        gap: 15px;
-    }
-    
-    .simulator-header {
-        padding: 20px;
-    }
-    
-    .simulator-icon {
-        font-size: 2rem;
-    }
-    
-    .simulator-header h3 {
         font-size: 1.2rem;
     }
     
-    .simulator-body {
-        padding: 20px;
-    }
-    
+    /* CTA секция */
     .cta-section {
-        padding: 40px 20px;
+        padding: 40px 25px;
     }
     
     .cta-title {
@@ -3312,20 +3249,14 @@
         margin-bottom: 30px;
     }
     
+    /* Футер */
     .footer-content {
         grid-template-columns: 1fr;
         gap: 30px;
-        padding: 0 20px;
     }
     
     .footer-section {
         text-align: center;
-    }
-    
-    .footer-links {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
     }
     
     /* Табы */
@@ -3336,7 +3267,6 @@
     
     .tab {
         width: 100%;
-        text-align: center;
         padding: 12px;
     }
     
@@ -3344,114 +3274,14 @@
     .modal-content {
         width: 95%;
         padding: 25px;
-        margin: 20px;
-    }
-    
-    /* Страница курса */
-    .course-header {
-        flex-direction: column;
-        text-align: center;
-    }
-    
-    .course-header-icon {
-        margin-bottom: 15px;
-    }
-    
-    .course-meta {
-        flex-direction: column;
-        gap: 10px;
-        align-items: center;
-    }
-    
-    /* Уроки */
-    .lesson-item {
-        padding: 15px;
-    }
-    
-    .lesson-number {
-        width: 25px;
-        height: 25px;
-        line-height: 25px;
-        font-size: 0.9rem;
-    }
-    
-    .lesson-title {
-        font-size: 1rem;
-    }
-    
-    /* Профиль */
-    .profile-header {
-        flex-direction: column;
-        text-align: center;
-    }
-    
-    .profile-avatar {
-        margin-bottom: 15px;
-    }
-    
-    .profile-stats {
-        flex-wrap: wrap;
-        justify-content: center;
-    }
-    
-    .profile-stat {
-        min-width: 100px;
-        padding: 10px;
-    }
-    
-    .profile-stat-value {
-        font-size: 1.5rem;
-    }
-    
-    .progress-course {
-        flex-direction: column;
-        text-align: center;
-    }
-    
-    .progress-course-icon {
-        margin-bottom: 10px;
-    }
-    
-    /* Тесты */
-    .simulator .options {
-        gap: 8px;
-    }
-    
-    .option {
-        padding: 12px;
-        font-size: 0.95rem;
-    }
-    
-    .result {
-        padding: 15px;
-    }
-    
-    /* Кнопки */
-    .btn-large {
-        padding: 12px 25px;
-        font-size: 1rem;
-    }
-    
-    .action-buttons {
-        flex-direction: column;
-        align-items: center;
-        gap: 10px;
-    }
-    
-    .action-buttons .btn {
-        width: 100%;
-        max-width: 300px;
+        margin: 0 15px;
     }
 }
 
-/* Маленькие телефоны (до 600px) */
-@media screen and (max-width: 600px) {
-    .container {
-        padding: 15px 10px;
-    }
-    
+/* Маленькие телефоны (до 480px) */
+@media screen and (max-width: 480px) {
     .hero-section {
-        padding: 30px 15px;
+        padding: 25px 15px;
     }
     
     .hero-title {
@@ -3464,90 +3294,81 @@
     }
     
     .hero-stats {
-        flex-direction: column;
-        align-items: center;
+        grid-template-columns: 1fr; /* В 1 колонку на очень маленьких */
         gap: 10px;
     }
     
     .hero-stat {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 12px 15px;
+        text-align: left;
+    }
+    
+    .hero-stat-number {
+        font-size: 1.5rem;
+        margin-bottom: 0;
+    }
+    
+    .hero-stat-text {
+        font-size: 0.9rem;
+    }
+    
+    .hero-content .btn-large {
         width: 100%;
-        max-width: 200px;
+        min-width: auto;
+        margin: 5px 0;
+    }
+    
+    .hero-content div[style*="gap: 20px"] {
+        flex-direction: column;
+        gap: 10px !important;
     }
     
     .section-title h2 {
-        font-size: 1.8rem;
+        font-size: 1.6rem;
     }
     
-    .card {
+    .feature-card {
         padding: 20px 15px;
     }
     
-    .card h2 {
+    .feature-icon {
+        width: 60px;
+        height: 60px;
         font-size: 1.5rem;
     }
     
-    .card h3 {
+    .feature-card h3 {
         font-size: 1.2rem;
     }
     
-    /* Формы */
-    .form-control {
-        padding: 10px 12px;
+    .course-card {
+        padding: 18px;
+    }
+    
+    .btn, .btn-large {
+        padding: 10px 20px;
         font-size: 0.95rem;
     }
     
-    .form-group label {
-        font-size: 0.95rem;
-    }
-    
-    /* Уведомления */
     .notification {
         top: 70px;
         right: 10px;
         left: 10px;
         width: auto;
-        max-width: none;
-        font-size: 0.95rem;
-        padding: 12px 15px;
-    }
-    
-    /* Кнопка наверх */
-    .scroll-to-top {
-        bottom: 20px;
-        right: 20px;
-        width: 45px;
-        height: 45px;
-        font-size: 1.3rem;
-    }
-    
-    /* Кнопка темы */
-    .theme-toggle {
-        bottom: 80px;
-        left: 20px;
-        width: 45px;
-        height: 45px;
-        font-size: 1.2rem;
     }
 }
 
-/* Очень маленькие телефоны (до 400px) */
-@media screen and (max-width: 400px) {
+/* Очень маленькие телефоны (до 360px) */
+@media screen and (max-width: 360px) {
     .hero-title {
         font-size: 1.5rem;
     }
     
     .hero-subtitle {
         font-size: 0.9rem;
-    }
-    
-    .btn {
-        padding: 10px 15px;
-        font-size: 0.9rem;
-    }
-    
-    .btn-large {
-        padding: 10px 20px;
-        font-size: 0.95rem;
     }
     
     .logo {
@@ -3561,320 +3382,29 @@
     .menu-btn {
         width: 35px;
         height: 35px;
-        font-size: 1rem;
     }
     
     .dropdown-menu {
-        width: 260px;
         left: 10px;
-    }
-    
-    .dropdown-header h3 {
-        font-size: 1rem;
-    }
-    
-    .dropdown-link {
-        padding: 10px 12px;
-        font-size: 0.95rem;
-    }
-    
-    .modal-content {
-        padding: 20px;
-    }
-    
-    .modal h2 {
-        font-size: 1.3rem;
-    }
-}
-
-/* Исправление для горизонтальной ориентации на телефонах */
-@media screen and (max-height: 500px) and (orientation: landscape) {
-    .navbar {
-        height: 50px;
-    }
-    
-    body {
-        padding-top: 50px;
-    }
-    
-    .dropdown-menu {
-        top: 50px;
-        max-height: calc(100vh - 60px);
-        overflow-y: auto;
-    }
-    
-    .hero-section {
-        padding: 20px 15px;
-    }
-    
-    .hero-stats {
-        flex-direction: row;
-        flex-wrap: wrap;
-    }
-    
-    .modal-content {
-        max-height: 90vh;
-        overflow-y: auto;
-    }
-}
-
-/* Большие экраны (от 1400px) */
-@media screen and (min-width: 1400px) {
-    .container {
-        max-width: 1400px;
-    }
-    
-    .hero-title {
-        font-size: 3.5rem;
-    }
-    
-    .hero-subtitle {
-        font-size: 1.3rem;
-    }
-    
-    .features-grid {
-        grid-template-columns: repeat(3, 1fr);
-    }
-    
-    .course-cards {
-        grid-template-columns: repeat(4, 1fr);
-    }
-    
-    .simulators-grid {
-        grid-template-columns: repeat(3, 1fr);
-    }
-}
-
-/* Очень большие экраны (от 1900px) */
-@media screen and (min-width: 1900px) {
-    .container {
-        max-width: 1600px;
-    }
-    
-    .hero-title {
-        font-size: 4rem;
-    }
-    
-    .features-grid {
-        grid-template-columns: repeat(4, 1fr);
-    }
-    
-    .course-cards {
-        grid-template-columns: repeat(5, 1fr);
-    }
-}
-/* ========== СПЕЦИАЛЬНЫЕ ИСПРАВЛЕНИЯ ДЛЯ МОБИЛЬНЫХ УСТРОЙСТВ ========== */
-
-/* Исправление для очень маленьких экранов */
-@media screen and (max-width: 480px) {
-    html, body {
-        overflow-x: hidden !important;
-        width: 100% !important;
-        max-width: 100% !important;
-    }
-    
-    .container {
-        width: 100% !important;
-        max-width: 100% !important;
-        padding: 15px 12px !important;
-        overflow-x: hidden !important;
-    }
-    
-    /* Фикс для hero-секции */
-    .hero-section {
-        width: 100% !important;
-        max-width: 100% !important;
-        margin-left: 0 !important;
-        margin-right: 0 !important;
-        padding: 30px 15px !important;
-        border-radius: 15px !important;
-    }
-    
-    .hero-content {
-        width: 100% !important;
-        max-width: 100% !important;
-        padding: 0 !important;
-    }
-    
-    .hero-title {
-        font-size: 1.8rem !important;
-        line-height: 1.2 !important;
-        word-wrap: break-word !important;
-    }
-    
-    .hero-subtitle {
-        font-size: 1rem !important;
-        padding: 12px !important;
-    }
-    
-    .hero-stats {
-        flex-direction: column !important;
-        align-items: center !important;
-        gap: 10px !important;
-        padding: 15px !important;
-        width: 100% !important;
-    }
-    
-    .hero-stat {
-        width: 100% !important;
-        max-width: 200px !important;
-        padding: 10px !important;
-    }
-    
-    /* Фикс для кнопок */
-    .btn, .btn-large {
-        width: 100% !important;
-        max-width: 280px !important;
-        margin-left: auto !important;
-        margin-right: auto !important;
-        padding: 12px 20px !important;
-        font-size: 1rem !important;
-        white-space: normal !important;
-        word-wrap: break-word !important;
-    }
-    
-    /* Фикс для карточек */
-    .feature-card, .course-card, .simulator-card {
-        width: 100% !important;
-        max-width: 100% !important;
-        margin-left: 0 !important;
-        margin-right: 0 !important;
-        padding: 20px 15px !important;
-    }
-    
-    /* Фикс для сеток */
-    .features-grid, .course-cards, .simulators-grid {
-        grid-template-columns: 1fr !important;
-        gap: 15px !important;
-        width: 100% !important;
-    }
-    
-    /* Фикс для модальных окон */
-    .modal-content {
-        width: 95% !important;
-        max-width: 95% !important;
-        padding: 20px 15px !important;
-        margin: 10px auto !important;
-    }
-    
-    /* Фикс для навигации */
-    .navbar {
-        width: 100% !important;
-        max-width: 100% !important;
-        padding: 0 !important;
-    }
-    
-    .nav-container {
-        padding: 0 12px !important;
-        width: 100% !important;
-    }
-    
-    .logo {
-        font-size: 1.2rem !important;
-    }
-    
-    .logo i {
-        font-size: 1.3rem !important;
-    }
-    
-    .menu-btn {
-        width: 38px !important;
-        height: 38px !important;
-    }
-    
-    /* Фикс для выпадающего меню */
-    .dropdown-menu {
-        left: 10px !important;
-        right: 10px !important;
-        width: auto !important;
-        max-width: calc(100% - 20px) !important;
-    }
-    
-    /* Фикс для текста */
-    p, h1, h2, h3, h4, h5, h6 {
-        word-wrap: break-word !important;
-        overflow-wrap: break-word !important;
-    }
-    
-    /* Фикс для изображений */
-    img {
-        max-width: 100% !important;
-        height: auto !important;
-    }
-    
-    /* Фикс для таблиц */
-    table {
-        width: 100% !important;
-        overflow-x: auto !important;
-        display: block !important;
-    }
-}
-
-/* Для очень маленьких телефонов (до 360px) */
-@media screen and (max-width: 360px) {
-    .hero-title {
-        font-size: 1.5rem !important;
-    }
-    
-    .hero-subtitle {
-        font-size: 0.9rem !important;
-        padding: 10px !important;
-    }
-    
-    .btn, .btn-large {
-        padding: 10px 15px !important;
-        font-size: 0.9rem !important;
-        max-width: 240px !important;
-    }
-    
-    .logo {
-        font-size: 1rem !important;
-    }
-    
-    .logo i {
-        font-size: 1.1rem !important;
-    }
-    
-    .menu-btn {
-        width: 35px !important;
-        height: 35px !important;
-        font-size: 1rem !important;
+        right: 10px;
+        width: auto;
     }
 }
 
 /* Исправление для горизонтальной ориентации */
 @media screen and (max-height: 500px) and (orientation: landscape) {
     .hero-section {
-        padding: 20px 15px !important;
+        padding: 20px;
     }
     
     .hero-stats {
-        flex-direction: row !important;
-        flex-wrap: wrap !important;
-    }
-    
-    .hero-stat {
-        width: auto !important;
-        min-width: 120px !important;
+        grid-template-columns: repeat(4, 1fr);
     }
     
     .dropdown-menu {
-        max-height: 80vh !important;
-        overflow-y: auto !important;
+        max-height: 80vh;
+        overflow-y: auto;
     }
-}
-
-/* Убираем горизонтальный скролл */
-body {
-    overflow-x: hidden !important;
-    width: 100% !important;
-    max-width: 100% !important;
-}
-
-html {
-    overflow-x: hidden !important;
-    width: 100% !important;
-    max-width: 100% !important;
 }
 </style>
 </head>
@@ -20434,132 +19964,6 @@ function downloadPasswordsCertificate() {
     }, 500);
 }
 
-console.log('Скрипт темы загружен');
-
-// Используем событие DOMContentLoaded для гарантии, что DOM готов
-document.addEventListener('DOMContentLoaded', function() {
-    console.log('DOM загружен');
-    
-    // Ждем немного, чтобы кнопка точно была в DOM
-    setTimeout(initThemeToggle, 500);
-});
-
-function initThemeToggle() {
-    const themeToggle = document.getElementById('themeToggle');
-    console.log('Кнопка темы найдена:', themeToggle);
-    
-    if (!themeToggle) {
-        console.error('Кнопка themeToggle не найдена в DOM');
-        // Создаем кнопку динамически, если она не существует
-        createThemeToggleButton();
-        return;
-    }
-    
-    // Назначаем обработчик события
-    themeToggle.addEventListener('click', toggleTheme);
-    
-    // Восстанавливаем сохраненную тему
-    const savedTheme = localStorage.getItem('cyberAcademyTheme');
-    if (savedTheme === 'dark') {
-        enableDarkTheme();
-    }
-    
-    console.log('Обработчик темы установлен');
-}
-
-function createThemeToggleButton() {
-    console.log('Создаем кнопку темы динамически');
-    
-    const button = document.createElement('button');
-    button.className = 'theme-toggle';
-    button.id = 'themeToggle';
-    button.innerHTML = '<i class="fas fa-moon"></i>';
-    button.style.cssText = `
-        position: fixed;
-        bottom: 30px;
-        left: 30px;
-        width: 50px;
-        height: 50px;
-        background-color: #1a237e;
-        color: white;
-        border-radius: 50%;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        font-size: 1.3rem;
-        cursor: pointer;
-        z-index: 100;
-        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
-        transition: all 0.3s ease;
-        border: none;
-    `;
-    
-    button.addEventListener('mouseenter', function() {
-        this.style.backgroundColor = '#3949ab';
-        this.style.transform = 'scale(1.1)';
-    });
-    
-    button.addEventListener('mouseleave', function() {
-        this.style.backgroundColor = '#1a237e';
-        this.style.transform = 'scale(1)';
-    });
-    
-    document.body.appendChild(button);
-    
-    // Назначаем обработчик события
-    button.addEventListener('click', toggleTheme);
-    
-    // Восстанавливаем сохраненную тему
-    const savedTheme = localStorage.getItem('cyberAcademyTheme');
-    if (savedTheme === 'dark') {
-        enableDarkTheme();
-    }
-}
-
-function toggleTheme() {
-    console.log('Переключение темы');
-    
-    if (document.body.classList.contains('dark-theme')) {
-        disableDarkTheme();
-    } else {
-        enableDarkTheme();
-    }
-}
-
-function enableDarkTheme() {
-    console.log('Включаем темную тему');
-    document.body.classList.add('dark-theme');
-    
-    const icon = document.querySelector('#themeToggle i');
-    if (icon) {
-        icon.classList.remove('fa-moon');
-        icon.classList.add('fa-sun');
-    }
-    
-    localStorage.setItem('cyberAcademyTheme', 'dark');
-}
-
-function disableDarkTheme() {
-    console.log('Выключаем темную тему');
-    document.body.classList.remove('dark-theme');
-    
-    const icon = document.querySelector('#themeToggle i');
-    if (icon) {
-        icon.classList.remove('fa-sun');
-        icon.classList.add('fa-moon');
-    }
-    
-    localStorage.setItem('cyberAcademyTheme', 'light');
-}
-
-// Проверяем, может быть кнопка уже существует при загрузке скрипта
-if (document.readyState === 'loading') {
-    // DOM еще не загружен, ждем события
-    document.addEventListener('DOMContentLoaded', initThemeToggle);
-} else {
-    // DOM уже загружен, инициализируем сразу
-    initThemeToggle();
-}
 // ============================
 // ТЕСТ: ПУУ СХЕМЫ И СЛОЖНЫЕ АТАКИ (15 вопросов)
 // ============================
@@ -22783,9 +22187,5 @@ document.addEventListener('keydown', handleSimulatorEnter);
 // Функция для отладки (можно удалить позже)
 console.log('Обработчик клавиши Enter добавлен для всех тестов');
 </script>
-<button class="theme-toggle" id="themeToggle">
-    <i class="fas fa-moon"></i>
-</button>
-
 </body>
 </html>
