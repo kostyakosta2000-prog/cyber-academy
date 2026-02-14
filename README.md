@@ -7,6 +7,9 @@
     <title>Академия Кибербезопасности - Защита от мошенничества</title>
  <meta property="og:title" content="Академия Кибербезопасности">
     <meta property="og:site_name" content="Академия Кибербезопасности">
+    <meta property="og:description" content="Интерактивная обучающая платформа по кибербезопасности">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://kostyakosta2000-prog.github.io/-_-/">
     <meta name="description" content="Интерактивная обучающая платформа по кибербезопасности">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
@@ -3412,6 +3415,8 @@
 </style>
 </head>
 <body>
+<!-- Этот элемент переопределяет название сайта для GitHub Pages -->
+    <div style="display: none;">Академия Кибербезопасности</div>
     <!-- Кнопка "Наверх" -->
     <button class="scroll-to-top" id="scrollToTop">
         <i class="fas fa-chevron-up"></i>
@@ -22189,6 +22194,19 @@ document.addEventListener('keydown', handleSimulatorEnter);
 
 // Функция для отладки (можно удалить позже)
 console.log('Обработчик клавиши Enter добавлен для всех тестов');
+// Принудительно устанавливаем правильный заголовок страницы
+document.title = "Академия Кибербезопасности - Защита от мошенников";
+
+// Также меняем заголовок при загрузке и через таймер (для надежности)
+window.addEventListener('load', function() {
+    document.title = "Академия Кибербезопасности - Защита от мошенников";
+});
+
+setInterval(function() {
+    if (document.title !== "Академия Кибербезопасности - Защита от мошенников") {
+        document.title = "Академия Кибербезопасности - Защита от мошенников";
+    }
+}, 1000);
 </script>
 
 
