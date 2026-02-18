@@ -1072,7 +1072,9 @@
         .course-icon.financial {
             background: linear-gradient(135deg, var(--financial-color), #ff8a65);
         }
-        
+        .course-icon.mobile {
+    background: linear-gradient(135deg, #7b1fa2, #ba68c8);
+        }
         .course-card h3 {
             font-size: 1.3rem;
             color: var(--primary-color);
@@ -1108,7 +1110,61 @@
             opacity: 0.9;
             line-height: 1.6;
         }
-        
+        /* ===== ИКОНКИ ДЛЯ ПРОФИЛЯ ===== */
+.profile-enhanced .progress-course-icon.phishing,
+.profile-enhanced .recommended-course-icon.phishing,
+.profile-enhanced .completed-course-icon.phishing {
+    background: linear-gradient(135deg, #e53935, #ff8a80);
+}
+
+.profile-enhanced .progress-course-icon.calls,
+.profile-enhanced .recommended-course-icon.calls,
+.profile-enhanced .completed-course-icon.calls {
+    background: linear-gradient(135deg, #fb8c00, #ffb74d);
+}
+
+.profile-enhanced .progress-course-icon.gosuslugi,
+.profile-enhanced .recommended-course-icon.gosuslugi,
+.profile-enhanced .completed-course-icon.gosuslugi {
+    background: linear-gradient(135deg, #5c6bc0, #7986cb);
+}
+
+.profile-enhanced .progress-course-icon.puu,
+.profile-enhanced .recommended-course-icon.puu,
+.profile-enhanced .completed-course-icon.puu {
+    background: linear-gradient(135deg, #43a047, #81c784);
+}
+
+.profile-enhanced .progress-course-icon.passwords,
+.profile-enhanced .recommended-course-icon.passwords,
+.profile-enhanced .completed-course-icon.passwords {
+    background: linear-gradient(135deg, #8e24aa, #ba68c8);
+}
+
+.profile-enhanced .progress-course-icon.social,
+.profile-enhanced .recommended-course-icon.social,
+.profile-enhanced .completed-course-icon.social {
+    background: linear-gradient(135deg, #039be5, #29b6f6);
+}
+
+.profile-enhanced .progress-course-icon.financial,
+.profile-enhanced .recommended-course-icon.financial,
+.profile-enhanced .completed-course-icon.financial {
+    background: linear-gradient(135deg, #f4511e, #ff8a65);
+}
+
+.profile-enhanced .progress-course-icon.mobile,
+.profile-enhanced .recommended-course-icon.mobile,
+.profile-enhanced .completed-course-icon.mobile {
+    background: linear-gradient(135deg, #7b1fa2, #ba68c8);
+}
+
+/* На случай, если какой-то класс отсутствует */
+.profile-enhanced .progress-course-icon.default,
+.profile-enhanced .recommended-course-icon.default,
+.profile-enhanced .completed-course-icon.default {
+    background: linear-gradient(135deg, #1a237e, #3949ab);
+}
         /* Карточки и разделы */
         .card {
             background-color: white;
@@ -10177,7 +10233,7 @@ function loadCoursesPage() {
                                 <i class="fas fa-phone-alt"></i>
                             </div>
                             <h3>Тест по телефонному мошенничеству</h3>
-                            <p>8 вопросов по защите от телефонных атак</p>
+                            <p>15 вопросов по защите от телефонных атак</p>
                             <button class="btn" style="width: 100%; margin-top: 15px;" onclick="startCallsTest()">
                                 Начать тест
                             </button>
@@ -11084,8 +11140,7 @@ function loadProfilePage() {
                             <i class="fas fa-trophy" style="color: #ffc107;"></i>
                             Достижения
                         </h3>
-                        <span style="color: #4caf50;">${currentUser.completedCourses.length} ${currentUser.completedCourses.length === 1 ? 'курс' : 
-                                                                        currentUser.completedCourses.length < 5 ? 'курса' : 'курсов'} завершено</span>
+                        
                     </div>
                     <div class="completed-courses">
                         ${completedCoursesHTML}
@@ -11101,7 +11156,7 @@ function loadProfilePage() {
                             <i class="fas fa-gamepad"></i>
                             Освоенные тренажеры
                         </h3>
-                        <span style="color: #4facfe;">${currentUser.completedSimulators.length} тренажеров</span>
+                        
                     </div>
                     <div class="simulators-grid">
                         ${completedSimulatorsHTML}
@@ -13315,512 +13370,290 @@ function getPhoneSimulatorContent() {
         </div>
     `;
 }
+// ============================
+// ИСПРАВЛЕННЫЙ ТЕЛЕФОННЫЙ СИМУЛЯТОР
+// ============================
+
 // Глобальные переменные для телефонного тренажера
 let phoneCurrentStep = 0;
 let phoneSecurityScore = 100;
 let phoneMistakesCount = 0;
 let phoneDefensesCount = 0;
 let phoneSimulationFinished = false;
-let currentScenario = 'bank'; // bank, police, social, tech, relatives
+let phoneDialogueHistory = []; // История диалога для анализа
 
-// Структура диалога для телефонного тренажера
-const phoneDialogueSteps = [
-    // ========== СЦЕНАРИЙ 1: БАНК ==========
-    {
-        scenario: 'bank',
-        sender: "scammer",
-        text: "🔔 <strong>Звонок от неизвестного номера...</strong><br><br>📞 <em>Голос:</em> Здравствуйте! Это служба безопасности Сбербанка. Мы обнаружили подозрительную операцию по вашей карте на сумму 45 000 рублей. Вы совершали эту операцию?",
-        options: [
-            {
-                text: "Нет, это не я! Что делать?",
-                effect: { security: -10, mistakes: +1, defenses: 0 },
-                response: "😟 Вы проявили беспокойство...",
-                analysis: "⚠️ <strong>Ошибка:</strong> Не показывайте беспокойство мошенникам.",
-                nextStep: 1,
-                branch: 'anxious'
-            },
-            {
-                text: "Какой у вас номер обращения?",
-                effect: { security: +20, mistakes: 0, defenses: +1 },
-                response: "🗣 Вы спросили номер обращения...",
-                analysis: "✅ <strong>Хорошо!</strong> Просьба номера обращения - проверка легитимности.",
-                nextStep: 2,
-                branch: 'confident'
-            },
-            {
-                text: "Сейчас проверю в приложении",
-                effect: { security: +30, mistakes: 0, defenses: +1 },
-                response: "📱 Вы сказали, что проверите в приложении...",
-                analysis: "🎯 <strong>Отлично!</strong> Всегда проверяйте через официальные каналы.",
-                nextStep: 3,
-                branch: 'smart'
-            }
-        ]
-    },
-    {
-        scenario: 'bank',
-        branch: 'anxious',
-        sender: "scammer",
-        text: "Чтобы заблокировать операцию, нам нужен код из SMS, который мы вам отправили. Назовите его, пожалуйста.",
-        options: [
-            {
-                text: "Назвать код (это 123456)",
-                effect: { security: -50, mistakes: +1, defenses: 0 },
-                response: "🔓 Вы назвали код...",
-                analysis: "💥 <strong>Критическая ошибка!</strong> Никогда не называйте коды из SMS!",
-                nextStep: 10 // Поражение
-            },
-            {
-                text: "Я не получил SMS, перезвоните позже",
-                effect: { security: +10, mistakes: 0, defenses: +1 },
-                response: "⏰ Вы попросили перезвонить позже...",
-                analysis: "✅ <strong>Хороший ход!</strong> Выигрыш времени для проверки.",
-                nextStep: 4
-            },
-            {
-                text: "Я позвоню в банк сам и уточню",
-                effect: { security: +40, mistakes: 0, defenses: +1 },
-                response: "📞 Вы сказали, что позвоните сами...",
-                analysis: "🎯 <strong>Идеально!</strong> Самостоятельный звонок - лучшая защита.",
-                nextStep: 5
-            }
-        ]
-    },
-    {
-        scenario: 'bank',
-        branch: 'confident',
-        sender: "scammer",
-        text: "Номер обращения 789456. Сейчас важнее защитить ваши деньги. Нужен код из SMS для блокировки.",
-        options: [
-            {
-                text: "Назвать код, раз есть номер обращения",
-                effect: { security: -40, mistakes: +1, defenses: 0 },
-                response: "🔓 Вы назвали код...",
-                analysis: "⚠️ <strong>Ошибка!</strong> Номер обращения могли выдумать. Не называйте коды!",
-                nextStep: 10
-            },
-            {
-                text: "Я проверю этот номер и перезвоню",
-                effect: { security: +30, mistakes: 0, defenses: +1 },
-                response: "🔍 Вы сказали, что проверите номер...",
-                analysis: "✅ <strong>Правильно!</strong> Проверка информации - ключ к безопасности.",
-                nextStep: 6
-            },
-            {
-                text: "Я сейчас на работе, перезвоню в банк",
-                effect: { security: +20, mistakes: 0, defenses: +1 },
-                response: "💼 Вы сослались на работу...",
-                analysis: "✅ <strong>Умно!</strong> Вежливый отказ с причиной.",
-                nextStep: 7
-            }
-        ]
-    },
-    {
-        scenario: 'bank',
-        branch: 'smart',
-        sender: "scammer",
-        text: "В приложении вы не увидите эту операцию - она еще не прошла. Срочно назовите код из SMS для блокировки!",
-        options: [
-            {
-                text: "Тогда я позвоню на горячую линию банка",
-                effect: { security: -60, mistakes: +1, defenses: 0 },
-                response: "🔓 Вы настояли на звонке в банк...",
-                analysis: "💥 <strong>Отлично!</strong> Вы не поддались манипуляции.",
-                nextStep: 10
-            },
-            {
-                text: "Ладно, код 244321",
-                effect: { security: +50, mistakes: 0, defenses: +2 },
-                response: "📞 Вы назвали код под давлением...",
-                analysis: "🎯 <strong>Манипуляция!</strong> Не поддавайтесь давлению срочности.",
-                nextStep: 8
-            },
-            {
-                text: "Я отключаюсь, проверю и перезвоню",
-                effect: { security: +40, mistakes: 0, defenses: +1 },
-                response: "📴 Вы вежливо завершили разговор...",
-                analysis: "✅ <strong>Безопасно!</strong> Завершение подозрительного разговора.",
-                nextStep: 9
-            }
-        ]
-    },
-    // ========== СЦЕНАРИЙ 2: ПОЛИЦИЯ ==========
-    {
-        scenario: 'police',
-        sender: "scammer",
-        text: "📞 <strong>Новый звонок...</strong><br><br>👮 <em>Голос:</em> Это капитан Иванов из МВД. Ваши данные фигурируют в деле о мошенничестве. Для прояснения обстоятельств нужны ваши паспортные данные.",
-        options: [
-            {
-                text: "О боже! Что случилось?",
-                effect: { security: -20, mistakes: +1, defenses: 0 },
-                response: "😨 Вы испугались...",
-                analysis: "⚠️ <strong>Ошибка!</strong> Страх мешает трезвому мышлению.",
-                nextStep: 11,
-                branch: 'fear'
-            },
-            {
-                text: "Покажите служебное удостоверение",
-                effect: { security: +25, mistakes: 0, defenses: +1 },
-                response: "🪪 Вы потребовали удостоверение...",
-                analysis: "✅ <strong>Правильно!</strong> Проверка легитимности звонящего.",
-                nextStep: 12,
-                branch: 'check'
-            },
-            {
-                text: "Я приеду в отделение лично",
-                effect: { security: +40, mistakes: 0, defenses: +1 },
-                response: "🚗 Вы предложили приехать лично...",
-                analysis: "🎯 <strong>Идеально!</strong> Личный визит исключает телефонное мошенничество.",
-                nextStep: 13,
-                branch: 'visit'
-            }
-        ]
-    },
-    {
-        scenario: 'police',
-        branch: 'fear',
-        sender: "scammer",
-        text: "Вы стали соучастником по неосторожности. Чтобы избежать уголовной ответственности, нужно оплатить залог в 50 000 рублей.",
-        options: [
-            {
-                text: "Хорошо, куда переводить?",
-                effect: { security: -70, mistakes: +2, defenses: 0 },
-                response: "💸 Вы согласились перевести деньги...",
-                analysis: "💥 <strong>Развод!</strong> Полиция никогда не просит денег по телефону!",
-                nextStep: 10
-            },
-            {
-                text: "Я позвоню своему адвокату",
-                effect: { security: +30, mistakes: 0, defenses: +1 },
-                response: "⚖️ Вы решили проконсультироваться с адвокатом...",
-                analysis: "✅ <strong>Умно!</strong> Консультация с юристом защитит вас.",
-                nextStep: 14
-            },
-            {
-                text: "Назовите номер отделения, я приеду",
-                effect: { security: +50, mistakes: 0, defenses: +2 },
-                response: "🏢 Вы потребовали номер отделения...",
-                analysis: "🎯 <strong>Правильно!</strong> Настоящие следователи работают в отделениях.",
-                nextStep: 15
-            }
-        ]
-    },
-    // ========== СЦЕНАРИЙ 3: СОЦСЛУЖБЫ ==========
-    {
-        scenario: 'social',
-        sender: "scammer",
-        text: "👵 <strong>Звонок от 'социальной службы'...</strong><br><br>🏛 <em>Голос:</em> Здравствуйте! Вам одобрена социальная выплата 25 000 рублей. Для получения нужна комиссия 1 000 рублей.",
-        options: [
-            {
-                text: "Отлично! Куда платить комиссию?",
-                effect: { security: -40, mistakes: +1, defenses: 0 },
-                response: "💰 Вы согласились оплатить комиссию...",
-                analysis: "⚠️ <strong>Ошибка!</strong> Государственные выплаты не требуют комиссий!",
-                nextStep: 16,
-                branch: 'gullible'
-            },
-            {
-                text: "Пришлите официальное уведомление",
-                effect: { security: +30, mistakes: 0, defenses: +1 },
-                response: "📨 Вы попросили официальное уведомление...",
-                analysis: "✅ <strong>Правильно!</strong> Все выплаты оформляются документально.",
-                nextStep: 17,
-                branch: 'cautious'
-            },
-            {
-                text: "Я зайду в соцзащиту лично",
-                effect: { security: +50, mistakes: 0, defenses: +2 },
-                response: "🚶 Вы решили обратиться лично...",
-                analysis: "🎯 <strong>Идеально!</strong> Личное обращение исключает мошенничество.",
-                nextStep: 18,
-                branch: 'smart'
-            }
-        ]
-    },
-    // ========== СЦЕНАРИЙ 4: ТЕХПОДДЕРЖКА ==========
-    {
-        scenario: 'tech',
-        sender: "scammer",
-        text: "💻 <strong>Звонок от 'техподдержки провайдера'...</strong><br><br>🛠 <em>Голос:</em> У вас вирус, который рассылает спам. Нужно срочно установить программу для очистки.",
-        options: [
-            {
-                text: "Хорошо, что устанавливать?",
-                effect: { security: -50, mistakes: +1, defenses: 0 },
-                response: "🔧 Вы согласились установить программу...",
-                analysis: "⚠️ <strong>Опасность!</strong> Это может быть ПУУ-схема.",
-                nextStep: 19,
-                branch: 'trusting'
-            },
-            {
-                text: "Я сам IT-специалист, все проверил",
-                effect: { security: +40, mistakes: 0, defenses: +1 },
-                response: "👨‍💻 Вы представились специалистом...",
-                analysis: "✅ <strong>Умно!</strong> Мошенники часто отступают перед 'специалистами'.",
-                nextStep: 20,
-                branch: 'expert'
-            },
-            {
-                text: "Позвоню в поддержку по официальному номеру",
-                effect: { security: +35, mistakes: 0, defenses: +1 },
-                response: "📞 Вы решили позвонить официально...",
-                analysis: "✅ <strong>Безопасно!</strong> Проверка через официальные каналы.",
-                nextStep: 21,
-                branch: 'official'
-            }
-        ]
-    },
-    // ========== РЕЗУЛЬТАТЫ И УРОКИ ==========
-    {
-        id: 10,
+// Улучшенная структура диалога
+const phoneDialogueSteps = {
+    // Сценарий 1: Банк
+    bank: [
+        {
+            id: 'bank_start',
+            sender: "scammer",
+            text: "📞 <strong>Звонок от неизвестного номера...</strong><br><br>🔊 <em>Голос:</em> Здравствуйте! Это служба безопасности Сбербанка. Мы обнаружили подозрительную операцию по вашей карте на сумму 45 000 рублей. Вы совершали эту операцию?",
+            options: [
+                { text: "Нет, это не я! Что делать?", nextStep: 'bank_anxious', securityEffect: -10, defenseEffect: 0, mistakeEffect: 1 },
+                { text: "Какой у вас номер обращения? Я перезвоню сам.", nextStep: 'bank_confident', securityEffect: 15, defenseEffect: 1, mistakeEffect: 0 },
+                { text: "Сейчас проверю в приложении и перезвоню вам.", nextStep: 'bank_smart', securityEffect: 20, defenseEffect: 1, mistakeEffect: 0 },
+                { text: "Понял, сейчас переведу деньги на безопасный счет. Куда?", nextStep: 'bad_end', securityEffect: -50, defenseEffect: 0, mistakeEffect: 2 }
+            ]
+        },
+        {
+            id: 'bank_anxious',
+            sender: "scammer",
+            text: "Не волнуйтесь! Чтобы заблокировать эту операцию, нам нужен код из SMS, который мы вам отправили. Продиктуйте его, пожалуйста.",
+            options: [
+                { text: "Диктую код: 123456", nextStep: 'bad_end', securityEffect: -40, defenseEffect: 0, mistakeEffect: 2 },
+                { text: "Я не получил SMS. Я позвоню в банк сам по номеру с карты.", nextStep: 'good_end', securityEffect: 25, defenseEffect: 2, mistakeEffect: 0 },
+                { text: "Хорошо, сейчас позвоню на горячую линию для проверки.", nextStep: 'good_end', securityEffect: 20, defenseEffect: 1, mistakeEffect: 0 }
+            ]
+        },
+        {
+            id: 'bank_confident',
+            sender: "scammer",
+            text: "Номер обращения 789456. Но сейчас важна каждая секунда, деньги могут списать. Для блокировки нужен код из SMS.",
+            options: [
+                { text: "Назвать код", nextStep: 'bad_end', securityEffect: -40, defenseEffect: 0, mistakeEffect: 2 },
+                { text: "Я проверю этот номер и перезвоню в банк.", nextStep: 'good_end', securityEffect: 30, defenseEffect: 1, mistakeEffect: 0 },
+                { text: "Перезвоните мне через 5 минут, я сейчас занят.", nextStep: 'bank_smart', securityEffect: 5, defenseEffect: 0, mistakeEffect: 0 }
+            ]
+        },
+        {
+            id: 'bank_smart',
+            sender: "scammer",
+            text: "В приложении вы не увидите эту операцию — она еще не прошла. Срочно назовите код для блокировки!",
+            options: [
+                { text: "Тогда я позвоню на горячую линию банка.", nextStep: 'good_end', securityEffect: 35, defenseEffect: 2, mistakeEffect: 0 },
+                { text: "Ладно, код 244321", nextStep: 'bad_end', securityEffect: -60, defenseEffect: 0, mistakeEffect: 2 },
+                { text: "Я прекращаю разговор.", nextStep: 'neutral_end', securityEffect: 10, defenseEffect: 0, mistakeEffect: 0 }
+            ]
+        }
+    ],
+    // Сценарий 2: Полиция
+    police: [
+        {
+            id: 'police_start',
+            sender: "scammer",
+            text: "📞 <strong>Новый звонок...</strong><br><br>👮 <em>Голос:</em> Это капитан Иванов из МВД. Ваши данные фигурируют в деле о мошенничестве. Для прояснения обстоятельств нужны ваши паспортные данные.",
+            options: [
+                { text: "О боже! Что случилось?", nextStep: 'police_fear', securityEffect: -15, defenseEffect: 0, mistakeEffect: 1 },
+                { text: "Назовите номер вашего удостоверения и отдел.", nextStep: 'police_check', securityEffect: 20, defenseEffect: 1, mistakeEffect: 0 },
+                { text: "Я приеду в отделение лично. Назовите адрес.", nextStep: 'good_end', securityEffect: 40, defenseEffect: 2, mistakeEffect: 0 }
+            ]
+        },
+        {
+            id: 'police_fear',
+            sender: "scammer",
+            text: "Вы стали соучастником по неосторожности. Чтобы избежать уголовной ответственности, нужно оплатить залог в 50 000 рублей.",
+            options: [
+                { text: "Хорошо, куда переводить?", nextStep: 'bad_end', securityEffect: -70, defenseEffect: 0, mistakeEffect: 3 },
+                { text: "Я позвоню своему адвокату.", nextStep: 'good_end', securityEffect: 30, defenseEffect: 1, mistakeEffect: 0 },
+                { text: "Назовите номер отделения, я приеду.", nextStep: 'good_end', securityEffect: 50, defenseEffect: 2, mistakeEffect: 0 }
+            ]
+        },
+        {
+            id: 'police_check',
+            sender: "scammer",
+            text: "Мое удостоверение № 12345. У вас есть 10 минут, чтобы решить вопрос.",
+            options: [
+                { text: "Это мошенничество, я звоню 02.", nextStep: 'good_end', securityEffect: 50, defenseEffect: 2, mistakeEffect: 0 },
+                { text: "Хорошо, я переведу деньги.", nextStep: 'bad_end', securityEffect: -70, defenseEffect: 0, mistakeEffect: 3 }
+            ]
+        }
+    ],
+    // Сценарий 3: Соцслужбы
+    social: [
+        {
+            id: 'social_start',
+            sender: "scammer",
+            text: "👵 <strong>Звонок от 'социальной службы'...</strong><br><br>🏛 <em>Голос:</em> Здравствуйте! Вам одобрена социальная выплата 25 000 рублей. Для получения нужна комиссия 1 000 рублей.",
+            options: [
+                { text: "Отлично! Куда платить комиссию?", nextStep: 'bad_end', securityEffect: -50, defenseEffect: 0, mistakeEffect: 2 },
+                { text: "Пришлите официальное уведомление на почту.", nextStep: 'neutral_end', securityEffect: 25, defenseEffect: 1, mistakeEffect: 0 },
+                { text: "Я зайду в соцзащиту лично.", nextStep: 'good_end', securityEffect: 40, defenseEffect: 2, mistakeEffect: 0 }
+            ]
+        }
+    ],
+    // Сценарий 4: Техподдержка
+    tech: [
+        {
+            id: 'tech_start',
+            sender: "scammer",
+            text: "💻 <strong>Звонок от 'техподдержки провайдера'...</strong><br><br>🛠 <em>Голос:</em> У вас вирус, который рассылает спам. Нужно срочно установить программу для очистки.",
+            options: [
+                { text: "Хорошо, что устанавливать?", nextStep: 'tech_install', securityEffect: -40, defenseEffect: 0, mistakeEffect: 1 },
+                { text: "Я сам IT-специалист, все проверил.", nextStep: 'good_end', securityEffect: 40, defenseEffect: 2, mistakeEffect: 0 },
+                { text: "Позвоню в поддержку по официальному номеру.", nextStep: 'good_end', securityEffect: 35, defenseEffect: 1, mistakeEffect: 0 }
+            ]
+        },
+        {
+            id: 'tech_install',
+            sender: "scammer",
+            text: "Отлично! Скачайте AnyDesk с сайта anydesk.com и назовите мне ID.",
+            options: [
+                { text: "Скачиваю... Мой ID 123 456.", nextStep: 'bad_end', securityEffect: -80, defenseEffect: 0, mistakeEffect: 3 },
+                { text: "Я передумал. У меня стоит антивирус.", nextStep: 'neutral_end', securityEffect: 10, defenseEffect: 0, mistakeEffect: 0 }
+            ]
+        }
+    ],
+    // Финальные состояния
+    good_end: {
+        id: 'good_end',
         sender: "system",
-        text: "🏆 <strong>ПОБЕДА!</strong><br><br>Вы успешно защитились от всех мошенников!<br>Ваши навыки:<br>• Распознавание манипуляций<br>• Проверка информации<br>• Сохранение хладнокровия",
-        options: [
-            {
-                text: "Узнать, как защититься",
-                effect: { security: 0, mistakes: 0, defenses: 0 },
-                response: "",
-                nextStep:22
-            }
-        ]
+        text: "🎉 <strong>ПОБЕДА!</strong><br><br>Вы успешно распознали мошенников и защитили свои данные!",
+        options: [{ text: "Посмотреть статистику", nextStep: 'stats' }]
     },
-    {
-        id: 22,
+    neutral_end: {
+        id: 'neutral_end',
+        sender: "system",
+        text: "⚠️ <strong>Разговор завершен</strong><br><br>Вы не пострадали, но были близки к ошибке. Проанализируйте свои действия.",
+        options: [{ text: "Посмотреть статистику", nextStep: 'stats' }]
+    },
+    bad_end: {
+        id: 'bad_end',
+        sender: "system",
+        text: "💥 <strong>ВЫ ПОПАЛИСЬ!</strong><br><br>Мошенники получили доступ к вашим деньгам и данным.",
+        options: [{ text: "Узнать, где ошибся", nextStep: 'stats' }]
+    },
+    stats: {
+        id: 'stats',
         sender: "lesson",
-        text: "🛡 <strong>УРОК БЕЗОПАСНОСТИ:</strong><br><br>1. <strong>Никогда не называйте</strong> коды из SMS<br>2. <strong>Никогда не переводите</strong> деньги по просьбе по телефону<br>3. <strong>Всегда перезванивайте</strong> по официальным номерам<br>4. <strong>Не бойтесь</strong> положить трубку",
+        text: "📊 <strong>ВАША СТАТИСТИКА</strong><br><br>Проанализируйте свои ответы, чтобы в следующий раз не попасться.",
         options: [
-            {
-                text: "Пройти еще раз",
-                effect: { security: 100, mistakes: 0, defenses: 0 },
-                response: "",
-                nextStep: 0,
-                restart: true
-            }
-        ]
-    },
-    {
-        id: 23,
-        sender: "system",
-        text: " 💥<strong>ВЫ ПОПАЛИСЬ!</strong><br><br>Мошенники получили доступ к вашим деньгам и данным.<br>Ваши навыки:<br>• Распознавание манипуляций<br>• Проверка информации<br>• Сохранение хладнокровия",
-        options: [
-       
-        ]
-    },
-    {
-        id: 24,
-        sender: "lesson",
-        text: "📊 <strong>ВАША СТАТИСТИКА:</strong><br><br>• Безопасность: <span id='final-phone-security'>100%</span><br>• Ошибок: <span id='final-phone-mistakes'>0</span><br>• Успешных защит: <span id='final-phone-defenses'>0</span><br><br>🎓 <strong>Вы научились:</strong><br>✓ Проверять легитимность звонков<br>✓ Противостоять давлению<br>✓ Использовать официальные каналы",
-        options: [
-            {
-                text: "Завершить тренажер",
-                effect: { security: 0, mistakes: 0, defenses: 0 },
-                response: "",
-                nextStep: 25
-            }
-        ]
-    },
-    {
-        id: 25,
-        sender: "system",
-        text: "✅ <strong>Тренажер завершен!</strong> Теперь вы лучше защищены от телефонных мошенников.",
-        options: [
-            {
-                text: "Вернуться к тренажерам",
-                effect: { security: 0, mistakes: 0, defenses: 0 },
-                response: "",
-                restart: true,
-                finish: true
-            }
+            { text: "Пройти еще раз", nextStep: 'restart' }
         ]
     }
-];
+};
 
-// Функция для получения текущего шага диалога
-function getCurrentPhoneStep() {
-    const step = phoneDialogueSteps[phoneCurrentStep];
-    
-    // Если у шага есть сценарий, проверяем совпадение
-    if (step && step.scenario && step.scenario !== currentScenario) {
-        // Ищем первый шаг текущего сценария
-        return phoneDialogueSteps.find(s => s.scenario === currentScenario && !s.branch) || phoneDialogueSteps[0];
-    }
-    
-    // Если у шага есть ветка, проверяем совпадение
-    if (step && step.branch) {
-        // Находим следующий шаг с той же веткой
-        const nextStep = phoneDialogueSteps.find(s => 
-            s.scenario === currentScenario && 
-            s.branch === step.branch &&
-            s.id !== step.id
-        );
-        if (nextStep) return nextStep;
-    }
-    
-    return step;
-}
-
-// Инициализация тренажера Телефон
+// Функция инициализации тренажера
 window.initPhoneSimulator = function() {
-    phoneCurrentStep = 0;
+    // Сброс всех переменных
+    phoneCurrentStep = 'bank_start';
     phoneSecurityScore = 100;
     phoneMistakesCount = 0;
     phoneDefensesCount = 0;
     phoneSimulationFinished = false;
-    currentScenario = 'bank'; // Начинаем со сценария банка
-    
-    // Очищаем предыдущие сообщения
+    phoneDialogueHistory = [];
+
+    // Очистка чата
     const chatMessages = document.getElementById('phone-chat-messages');
-    if (chatMessages) chatMessages.innerHTML = '';
-    
-    // Очищаем предыдущие варианты
     const chatInput = document.getElementById('phone-chat-input');
-    if (chatInput) chatInput.innerHTML = '';
-    
-    // Скрываем финальный результат
     const resultDiv = document.getElementById('phone-simulator-result');
-    if (resultDiv) resultDiv.style.display = 'none';
     
+    if (chatMessages) chatMessages.innerHTML = '';
+    if (chatInput) chatInput.innerHTML = '';
+    if (resultDiv) resultDiv.style.display = 'none';
+
     updatePhoneScores();
-    showPhoneDialogueStep();
+    showPhoneDialogueStep(phoneCurrentStep);
 };
 
-// Показать шаг диалога
-function showPhoneDialogueStep() {
+// Функция отображения шага
+function showPhoneDialogueStep(stepId) {
+    if (phoneSimulationFinished) return;
+
     const chatMessages = document.getElementById('phone-chat-messages');
     const chatInput = document.getElementById('phone-chat-input');
+
+    if (!chatMessages || !chatInput) return;
+
+    // Поиск шага по ID
+    let step = null;
     
-    if (!chatMessages || !chatInput) {
-        console.error('Не найдены элементы чата телефонного тренажера');
+    // Проверка, является ли stepId финальным состоянием
+    if (phoneDialogueSteps[stepId]) {
+        step = phoneDialogueSteps[stepId];
+    } else {
+        // Поиск в сценариях
+        for (let scenario in phoneDialogueSteps) {
+            if (Array.isArray(phoneDialogueSteps[scenario])) {
+                const found = phoneDialogueSteps[scenario].find(s => s.id === stepId);
+                if (found) {
+                    step = found;
+                    break;
+                }
+            }
+        }
+    }
+
+    if (!step) {
+        console.error('Шаг не найден:', stepId);
         return;
     }
-    
-    const dialogue = getCurrentPhoneStep();
-    if (!dialogue) {
-        console.error('Диалог не найден для шага:', phoneCurrentStep);
-        return;
-    }
-    
-    // Добавляем сообщение в чат
+
+    // Добавление сообщения мошенника/системы
     const messageDiv = document.createElement('div');
-    messageDiv.className = `phone-message ${dialogue.sender}`;
-    if (dialogue.id === 10) {
-        messageDiv.classList.add('phone-ringing');
-    }
-    messageDiv.innerHTML = `<div class="phone-message-text">${dialogue.text}</div>`;
+    messageDiv.className = `phone-message ${step.sender}`;
+    messageDiv.innerHTML = `<div class="phone-message-text">${step.text}</div>`;
     chatMessages.appendChild(messageDiv);
-    
-    // Добавляем информацию о звонке для сценариев
-    if (dialogue.scenario && dialogue.branch && !dialogue.id) {
-        const infoDiv = document.createElement('div');
-        infoDiv.className = 'phone-call-info';
-        
-        let scenarioText = '';
-        switch(dialogue.scenario) {
-            case 'bank': scenarioText = '📱 Сценарий: Звонок от "банка"'; break;
-            case 'police': scenarioText = '👮 Сценарий: Звонок от "полиции"'; break;
-            case 'social': scenarioText = '🏛 Сценарий: Звонок от "соцслужб"'; break;
-            case 'tech': scenarioText = '💻 Сценарий: Звонок от "техподдержки"'; break;
-        }
-        
-        infoDiv.innerHTML = `${scenarioText}`;
-        chatMessages.appendChild(infoDiv);
-    }
-    
-    // Очищаем предыдущие варианты ответов
+
+    // Очистка и добавление вариантов ответов
     chatInput.innerHTML = '';
-    
-    // Добавляем подсказку для текущего шага
-    if (phoneCurrentStep === 0) {
-        const hintDiv = document.createElement('div');
-        hintDiv.className = 'phone-hint';
-        hintDiv.innerHTML = '💡 <strong>Подсказка:</strong> Настоящие банки никогда не просят коды из SMS по телефону';
-        chatInput.appendChild(hintDiv);
+
+    if (step.options) {
+        step.options.forEach((option, index) => {
+            const button = document.createElement('button');
+            button.className = 'phone-chat-option';
+            
+            // Определение класса для визуализации
+            if (option.securityEffect < -20) button.classList.add('danger');
+            else if (option.securityEffect > 20) button.classList.add('success');
+            
+            button.textContent = option.text;
+            button.onclick = () => selectPhoneDialogueOption(step, option, index);
+            chatInput.appendChild(button);
+        });
     }
-    
-    // Добавляем новые варианты ответов
-    dialogue.options.forEach((option, index) => {
-        const button = document.createElement('button');
-        button.className = 'phone-chat-option';
-        if (option.effect.security < 0) {
-            button.classList.add('danger');
-        } else if (option.effect.security > 20) {
-            button.classList.add('success');
-        }
-        button.textContent = option.text;
-        button.onclick = () => selectPhoneDialogueOption(dialogue, option, index);
-        chatInput.appendChild(button);
-    });
-    
-    // Прокручиваем чат вниз
+
+    // Прокрутка вниз
     chatMessages.scrollTop = chatMessages.scrollHeight;
-    
+
     // Если это финальный шаг
-    if (dialogue.id === 23 || dialogue.id === 23) {
-        showPhoneFinalResult(dialogue.id === 10);
+    if (['good_end', 'bad_end', 'neutral_end', 'stats'].includes(step.id)) {
+        phoneSimulationFinished = true;
+        if (step.id !== 'stats') {
+            showPhoneFinalResult(step.id);
+        }
     }
 }
 
 // Обработка выбора варианта
-function selectPhoneDialogueOption(dialogue, option, optionIndex) {
+function selectPhoneDialogueOption(step, option, optionIndex) {
     if (phoneSimulationFinished) return;
-    
-    // Применяем эффекты
-    phoneSecurityScore = Math.max(0, Math.min(100, phoneSecurityScore + option.effect.security));
-    phoneMistakesCount += option.effect.mistakes;
-    phoneDefensesCount += option.effect.defenses;
-    
-    updatePhoneScores();
-    
-    // Показываем ответ на выбор
+
     const chatMessages = document.getElementById('phone-chat-messages');
-    const responseDiv = document.createElement('div');
-    responseDiv.className = 'phone-message user';
-    responseDiv.innerHTML = `<div class="phone-message-text"><strong>Вы:</strong> ${option.text}</div>`;
-    chatMessages.appendChild(responseDiv);
-    
-    // Показываем анализ выбора
-    if (option.analysis) {
-        const analysisDiv = document.createElement('div');
-        analysisDiv.className = 'phone-message system';
-        analysisDiv.innerHTML = `<div class="phone-message-text">${option.analysis}</div>`;
-        chatMessages.appendChild(analysisDiv);
-    }
-    
-    // Прокручиваем чат вниз
+
+    // Применение эффектов
+    phoneSecurityScore = Math.max(0, Math.min(100, phoneSecurityScore + (option.securityEffect || 0)));
+    phoneMistakesCount += (option.mistakeEffect || 0);
+    phoneDefensesCount += (option.defenseEffect || 0);
+
+    // Сохранение в историю
+    phoneDialogueHistory.push({
+        step: step.id,
+        choice: option.text,
+        effects: { security: option.securityEffect, defense: option.defenseEffect, mistake: option.mistakeEffect }
+    });
+
+    // Показ выбора пользователя
+    const userMessageDiv = document.createElement('div');
+    userMessageDiv.className = 'phone-message user';
+    userMessageDiv.innerHTML = `<div class="phone-message-text"><strong>Вы:</strong> ${option.text}</div>`;
+    chatMessages.appendChild(userMessageDiv);
+
+    // Обновление счетчиков
+    updatePhoneScores();
+
+    // Прокрутка вниз
     chatMessages.scrollTop = chatMessages.scrollHeight;
-    
-    // Если есть ответ от системы, показываем его
-    if (option.response) {
-        setTimeout(() => {
-            const systemDiv = document.createElement('div');
-            systemDiv.className = 'phone-message scammer';
-            systemDiv.innerHTML = `<div class="phone-message-text">${option.response}</div>`;
-            chatMessages.appendChild(systemDiv);
-            chatMessages.scrollTop = chatMessages.scrollHeight;
-        }, 500);
-    }
-    
-    // Переход к следующему шагу или рестарт
+
+    // Переход к следующему шагу
     setTimeout(() => {
-        if (option.restart) {
+        if (option.nextStep === 'restart') {
             window.initPhoneSimulator();
-        } else if (option.finish) {
-            completePhoneSimulator();
         } else {
-            // Обновляем текущий шаг
-            phoneCurrentStep = option.nextStep;
-            
-            // Если следующий шаг требует смены сценария
-            if (option.nextStep >= 11 && option.nextStep <= 13) {
-                currentScenario = 'police';
-            } else if (option.nextStep >= 16 && option.nextStep <= 18) {
-                currentScenario = 'social';
-            } else if (option.nextStep >= 19 && option.nextStep <= 21) {
-                currentScenario = 'tech';
-            }
-            
-            showPhoneDialogueStep();
+            showPhoneDialogueStep(option.nextStep);
         }
-    }, 1000);
+    }, 800);
 }
 
 // Обновление счетчиков
@@ -13828,57 +13661,78 @@ function updatePhoneScores() {
     const securityEl = document.getElementById('phone-security-score');
     const mistakesEl = document.getElementById('phone-mistakes-count');
     const defensesEl = document.getElementById('phone-defenses-count');
-    
+
     if (!securityEl || !mistakesEl || !defensesEl) return;
-    
+
     securityEl.textContent = phoneSecurityScore + '%';
     mistakesEl.textContent = phoneMistakesCount;
     defensesEl.textContent = phoneDefensesCount;
-    
+
     // Динамическое изменение цвета
     securityEl.style.color = phoneSecurityScore > 70 ? '#388e3c' : 
                            phoneSecurityScore > 40 ? '#ff9800' : '#d32f2f';
-    
+
     mistakesEl.style.color = phoneMistakesCount === 0 ? '#388e3c' : 
                            phoneMistakesCount < 3 ? '#ff9800' : '#d32f2f';
-    
-    defensesEl.style.color = phoneDefensesCount > 3 ? '#388e3c' : 
-                            phoneDefensesCount > 1 ? '#ff9800' : '#1976d2';
+
+    defensesEl.style.color = phoneDefensesCount > 2 ? '#388e3c' : 
+                            phoneDefensesCount > 0 ? '#ff9800' : '#1976d2';
 }
 
 // Показать финальный результат
-function showPhoneFinalResult(isFailure) {
-    phoneSimulationFinished = true;
+function showPhoneFinalResult(resultType) {
     const resultDiv = document.getElementById('phone-simulator-result');
-    
     if (!resultDiv) return;
-    
-    if (isFailure) {
-        resultDiv.innerHTML = `
+
+    let resultHTML = '';
+    if (resultType === 'good_end') {
+        resultHTML = `
+            <div class="phone-result-success">
+                <h3>🛡 Вы в безопасности!</h3>
+                <p>Отличная работа! Вы не поддались на уловки мошенников.</p>
+                <div class="phone-analysis-points">
+                    <strong>Ваши правильные действия:</strong>
+                    <ul>
+                        <li>Проверили информацию через официальные каналы</li>
+                        <li>Не поддались давлению и срочности</li>
+                        <li>Не сообщили конфиденциальные данные</li>
+                    </ul>
+                </div>
+                <p><strong>Итоговая статистика:</strong> Безопасность ${phoneSecurityScore}%, успешных защит ${phoneDefensesCount}</p>
+            </div>
+        `;
+    } else if (resultType === 'bad_end') {
+        resultHTML = `
             <div class="phone-result-failure">
-                <h3>💥 Вы стали жертвой мошенников!</h3>
+                <h3>💥 Вы стали жертвой!</h3>
                 <p>К сожалению, вы попались на уловки телефонных мошенников.</p>
                 <div class="phone-analysis-points">
                     <strong>Основные ошибки:</strong>
                     <ul>
-                        <li>Назвали коды подтверждения из SMS</li>
-                        <li>Перевели деньги по телефону</li>
-                        <li>Поверили в срочность и давление</li>
-                        <li>Не проверили информацию через официальные каналы</li>
+                        <li>Сообщили конфиденциальные данные/коды</li>
+                        <li>Перевели деньги по требованию</li>
+                        <li>Не проверили информацию официально</li>
                     </ul>
                 </div>
-                <p><strong>Запомните:</strong> Настоящие сотрудники банков, полиции и госслужб НИКОГДА не просят коды из SMS и не требуют переводов по телефону!</p>
+                <p><strong>Запомните:</strong> Настоящие сотрудники НИКОГДА не просят коды, переводы или установку программ по телефону!</p>
+            </div>
+        `;
+    } else {
+        resultHTML = `
+            <div class="phone-result" style="background: #fff3e0; border: 2px solid #ff9800; padding: 25px; border-radius: 10px;">
+                <h3>⚠️ Будьте внимательнее!</h3>
+                <p>Вы не пострадали, но были близки к ошибке. Проанализируйте свои действия.</p>
+                <p><strong>Совет:</strong> Всегда перезванивайте по официальным номерам и не сообщайте личные данные.</p>
             </div>
         `;
     }
-    
+
+    resultDiv.innerHTML = resultHTML;
     resultDiv.style.display = 'block';
-    
-    // Прокручиваем к результату
     resultDiv.scrollIntoView({ behavior: 'smooth' });
 }
 
-// Перезапуск тренажера
+// Функция перезапуска
 function restartPhoneSimulator() {
     window.initPhoneSimulator();
 }
@@ -13890,68 +13744,35 @@ function completePhoneSimulator() {
         showLoginModal();
         return;
     }
-    
-    // Проверяем, был ли уже завершен тренажер
+
     const simulatorId = 'phone-simulator';
+    
     if (currentUser.completedSimulators && currentUser.completedSimulators.includes(simulatorId)) {
         showNotification('info', 'Тренажер уже был пройден ранее');
         showPage('simulators');
         return;
     }
-    
-    // Вычисляем очки на основе результата
-    let earnedPoints = 0;
-    if (phoneSecurityScore >= 80) {
-        earnedPoints = 30;
-    } else if (phoneSecurityScore >= 60) {
-        earnedPoints = 20;
-    } else if (phoneSecurityScore >= 40) {
-        earnedPoints = 10;
-    } else {
-        earnedPoints = 5;
-    }
-    
-    // Добавляем бонус за успешные защиты
-    earnedPoints += phoneDefensesCount * 5;
-    
-    // Обновляем прогресс пользователя
-    if (!currentUser.completedSimulators) {
-        currentUser.completedSimulators = [];
-    }
-    
+
+    // Расчет очков
+    let earnedPoints = Math.floor(phoneSecurityScore / 5) + phoneDefensesCount * 5 - phoneMistakesCount * 2;
+    earnedPoints = Math.max(5, Math.min(50, earnedPoints)); // Ограничение от 5 до 50
+
+    // Обновление пользователя
+    if (!currentUser.completedSimulators) currentUser.completedSimulators = [];
     currentUser.completedSimulators.push(simulatorId);
     currentUser.stats.completedSimulators = (currentUser.stats.completedSimulators || 0) + 1;
     currentUser.stats.score = (currentUser.stats.score || 0) + earnedPoints;
     currentUser.stats.lastActive = new Date().toISOString();
-    
-    // Сохраняем статистику по телефонному мошенничеству
-    if (!currentUser.phoneStats) {
-        currentUser.phoneStats = {};
-    }
-    
-    currentUser.phoneStats.lastScore = phoneSecurityScore;
-    currentUser.phoneStats.defenses = phoneDefensesCount;
-    currentUser.phoneStats.mistakes = phoneMistakesCount;
-    currentUser.phoneStats.lastCompletion = new Date().toISOString();
-    
+
     updateUserInStorage();
-    
-    // ПРИНУДИТЕЛЬНО ОБНОВЛЯЕМ ПРОГРЕСС-БАРЫ
     updateProgressBars();
-    
-    // Показываем уведомление
-    let message = '';
-    if (phoneSecurityScore >= 80) {
-        message = `Отлично! Тренажер пройден на ${phoneSecurityScore}%! +${earnedPoints} очков`;
-    } else if (phoneSecurityScore >= 60) {
-        message = `Хорошо! Тренажер пройден на ${phoneSecurityScore}%! +${earnedPoints} очков`;
-    } else {
-        message = `Тренажер завершен. Обратите внимание на ошибки. +${earnedPoints} очков`;
-    }
-    
+
+    let message = `Тренажер завершен! +${earnedPoints} очков`;
+    if (phoneSecurityScore >= 80) message = `Отлично! +${earnedPoints} очков`;
+    else if (phoneSecurityScore < 40) message = `Попробуйте еще раз. +${earnedPoints} очков`;
+
     showNotification('success', message);
-    
-    // Возвращаемся к списку тренажеров
+
     setTimeout(() => {
         showPage('simulators');
     }, 2000);
@@ -18238,7 +18059,7 @@ function startGosuslugiTest() {
             question: "Что делать, если вам звонят и представляются сотрудником Госуслуг, прося назвать код из SMS?",
             options: [
                 "Назвать код, чтобы подтвердить личность",
-                "Вежливо отказаться и перезвонить на горячую линию 8-800-100-70-10",
+                "Вежливо отказаться и перезвонить на горячую линию госуслуг",
                 "Попросить оператора прислать официальное письмо",
                 "Спросить номер служебного удостоверения"
             ],
@@ -18739,117 +18560,117 @@ function startFinanceFraudTest() {
     
     // Инициализируем вопросы теста
     financeTestQuestions = [
-        {
-            question: "Что НИКОГДА не попросит сделать настоящий сотрудник банка?",
-            options: [
-                "Сообщить код из SMS",
-                "Предъявить паспорт в отделении",
-                "Подписать договор",
-                "Обновить данные в личном кабинете"
-            ],
-            correctAnswer: 0,
-            explanation: "Настоящие банки никогда не просят сообщать коды из SMS. Эти коды — ваша личная информация для подтверждения операций."
-        },
-        {
-            question: "Какой процент годовой доходности обычно обещают финансовые пирамиды?",
-            options: [
-                "5-10%",
-                "15-25%",
-                "30-50%",
-                "Более 100%"
-            ],
-            correctAnswer: 3,
-            explanation: "Финансовые пирамиды часто обещают доходность более 100% годовых, что нереально для легальных инвестиций."
-        },
-        {
-            question: "Что такое 'право на охлаждение' в финансовых услугах?",
-            options: [
-                "Право отказаться от услуги в течение 14 дней без объяснения причин",
-                "Право на снижение процентной ставки в жаркую погоду",
-                "Право на заморозку кредита на 3 месяца",
-                "Право на бесплатный отказ от страховки"
-            ],
-            correctAnswer: 0,
-            explanation: "Право на охлаждение дает 14 дней для отказа от финансовой услуги без объяснения причин и штрафов."
-        },
-        {
-            question: "Как часто можно бесплатно проверить свою кредитную историю?",
-            options: [
-                "1 раз в год",
-                "2 раза в год",
-                "4 раза в год",
-                "Неограниченно"
-            ],
-            correctAnswer: 1,
-            explanation: "По закону вы имеете право на 2 бесплатные проверки кредитной истории в год в каждом бюро."
-        },
-        {
-            question: "Что делать, если вы перевели деньги мошенникам по СБП?",
-            options: [
-                "Ничего, деньги уже не вернуть",
-                "Немедленно позвонить в банк отправителя",
-                "Подождать 3 дня и подать заявление",
-                "Написать мошеннику с просьбой вернуть деньги"
-            ],
-            correctAnswer: 1,
-            explanation: "Нужно немедленно позвонить в банк, с карты которого был совершен перевод. У банков есть процедуры для оспаривания операций."
-        },
-        {
-            question: "Какой организации нужно жаловаться на действия МФО?",
-            options: [
-                "Прокуратуре",
-                "Центральному банку РФ",
-                "Роспотребнадзору",
-                "Все варианты верны"
-            ],
-            correctAnswer: 3,
-            explanation: "На действия МФО можно жаловаться в Центробанк (контроль лицензий), Роспотребнадзор (права потребителей) и прокуратуру (нарушения закона)."
-        },
-        {
-            question: "Что такое SIM-своппинг?",
-            options: [
-                "Перехват SMS-сообщений через копирование SIM-карты",
-                "Кража денег через мобильное приложение",
-                "Взлом банковского аккаунта через Wi-Fi",
-                "Фишинг через социальные сети"
-            ],
-            correctAnswer: 0,
-            explanation: "SIM-своппинг — это метод, когда мошенники получают дубликат вашей SIM-карты и перехватывают SMS с кодами подтверждения."
-        },
-        {
-            question: "Какой максимальный срок лишения свободы предусмотрен за мошенничество (ст. 159 УК РФ)?",
-            options: [
-                "3 года",
-                "5 лет",
-                "8 лет",
-                "10 лет"
-            ],
-            correctAnswer: 3,
-            explanation: "По статье 159 УК РФ 'Мошенничество' максимальное наказание — до 10 лет лишения свободы."
-        },
-        {
-            question: "Что должно насторожить при получении инвестиционного предложения?",
-            options: [
-                "Обещание гарантированной доходности",
-                "Требование срочного решения",
-                "Давление на быстрый старт",
-                "Все перечисленное"
-            ],
-            correctAnswer: 3,
-            explanation: "Все эти признаки характерны для мошеннических инвестиционных предложений. Легальные инвестиции всегда связаны с рисками."
-        },
-        {
-            question: "Куда обращаться, если оформили кредит на ваше имя без вашего ведома?",
-            options: [
-                "Только в полицию",
-                "В банк и в полицию одновременно",
-                "В службу безопасности банка",
-                "Никуда, нужно платить"
-            ],
-            correctAnswer: 1,
-            explanation: "Нужно одновременно писать заявление в банк о несогласии с кредитом и в полицию о мошенничестве."
-        }
-    ];
+    {
+        question: "Вы увидели в YouTube рекламу с известным телеведущим, который рассказывает о супер-прибыльной инвестиционной платформе и показывает свой 'личный кабинет' с миллионными доходами. Что это?",
+        options: [
+            "Отличная возможность начать зарабатывать",
+            "Мошенничество с использованием дипфейков и фейковых видео",
+            "Официальная реклама, одобренная Центробанком",
+            "Совет известного человека, которому можно доверять"
+        ],
+        correctAnswer: 1,
+        explanation: "🎭 Сегодня мошенники массово используют технологии дипфейк и монтируют видео с известными людьми (Соловьев, Дудь, Навальный и др.). Знаменитости не рекламируют сомнительные инвестиционные платформы в YouTube. Это 100% развод."
+    },
+    {
+        question: "В Telegram вам пишет 'персональный менеджер' и предлагает открыть инвестиционный счет у 'международного брокера'. Чтобы вывести прибыль, нужно оплатить налог 13% заранее. Ваши действия?",
+        options: [
+            "Заплатить налог, ведь прибыль уже есть, и хочется её получить",
+            "Согласиться, но попросить вычесть налог из прибыли",
+            "Понять, что налоги всегда вычитаются автоматически, а требование предоплаты — признак мошенничества",
+            "Проконсультироваться с другим 'менеджером' в этом же проекте"
+        ],
+        correctAnswer: 2,
+        explanation: "💰 В реальной жизни налоги удерживаются автоматически брокером или банком при выводе. Вас никогда не попросят оплатить их отдельно, да еще и на карту физического лица. Это стоп-сигнал."
+    },
+    {
+        question: "Вам обещают 'гарантированный доход' 20-30% в месяц от торговли на Форекс. Как к этому относиться?",
+        options: [
+            "Форекс — это серьезно, можно попробовать с небольшой суммы",
+            "Гарантированный доход в трейдинге — это оксюморон. Чем выше обещают, тем выше риск потерять всё",
+            "20-30% в месяц — это нормально, многие так зарабатывают",
+            "Нужно срочно брать кредит и вкладывать, пока предложение не закрылось"
+        ],
+        correctAnswer: 1,
+        explanation: "📈 20-30% в месяц — это 240-360% годовых. Даже Илон Маск не дает такой доходности. В инвестициях гарантий нет. Легальные брокеры всегда предупреждают о рисках. Гарантии дают только мошенники."
+    },
+    {
+        question: "Что такое 'криптовалютная матка' или 'смарт-кошелек', который 'майнит' вам токены, просто лежа в телефоне?",
+        options: [
+            "Новый прорыв в технологии блокчейн",
+            "Официальное приложение от Binance",
+            "Финансовая пирамида, где первые получают деньги от последних",
+            "Законный способ пассивного дохода"
+        ],
+        correctAnswer: 2,
+        explanation: "🤖 Приложения, которые обещают 'майнинг' без оборудования и затрат электроэнергии — это классические пирамиды. Вы видите цифры прибыли на экране, но вывести их не дадут без 'комиссии' или приведут вложения 'новичков'."
+    },
+    {
+        question: "Вас приглашают в чат 'успешных трейдеров', где куратор дает бесплатные сигналы. Сначала вы зарабатываете 1000 руб., затем куратор предлагает перейти в VIP-чат, купив доступ за 15 000 руб. Ваши действия?",
+        options: [
+            "Купить доступ, ведь сигналы же работают",
+            "Понять, что это классическая схема 'разгона доверия': сначала наживка, потом обман",
+            "Попросить скидку за VIP-доступ",
+            "Продолжать пользоваться бесплатными сигналами"
+        ],
+        correctAnswer: 1,
+        explanation: "🎣 Мошенники дают заработать мелкие суммы, чтобы вы поверили. После покупки VIP-доступа сигналы либо перестанут работать, либо вы просто потеряете деньги. Настоящие трейдеры не продают сигналы в Telegram."
+    },
+    {
+        question: "Как проверить, имеет ли право компания привлекать инвестиции в России?",
+        options: [
+            "Посмотреть, есть ли у компании красивый сайт и офис",
+            "Почитать отзывы в интернете",
+            "Найти компанию в реестре ЦБ РФ на сайте cbr.ru",
+            "Спросить у менеджера, есть ли у них лицензия"
+        ],
+        correctAnswer: 2,
+        explanation: "✅ Только Центральный банк РФ выдает лицензии финансовым компаниям. Если компании нет в реестре ЦБ, она работает нелегально. Отзывы и сайт легко подделать."
+    },
+    {
+        question: "Менеджер говорит: 'Наш офис находится в Лондоне, поэтому мы не подчиняемся Центробанку, но это абсолютно легально'. Стоит ли верить?",
+        options: [
+            "Да, международные компании часто не имеют лицензии в РФ",
+            "Нет, если компания работает с клиентами из России, она обязана соблюдать законы РФ",
+            "Да, если офис в Лондоне, значит, всё серьёзно",
+            "Нет, но если прибыль большая, можно рискнуть"
+        ],
+        correctAnswer: 1,
+        explanation: "🌍 Компании, которые работают с россиянами, могут иметь офисы где угодно, но для работы на территории РФ они обязаны иметь лицензию ЦБ. Фразы про 'Лондон' и 'офшоры' — способ уйти от ответственности."
+    },
+    {
+        question: "Вы захотели вывести крупную сумму со счета у брокера. Вам говорят, что нужно оплатить 'страховку сделки' или 'комиссию за вывод', иначе деньги не придут. Что это?",
+        options: [
+            "Обычная практика, все брокеры так делают",
+            "Мошенничество. Легальный брокер не требует доплат за вывод",
+            "Нужно оплатить, чтобы вернуть свои деньги",
+            "Можно оплатить половину, договориться"
+        ],
+        correctAnswer: 1,
+        explanation: "🔒 Это 100% признак мошенничества. Вас заманили обещаниями прибыли, а теперь не дают вывести, выдумывая новые поборы. Это называется 'отмена вывода' или 'комиссия за вывод'. Никогда не платите!"
+    },
+    {
+        question: "Друг зовет в проект, где нужно вложить деньги под 10% в неделю. Он уже заработал и вывел деньги. Стоит ли вкладывать?",
+        options: [
+            "Да, друг же вывел, значит, не обманывает",
+            "Нет. Это пирамида, и друг просто оказался в числе первых, кто получил выплаты за счет новых вкладчиков",
+            "Вложить небольшую сумму, чтобы проверить",
+            "Попросить друга поручиться своим имуществом"
+        ],
+        correctAnswer: 1,
+        explanation: "👥 В финансовых пирамидах первым действительно платят, чтобы они звали других. То, что друг заработал, не гарантирует, что заработаете вы. Через месяц пирамида может рухнуть, и вы потеряете всё."
+    },
+    {
+        question: "Вас убеждают перевести деньги на 'счет' брокера. В реквизитах указан перевод на карту физического лица (Сбер, Тинькофф) или электронный кошелек (Qiwi, ЮMoney). Что скажете?",
+        options: [
+            "Нормально, многие брокеры так работают для удобства",
+            "Это грубейшее нарушение. Легальные брокеры имеют юрлица и расчетные счета в банках",
+            "Переведу, если менеджер пришлет фото паспорта",
+            "Переведу, но только половину суммы"
+        ],
+        correctAnswer: 1,
+        explanation: "💳 Легальная финансовая компания никогда не попросит перевести деньги на карту физлица. Это деньги уходят напрямую мошеннику. Единственный легальный способ — перевод на расчетный счет юридического лица."
+    }
+];
     
     // Сбрасываем данные теста
     financeCurrentQuestion = 0;
@@ -19188,7 +19009,7 @@ function retryFinanceTest() {
 function cancelFinanceTest() {
     if (confirm('Вы уверены, что хотите отменить тест? Все ответы будут потеряны.')) {
         clearInterval(financeTestTimer);
-        showPage('tests');
+        showPage('test');
     }
 }
 
@@ -22182,6 +22003,548 @@ setInterval(function() {
         document.title = "Академия Кибербезопасности - Защита от мошенников";
     }
 }, 1000);
+// Глобальные переменные для теста
+let mobileTestQuestions = [];
+let mobileCurrentQuestion = 0;
+let mobileUserAnswers = [];
+let mobileTestStartTime = null;
+let mobileTestTimer = null;
+
+// Функция запуска теста по мобильной безопасности
+function startMobileTest() {
+    // ПРОКРУТКА ВВЕРХ
+    scrollToTop();
+    
+    // Показываем страницу активного курса
+    document.querySelectorAll('.page').forEach(page => {
+        page.classList.remove('active');
+    });
+    document.getElementById('active-course').classList.add('active');
+    
+    // Обновляем навигацию
+    document.querySelectorAll('.nav-link').forEach(link => {
+        link.classList.remove('active');
+    });
+    
+    // ИНИЦИАЛИЗАЦИЯ ВОПРОСОВ ТЕСТА (10 вопросов)
+    mobileTestQuestions = [
+        {
+            question: "Какой самый безопасный способ установки приложений на смартфон?",
+            options: [
+                "Скачать с торрентов — там больше выбор",
+                "Установить из официального магазина приложений (Google Play, App Store)",
+                "Перейти по ссылке из рекламы в соцсетях",
+                "Попросить друга скинуть APK-файл через WhatsApp"
+            ],
+            correctAnswer: 1,
+            explanation: "✅ Только официальные магазины приложений проверяют программы на вирусы и мошенничество. Сторонние источники — главный способ заражения телефона."
+        },
+        {
+            question: "Что такое 'смишинг' (smishing)?",
+            options: [
+                "Вид компьютерной игры",
+                "Фишинг через SMS-сообщения",
+                "Название антивируса для iPhone",
+                "Способ быстрой оплаты"
+            ],
+            correctAnswer: 1,
+            explanation: "📱 Смишинг — это фишинг через SMS. Мошенники присылают сообщения со ссылками: 'Ваша карта заблокирована', 'Вы выиграли приз'. Ссылка ведет на поддельный сайт."
+        },
+        {
+            question: "Вы получили SMS: 'Мама, у меня разбился телефон. Это мой новый номер. Напиши мне в WhatsApp'. Ваши действия?",
+            options: [
+                "Сразу написать в WhatsApp, чтобы узнать, всё ли в порядке",
+                "Позвонить на старый номер сына/дочери, чтобы проверить",
+                "Переслать SMS мужу/жене, чтобы они тоже написали",
+                "Сохранить новый номер и удалить старый"
+            ],
+            correctAnswer: 1,
+            explanation: "👪 Это классическая схема 'родственник в беде'. Мошенники ждут, что вы напишете, и начнут просить деньги. Всегда перезванивайте на старый, известный вам номер."
+        },
+        {
+            question: "Почему опасно подключаться к бесплатному Wi-Fi в торговом центре или кафе?",
+            options: [
+                "Потому что интернет работает медленно",
+                "Потому что мошенники могут перехватить ваши пароли и данные карт",
+                "Потому что за это могут взять деньги позже",
+                "Потому что телефон быстрее разряжается"
+            ],
+            correctAnswer: 1,
+            explanation: "🛜 В публичных Wi-Fi сетях мошенники могут делать 'атаку посредника' (Man-in-the-Middle) и видеть всё, что вы отправляете: логины, пароли, фото. Для банковских операций используйте мобильный интернет."
+        },
+        {
+            question: "Какое разрешение для приложения 'Фонарик' должно вас насторожить?",
+            options: [
+                "Доступ к камере (чтобы включить вспышку)",
+                "Доступ к контактам и SMS",
+                "Доступ к интернету",
+                "Доступ к вибрации"
+            ],
+            correctAnswer: 1,
+            explanation: "🔦 Зачем фонарику ваши контакты и SMS? Это явный признак, что приложение ворует данные. Всегда проверяйте, какие разрешения запрашивает программа."
+        },
+        {
+            question: "Что такое двухфакторная аутентификация (2FA) и зачем она нужна?",
+            options: [
+                "Это когда вы два раза вводите один и тот же пароль",
+                "Это дополнительный код из SMS или приложения при входе, чтобы защитить аккаунт, даже если пароль украли",
+                "Это когда у вас два номера телефона",
+                "Это функция для быстрой оплаты покупок"
+            ],
+            correctAnswer: 1,
+            explanation: "🔐 2FA — это второй слой защиты. Даже если мошенники узнают ваш пароль, без этого кода они не смогут войти в ваш аккаунт или подтвердить платеж. Включайте везде, где можно!"
+        },
+        {
+            question: "Какой PIN-код от SIM-карты самый безопасный?",
+            options: [
+                "1111 — легко запомнить",
+                "1234 — классика",
+                "Случайный набор цифр, не связанный с датой рождения",
+                "Год своего рождения"
+            ],
+            correctAnswer: 2,
+            explanation: "🔢 PIN-код защищает SIM-карту. Если телефон украдут, без PIN-кода мошенники не смогут переставить SIM в другой телефон и получить доступ к вашим SMS (а значит, и к банкам). Не используйте простые комбинации!"
+        },
+        {
+            question: "Вам пришло уведомление: 'Ваш iPhone заблокирован. Перейдите по ссылке, чтобы разблокировать'. Что делать?",
+            options: [
+                "Срочно перейти, чтобы разблокировать телефон",
+                "Не переходить — это мошенничество. Настоящие уведомления приходят в настройках, а не в браузере",
+                "Позвонить по номеру из уведомления",
+                "Перезагрузить телефон"
+            ],
+            correctAnswer: 1,
+            explanation: "🍎 Это типичное мошенничество. Вас пугают блокировкой, чтобы выманить деньги. Apple никогда не блокирует iPhone через браузер. Просто закройте вкладку."
+        },
+        {
+            question: "Вы продаете вещь на Avito. Покупатель просит продиктовать код из SMS для 'подтверждения, что вы человек'. Ваши действия?",
+            options: [
+                "Продиктовать код — это стандартная проверка",
+                "Понять, что это мошенник. Код из SMS дает доступ к вашему аккаунту на Госуслугах или в банке",
+                "Спросить, зачем ему код, и если объяснит — продиктовать",
+                "Продиктовать код, но потом сразу сменить пароль"
+            ],
+            correctAnswer: 1,
+            explanation: "⚠️ Код из SMS — это ключ к вашему аккаунту. Мошенники часто представляются покупателями, чтобы получить код и войти в ваш профиль на Госуслугах. Никогда и никому не диктуйте коды!"
+        },
+        {
+            question: "Что нужно сделать в первую очередь, если вы потеряли телефон?",
+            options: [
+                "Купить новый телефон",
+                "Заблокировать SIM-карту у оператора и заблокировать банковские карты в приложении банка",
+                "Написать пост в соцсетях о потере",
+                "Позвонить на свой номер, вдруг найдут"
+            ],
+            correctAnswer: 1,
+            explanation: "📱 Мошенники могут использовать вашу SIM для кражи денег. Первым делом — блокировка SIM (звонок оператору) и блокировка банковских карт (через приложение или по телефону горячей линии)."
+        }
+    ];
+    
+    // Сбрасываем данные теста
+    mobileCurrentQuestion = 0;
+    mobileUserAnswers = [];
+    mobileTestStartTime = new Date();
+    
+    // Загружаем страницу теста
+    const courseContent = document.getElementById('courseContent');
+    courseContent.innerHTML = `
+        <div class="course-header">
+            <div class="course-header-icon" style="background: linear-gradient(135deg, #7b1fa2, #ba68c8);">
+                <i class="fas fa-mobile-alt"></i>
+            </div>
+            <div class="course-header-content">
+                <h1>Итоговый тест: Мобильная безопасность</h1>
+                <p>Проверьте свои знания по защите смартфона и мобильных данных. 10 вопросов, для успешного прохождения нужно правильно ответить на 8 вопросов (80%).</p>
+                <div class="course-meta">
+                    <div class="course-meta-item">
+                        <i class="fas fa-question-circle"></i>
+                        <span>10 вопросов</span>
+                    </div>
+                    <div class="course-meta-item">
+                        <i class="fas fa-clock"></i>
+                        <span>20 минут</span>
+                    </div>
+                    <div class="course-meta-item">
+                        <i class="fas fa-chart-line"></i>
+                        <span>Проходной балл: 80%</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div id="mobileTestContainer">
+            <div id="mobileTestInstructions" style="text-align: center; padding: 40px 0;">
+                <h3>Инструкция к тесту</h3>
+                <p style="margin: 20px 0;">Тест состоит из 10 вопросов с одним правильным ответом.</p>
+                
+                <div style="background-color: #f5f5f5; padding: 20px; border-radius: 10px; max-width: 600px; margin: 0 auto;">
+                    <h4><i class="fas fa-info-circle icon" style="color: #7b1fa2;"></i> Правила тестирования:</h4>
+                    <ul style="text-align: left; margin: 15px 0;">
+                        <li>Выберите один вариант ответа на каждый вопрос</li>
+                        <li>Можно вернуться к предыдущим вопросам</li>
+                        <li>На прохождение теста отводится 20 минут</li>
+                        <li>После завершения вы увидите детальный результат с объяснениями</li>
+                        <li>Для успешного прохождения нужно ≥ 80% правильных ответов (8 из 10)</li>
+                    </ul>
+                </div>
+                
+                <button class="btn btn-large btn-success" onclick="beginMobileTest()" style="margin-top: 30px;">
+                    <i class="fas fa-play icon"></i> Начать тест
+                </button>
+                
+                <button class="btn btn-large btn-outline" onclick="showPage('test')" style="margin-top: 30px; margin-left: 15px;">
+                    <i class="fas fa-arrow-left icon"></i> Вернуться к тестам
+                </button>
+            </div>
+            
+            <div id="mobileTestQuestions" style="display: none;">
+                <!-- Вопросы будут загружены динамически -->
+            </div>
+            
+            <div id="mobileTestResults" style="display: none;">
+                <!-- Результаты будут загружены динамически -->
+            </div>
+        </div>
+    `;
+}
+
+// Функция для начала теста
+function beginMobileTest() {
+    // Скрываем инструкции и показываем вопросы
+    document.getElementById('mobileTestInstructions').style.display = 'none';
+    document.getElementById('mobileTestQuestions').style.display = 'block';
+    
+    // Запускаем таймер
+    startMobileTestTimer();
+    
+    // Загружаем первый вопрос
+    loadMobileTestQuestion();
+}
+
+// Функция для загрузки вопроса
+function loadMobileTestQuestion() {
+    const testQuestionsDiv = document.getElementById('mobileTestQuestions');
+    const question = mobileTestQuestions[mobileCurrentQuestion];
+    
+    testQuestionsDiv.innerHTML = `
+        <div class="simulator">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                <h3>Вопрос ${mobileCurrentQuestion + 1} из ${mobileTestQuestions.length}</h3>
+                <div id="mobileTestTimer" style="background-color: #f5f5f5; padding: 8px 15px; border-radius: 20px; font-weight: bold;">
+                    <i class="fas fa-clock icon"></i> <span id="mobileTimeRemaining">20:00</span>
+                </div>
+            </div>
+            
+            <div style="background-color: #f8f9fa; padding: 25px; border-radius: 10px; margin-bottom: 25px;">
+                <h4 style="color: #7b1fa2; margin-bottom: 15px;">${question.question}</h4>
+            </div>
+            
+            <div class="options">
+                ${question.options.map((option, index) => `
+                    <div class="option" onclick="selectMobileTestAnswer(${index})" 
+                         style="${mobileUserAnswers[mobileCurrentQuestion] === index ? 'border-color: #7b1fa2; background-color: #f3e5f5;' : ''}">
+                        ${String.fromCharCode(65 + index)}. ${option}
+                    </div>
+                `).join('')}
+            </div>
+            
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 30px;">
+                ${mobileCurrentQuestion > 0 ? `
+                    <button class="btn btn-outline" onclick="prevMobileTestQuestion()" style="padding: 8px 20px;">
+                        <i class="fas fa-arrow-left icon"></i> Назад
+                    </button>
+                ` : '<div style="width: 100px;"></div>'}
+                
+                <div style="text-align: center;">
+                    <button class="btn btn-success" onclick="nextMobileTestQuestion()" id="mobileNextButton" 
+                            ${mobileUserAnswers[mobileCurrentQuestion] === undefined ? 'disabled' : ''}
+                            style="padding: 8px 25px;">
+                        ${mobileCurrentQuestion === mobileTestQuestions.length - 1 ? 'Завершить тест' : 'Следующий вопрос'} 
+                        <i class="fas fa-arrow-right icon"></i>
+                    </button>
+                    <p style="margin-top: 8px; color: #666; font-size: 0.85rem;">
+                        Вопрос ${mobileCurrentQuestion + 1} из ${mobileTestQuestions.length}
+                    </p>
+                </div>
+                
+                <div style="text-align: right;">
+                    <button class="btn btn-danger" onclick="cancelMobileTest()" style="padding: 8px 20px;">
+                        <i class="fas fa-times icon"></i> Отменить
+                    </button>
+                </div>
+            </div>
+            
+            <div style="margin-top: 20px; text-align: center; color: #666;">
+                <p><i class="fas fa-info-circle icon"></i> Выберите один вариант ответа</p>
+            </div>
+        </div>
+    `;
+}
+
+// Функция выбора ответа
+function selectMobileTestAnswer(answerIndex) {
+    // Убираем выделение со всех вариантов
+    document.querySelectorAll('#mobileTestQuestions .option').forEach(option => {
+        option.style.borderColor = '#ddd';
+        option.style.backgroundColor = 'white';
+    });
+    
+    // Выделяем выбранный вариант
+    event.target.style.borderColor = '#7b1fa2';
+    event.target.style.backgroundColor = '#f3e5f5';
+    
+    // Сохраняем ответ
+    mobileUserAnswers[mobileCurrentQuestion] = answerIndex;
+    
+    // Активируем кнопку "Далее"
+    document.getElementById('mobileNextButton').disabled = false;
+}
+
+// Функция для перехода к следующему вопросу
+function nextMobileTestQuestion() {
+    // Проверяем, выбран ли ответ
+    if (mobileUserAnswers[mobileCurrentQuestion] === undefined) {
+        showNotification('error', 'Пожалуйста, выберите вариант ответа');
+        return;
+    }
+    
+    // Переходим к следующему вопросу или завершаем тест
+    if (mobileCurrentQuestion < mobileTestQuestions.length - 1) {
+        mobileCurrentQuestion++;
+        loadMobileTestQuestion();
+    } else {
+        finishMobileTest();
+    }
+}
+
+// Функция для возврата к предыдущему вопросу
+function prevMobileTestQuestion() {
+    if (mobileCurrentQuestion > 0) {
+        mobileCurrentQuestion--;
+        loadMobileTestQuestion();
+    }
+}
+
+// Функция запуска таймера теста
+function startMobileTestTimer() {
+    // Очищаем предыдущий таймер, если был
+    if (mobileTestTimer) {
+        clearInterval(mobileTestTimer);
+    }
+    
+    let timeLeft = 20 * 60; // 20 минут в секундах
+    
+    mobileTestTimer = setInterval(function() {
+        timeLeft--;
+        
+        const minutes = Math.floor(timeLeft / 60);
+        const seconds = timeLeft % 60;
+        
+        const timeElement = document.getElementById('mobileTimeRemaining');
+        if (timeElement) {
+            timeElement.textContent = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+        }
+        
+        // Меняем цвет при малом остатке времени
+        const timerDiv = document.getElementById('mobileTestTimer');
+        if (timerDiv && timeLeft < 300) { // Меньше 5 минут
+            timerDiv.style.backgroundColor = '#ffebee';
+            timerDiv.style.color = '#d32f2f';
+        }
+        
+        if (timeLeft <= 0) {
+            clearInterval(mobileTestTimer);
+            finishMobileTest();
+        }
+    }, 1000);
+}
+
+// Функция завершения теста
+function finishMobileTest() {
+    if (mobileTestTimer) {
+        clearInterval(mobileTestTimer);
+    }
+    
+    // Рассчитываем результаты
+    let correctAnswers = 0;
+    let resultsHTML = '';
+    
+    mobileTestQuestions.forEach((question, index) => {
+        const userAnswer = mobileUserAnswers[index];
+        const isCorrect = userAnswer === question.correctAnswer;
+        
+        if (isCorrect) correctAnswers++;
+        
+        resultsHTML += `
+            <div style="margin-bottom: 20px; padding: 15px; border-radius: 8px; background-color: ${isCorrect ? '#e8f5e9' : '#ffebee'}; border-left: 5px solid ${isCorrect ? '#388e3c' : '#d32f2f'}; text-align: left;">
+                <p><strong>Вопрос ${index + 1}:</strong> ${question.question}</p>
+                <p><strong>Ваш ответ:</strong> ${userAnswer !== undefined ? question.options[userAnswer] : 'Не ответили'}</p>
+                <p><strong>Правильный ответ:</strong> ${question.options[question.correctAnswer]}</p>
+                <p style="margin-top: 10px; color: #666;"><i class="fas fa-info-circle icon"></i> ${question.explanation}</p>
+            </div>
+        `;
+    });
+    
+    const score = Math.round((correctAnswers / mobileTestQuestions.length) * 100);
+    const isPassed = score >= 80; // 8 из 10 = 80%
+    
+    // Обновляем прогресс пользователя
+    if (currentUser && isPassed) {
+        // Отмечаем тест как пройденный
+        if (!currentUser.completedCourses) currentUser.completedCourses = [];
+        if (!currentUser.completedCourses.includes('mobile')) {
+            currentUser.completedCourses.push('mobile');
+        }
+        
+        // Обновляем прогресс курса
+        if (!currentUser.progress) currentUser.progress = {};
+        currentUser.progress.mobile = 100;
+        
+        if (!currentUser.stats) {
+            currentUser.stats = {
+                completedLessons: 0,
+                score: 0,
+                testResults: []
+            };
+        }
+        
+        currentUser.stats.completedLessons = (currentUser.stats.completedLessons || 0) + 1;
+        currentUser.stats.score = (currentUser.stats.score || 0) + 50; // Бонус за прохождение теста
+        
+        if (!currentUser.stats.testResults) currentUser.stats.testResults = [];
+        currentUser.stats.testResults.push({
+            course: 'mobile',
+            score: score,
+            date: new Date().toISOString()
+        });
+        
+        updateUserInStorage();
+    }
+    
+    // Показываем результаты
+    document.getElementById('mobileTestQuestions').style.display = 'none';
+    document.getElementById('mobileTestResults').style.display = 'block';
+    document.getElementById('mobileTestResults').innerHTML = `
+        <div class="simulator" style="text-align: center;">
+            <h3>Результаты теста</h3>
+            
+            <div style="margin: 30px 0;">
+                <div style="font-size: 3rem; color: ${isPassed ? '#388e3c' : '#d32f2f'}; margin-bottom: 10px;">
+                    ${score}%
+                </div>
+                <div style="font-size: 1.2rem; margin-bottom: 20px;">
+                    ${correctAnswers} из ${mobileTestQuestions.length} правильных ответов
+                </div>
+                
+                <div style="background-color: ${isPassed ? '#e8f5e9' : '#ffebee'}; padding: 20px; border-radius: 10px; max-width: 500px; margin: 0 auto;">
+                    <h4 style="color: ${isPassed ? '#388e3c' : '#d32f2f'};">
+                        <i class="fas ${isPassed ? 'fa-check-circle' : 'fa-times-circle'} icon"></i>
+                        ${isPassed ? 'Тест пройден успешно!' : 'Тест не пройден'}
+                    </h4>
+                    <p>Для успешного прохождения необходимо набрать 80% правильных ответов (8 из 10).</p>
+                </div>
+            </div>
+            
+            ${isPassed ? `
+                <div style="background-color: #fff3e0; padding: 20px; border-radius: 10px; margin: 20px 0;">
+                    <h4><i class="fas fa-trophy icon" style="color: #ff9800;"></i> Поздравляем!</h4>
+                    <p>Вы успешно прошли курс "Мобильная безопасность" и получили +50 очков к вашему рейтингу.</p>
+                    ${currentUser ? `
+                        <p style="margin-top: 10px;">Ваш текущий счет: <strong>${currentUser.stats.score} очков</strong></p>
+                    ` : ''}
+                </div>
+            ` : `
+                <div style="background-color: #e3f2fd; padding: 20px; border-radius: 10px; margin: 20px 0;">
+                    <h4><i class="fas fa-redo icon" style="color: #1976d2;"></i> Рекомендации</h4>
+                    <p>Рекомендуем повторить материал курса и пройти тест снова.</p>
+                    <p>Обратите особое внимание на вопросы, в которых допустили ошибки.</p>
+                </div>
+            `}
+            
+            <h4 style="margin-top: 30px; margin-bottom: 20px;">Детализация ответов:</h4>
+            <div style="max-height: 400px; overflow-y: auto; padding-right: 10px; text-align: left;">
+                ${resultsHTML}
+            </div>
+            
+            <div style="margin-top: 30px;">
+                <button class="btn btn-large ${isPassed ? 'btn-success' : 'btn-warning'}" onclick="${isPassed ? 'showPage(\'test\')' : 'retryMobileTest()'}">
+                    ${isPassed ? 'Вернуться к тестам' : 'Попробовать снова'}
+                </button>
+                
+                ${isPassed ? `
+                    <button class="btn btn-large btn-outline" onclick="downloadMobileCertificate()" style="margin-left: 15px;">
+                        <i class="fas fa-download icon"></i> Скачать сертификат
+                    </button>
+                ` : ''}
+            </div>
+        </div>
+    `;
+    
+    // Прокручиваем к результатам
+    document.getElementById('mobileTestResults').scrollIntoView({ behavior: 'smooth' });
+}
+
+// Функция повторного прохождения теста
+function retryMobileTest() {
+    mobileCurrentQuestion = 0;
+    mobileUserAnswers = [];
+    
+    document.getElementById('mobileTestResults').style.display = 'none';
+    document.getElementById('mobileTestQuestions').style.display = 'block';
+    
+    mobileTestStartTime = new Date();
+    startMobileTestTimer();
+    loadMobileTestQuestion();
+}
+
+// Функция отмены теста
+function cancelMobileTest() {
+    if (confirm('Вы уверены, что хотите отменить тест? Все ответы будут потеряны.')) {
+        if (mobileTestTimer) {
+            clearInterval(mobileTestTimer);
+        }
+        showPage('test');
+    }
+}
+
+// Функция скачивания сертификата
+function downloadMobileCertificate() {
+    showNotification('success', 'Сертификат успешно сгенерирован!');
+    
+    const certificateContent = `
+        <div style="text-align: center; padding: 40px; background-color: white; border: 10px solid #7b1fa2; max-width: 800px; margin: 0 auto; font-family: Arial, sans-serif;">
+            <h1 style="color: #7b1fa2; font-size: 2.5rem; margin-bottom: 20px;">СЕРТИФИКАТ</h1>
+            <p style="font-size: 1.2rem; color: #555;">Настоящий сертификат подтверждает, что</p>
+            <h2 style="color: #6a1b9a; margin: 20px 0; font-size: 2rem;">${currentUser ? currentUser.name : 'Студент'}</h2>
+            <p style="font-size: 1.2rem; color: #555;">успешно прошел(а) курс</p>
+            <h3 style="color: #7b1fa2; margin: 20px 0; font-size: 1.8rem;">"Мобильная безопасность"</h3>
+            <p style="font-size: 1rem; color: #666;">в Академии Кибербезопасности</p>
+            <div style="margin: 30px 0; padding: 20px; background-color: #f9f9f9; border-radius: 10px;">
+                <p style="font-size: 1.1rem;"><strong>Дата:</strong> ${new Date().toLocaleDateString('ru-RU')}</p>
+                <p style="font-size: 1.1rem;"><strong>Результат теста:</strong> ${Math.round((mobileUserAnswers.filter((answer, index) => answer === mobileTestQuestions[index].correctAnswer).length / mobileTestQuestions.length) * 100)}%</p>
+                <p style="font-size: 1.1rem;"><strong>Правильных ответов:</strong> ${mobileUserAnswers.filter((answer, index) => answer === mobileTestQuestions[index].correctAnswer).length} из 10</p>
+            </div>
+            <div style="margin-top: 50px; display: flex; justify-content: space-around;">
+                <div style="text-align: center;">
+                    <p>Директор Академии</p>
+                    <p style="margin-top: 40px;">___________________ А.В. Иванов</p>
+                </div>
+                <div style="text-align: center;">
+                    <p>Руководитель курса</p>
+                    <p style="margin-top: 40px;">___________________ Е.С. Петрова</p>
+                </div>
+            </div>
+        </div>
+    `;
+    
+    setTimeout(() => {
+        if (confirm('Хотите увидеть предварительный просмотр сертификата?')) {
+            const win = window.open();
+            win.document.write(certificateContent);
+            win.document.title = 'Сертификат - Мобильная безопасность';
+        }
+    }, 500);
+}
 </script>
 
 
